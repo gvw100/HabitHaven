@@ -71,6 +71,8 @@ public class HabitApp {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates a habit and adds it to habitManager.habits
     private void createHabit() {
         String name = getHabitName();
         String description = getHabitDescription();
