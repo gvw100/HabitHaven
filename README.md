@@ -28,7 +28,7 @@ completions, etc.)
 - As a user, I want to be able to add a habit to my list of habits and specify the
 name, frequency/period, and description. 
 - As a user, I want to be able to mark a habit as completed for the current time period. (eg: 
-I did 20 push-up successfully)
+I did 20 push-ups successfully)
 - As a user, I want to be able to view a list of all my active habits.
 - As a user, I want to be able to edit my habits.
 - As a user, I want to be able to delete my habits.
