@@ -1,9 +1,9 @@
 package model;
 
-// Statistics for a habit, streak is number of consecutive period completions,
-// bestStreak is all-time best streak, totalNumSuccess gives the number of
-// times the habit was marked as complete, numPeriodSuccess
-// gives the number of times habit complete within period
+// Statistics for a habit, with the number of consecutive period completions,
+// the all-time best streak, the number of times the habit was
+// marked as complete, the total number of successful periods,
+// and the number of periods tracked
 public abstract class HabitStatistics {
     private int streak;
     private int bestStreak;
@@ -76,7 +76,7 @@ public abstract class HabitStatistics {
 
     // MODIFIES: this
     // EFFECTS: increments totalNumSuccess
-    public void incrementNumSuccess() {
+    public void incrementTotalNumSuccess() {
         totalNumSuccess++;
     }
 

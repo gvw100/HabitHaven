@@ -124,7 +124,7 @@ public class Habit extends HabitStatistics {
         updateHabit();
         if (numSuccess < frequency) {
             numSuccess++;
-            super.incrementNumSuccess();
+            super.incrementTotalNumSuccess();
             checkPeriodComplete();
             return true;
         }
@@ -132,7 +132,8 @@ public class Habit extends HabitStatistics {
     }
 
     // MODIFIES: this
-    // EFFECTS: if isPreviousComplete(), then increments both super.numPeriodSuccess and super.streak
+    // EFFECTS: if isPeriodComplete(), then increments both super.numPeriodSuccess
+    //          a super.streak, sets isPreviousComplete to true
     public void checkPeriodComplete() {
         if (isPeriodComplete()) {
             isPreviousComplete = true;
@@ -159,6 +160,7 @@ public class Habit extends HabitStatistics {
 
     // MODIFIES: this
     // EFFECTS: updates currentPeriodEnd, nextPeriodEnd, and habit statistics based on current date time
+    //          a day is defined to start at 00:00
     //          if now is not after currentPeriodEnd, do nothing,
     //          if now is between currentPeriodEnd and nextPeriodEnd, but if !isPreviousComplete(),
     //          switch to next period, then reset streak,
@@ -185,20 +187,20 @@ public class Habit extends HabitStatistics {
     public void updateDateTime() {
         switch (period) {
             case DAILY:
-                updateDaily(clock);
+                updateDaily();
                 break;
             case WEEKLY:
-                updateWeekly(clock);
+                updateWeekly();
                 break;
             case MONTHLY:
-                updateMonthly(clock);
+                updateMonthly();
         }
     }
 
     // REQUIRES: this.getPeriod() == Period.DAILY
     // MODIFIES: this
     // EFFECTS: sets currentPeriodEnd to 23:59 today nextPeriodEnd to 23:59 tomorrow
-    private void updateDaily(Clock clock) {
+    public void updateDaily() {
         LocalDateTime now = LocalDateTime.now(clock);
         currentPeriodEnd = now.withHour(23).withMinute(59).withSecond(0).withNano(0);
         nextPeriodEnd = now.plusDays(1).withHour(23).withMinute(59).withSecond(0).withNano(0);
@@ -207,7 +209,7 @@ public class Habit extends HabitStatistics {
     // REQUIRES: this.getPeriod() == Period.WEEKLY
     // MODIFIES: this
     // EFFECTS: sets currentPeriodEnd to 23:59 this Saturday and sets nextPeriodEnd to 23:59 next Saturday
-    private void updateWeekly(Clock clock) {
+    public void updateWeekly() {
         LocalDateTime now = LocalDateTime.now(clock);
         LocalDateTime nextSaturday = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY));
         LocalDateTime nextNextSaturday = nextSaturday.plusDays(7);
@@ -219,7 +221,7 @@ public class Habit extends HabitStatistics {
     // MODIFIES: this
     // EFFECTS: sets currentPeriodEnd to 23:59 on the last day of the month
     //          and sets nextPeriodEnd to 23:59 on the last day of next month
-    private void updateMonthly(Clock clock) {
+    public void updateMonthly() {
         LocalDateTime now = LocalDateTime.now(clock);
         LocalDateTime lastDayOfMonth = now.with(TemporalAdjusters.lastDayOfMonth());
         currentPeriodEnd = lastDayOfMonth.withHour(23).withMinute(59).withSecond(0).withNano(0);

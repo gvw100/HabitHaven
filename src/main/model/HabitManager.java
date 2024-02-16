@@ -16,6 +16,11 @@ public class HabitManager {
         return this.habits;
     }
 
+    // EFFECTS: returns size of habits
+    public int getSize() {
+        return this.habits.size();
+    }
+
     // MODIFIES: this
     // EFFECTS: habit added to list of habits
     public void addHabit(Habit habit) {

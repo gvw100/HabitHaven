@@ -13,15 +13,17 @@ import java.util.Scanner;
 public class HabitApp {
     private Scanner input;
     private final HabitManager habitManager;
+    private final Clock clock;
 
     // EFFECTS: starts the application
     HabitApp() {
         habitManager = new HabitManager();
+        clock = Clock.systemDefaultZone();
         startApp();
     }
 
     // MODIFIES: this
-    // EFFECTS: processes user input
+    // EFFECTS: setup scanner, display menu, and process input
     private void startApp() {
         setupScanner();
         menu();
@@ -82,7 +84,7 @@ public class HabitApp {
         String description = getHabitDescription();
         Period period = getHabitPeriod();
         int frequency = getHabitFrequency();
-        Habit habit = new Habit(name, description, period, frequency, Clock.systemDefaultZone());
+        Habit habit = new Habit(name, description, period, frequency, clock);
         habitManager.addHabit(habit);
     }
 
