@@ -185,15 +185,12 @@ public class Habit extends HabitStatistics {
     // MODIFIES: this
     // EFFECTS: updates currentPeriodEnd and nextPeriodEnd based on period
     public void updateDateTime() {
-        switch (period) {
-            case DAILY:
-                updateDaily();
-                break;
-            case WEEKLY:
-                updateWeekly();
-                break;
-            case MONTHLY:
-                updateMonthly();
+        if (period.equals(Period.DAILY)) {
+            updateDaily();
+        } else if (period.equals(Period.WEEKLY)) {
+            updateWeekly();
+        } else {
+            updateMonthly();
         }
     }
 
