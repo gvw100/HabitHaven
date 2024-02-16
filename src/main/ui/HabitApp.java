@@ -178,6 +178,8 @@ public class HabitApp {
         } while (inputIsInvalid);
     }
 
+    // MODIFIES: this
+    // EFFECTS: brings user to the appropriate habit tool according to input
     private boolean processHabitInput(Habit habit) {
         switch (input.next()) {
             case "e":
@@ -320,6 +322,7 @@ public class HabitApp {
         viewHabit(habit);
     }
 
+    // EFFECTS: displays in-depth habit statistics
     private void showStatistics(Habit habit) {
         int streak = habit.getStreak();
         int bestStreak = habit.getBestStreak();
@@ -343,10 +346,12 @@ public class HabitApp {
         viewHabit(habit);
     }
 
+    // EFFECTS: processes input and returns whether the input is invalid
     private boolean processStatInput() {
         return !input.next().equals("b");
     }
 
+    // EFFECTS: selects appropriate string based on the period
     private String getPeriodString(Period period, String day, String week, String month) {
         String periodString = null;
         switch (period) {

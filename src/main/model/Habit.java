@@ -28,7 +28,7 @@ public class Habit extends HabitStatistics {
         this.description = description;
         this.clock = clock;
         this.isPreviousComplete = false;
-        updateDateTime(clock);
+        updateDateTime();
     }
 
     public void setName(String name) {
@@ -58,7 +58,7 @@ public class Habit extends HabitStatistics {
         }
         this.period = period;
         resetProgress();
-        updateDateTime(clock);
+        updateDateTime();
     }
 
     // MODIFIES: this
@@ -145,7 +145,7 @@ public class Habit extends HabitStatistics {
     // MODIFIES: this
     // EFFECTS: updates currentPeriodEnd and nextPeriodEnd, resets numSuccess to 0, increments super.numPeriod
     public void nextHabitPeriod() {
-        updateDateTime(clock);
+        updateDateTime();
         numSuccess = 0;
         incrementNumPeriod();
     }
@@ -167,13 +167,13 @@ public class Habit extends HabitStatistics {
     //          if now is after nextPeriodEnd, switch to next period, reset streak, and reset isPreviousComplete
     public void updateHabit() {
         LocalDateTime now = LocalDateTime.now(clock);
-        if (now.isAfter(currentPeriodEnd) && !now.isAfter(nextPeriodEnd)) {
+        if (!now.isBefore(currentPeriodEnd.plusMinutes(1)) && now.isBefore(nextPeriodEnd.plusMinutes(1))) {
             nextHabitPeriod();
             if (!isPreviousComplete()) {
                 super.resetStreak();
             }
             isPreviousComplete = false;
-        } else if (now.isAfter(nextPeriodEnd)) {
+        } else if (!now.isBefore(nextPeriodEnd.plusMinutes(1))) {
             nextHabitPeriod();
             super.resetStreak();
             isPreviousComplete = false;
@@ -182,7 +182,7 @@ public class Habit extends HabitStatistics {
 
     // MODIFIES: this
     // EFFECTS: updates currentPeriodEnd and nextPeriodEnd based on period
-    public void updateDateTime(Clock clock) {
+    public void updateDateTime() {
         switch (period) {
             case DAILY:
                 updateDaily(clock);
@@ -195,33 +195,36 @@ public class Habit extends HabitStatistics {
         }
     }
 
+    // REQUIRES: this.getPeriod() == Period.DAILY
     // MODIFIES: this
     // EFFECTS: sets currentPeriodEnd to 23:59 today nextPeriodEnd to 23:59 tomorrow
     private void updateDaily(Clock clock) {
         LocalDateTime now = LocalDateTime.now(clock);
-        currentPeriodEnd = now.withHour(23).withMinute(59);
-        nextPeriodEnd = now.plusDays(1).withHour(23).withMinute(59);
+        currentPeriodEnd = now.withHour(23).withMinute(59).withSecond(0).withNano(0);
+        nextPeriodEnd = now.plusDays(1).withHour(23).withMinute(59).withSecond(0).withNano(0);
     }
 
+    // REQUIRES: this.getPeriod() == Period.WEEKLY
     // MODIFIES: this
     // EFFECTS: sets currentPeriodEnd to 23:59 this Saturday and sets nextPeriodEnd to 23:59 next Saturday
     private void updateWeekly(Clock clock) {
         LocalDateTime now = LocalDateTime.now(clock);
         LocalDateTime nextSaturday = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY));
         LocalDateTime nextNextSaturday = nextSaturday.plusDays(7);
-        currentPeriodEnd = nextSaturday.withHour(23).withMinute(59);
-        nextPeriodEnd = nextNextSaturday.withHour(23).withMinute(59);
+        currentPeriodEnd = nextSaturday.withHour(23).withMinute(59).withSecond(0).withNano(0);
+        nextPeriodEnd = nextNextSaturday.withHour(23).withMinute(59).withSecond(0).withNano(0);
     }
 
+    // REQUIRES: this.getPeriod() == Period.MONTHLY
     // MODIFIES: this
     // EFFECTS: sets currentPeriodEnd to 23:59 on the last day of the month
     //          and sets nextPeriodEnd to 23:59 on the last day of next month
     private void updateMonthly(Clock clock) {
         LocalDateTime now = LocalDateTime.now(clock);
         LocalDateTime lastDayOfMonth = now.with(TemporalAdjusters.lastDayOfMonth());
-        currentPeriodEnd = lastDayOfMonth.withHour(23).withMinute(59);
+        currentPeriodEnd = lastDayOfMonth.withHour(23).withMinute(59).withSecond(0).withNano(0);
         LocalDateTime firstDayOfNextMonth = now.with(TemporalAdjusters.firstDayOfNextMonth());
         LocalDateTime lastDayOfNextMonth = firstDayOfNextMonth.with(TemporalAdjusters.lastDayOfMonth());
-        nextPeriodEnd = lastDayOfNextMonth.withHour(23).withMinute(59);
+        nextPeriodEnd = lastDayOfNextMonth.withHour(23).withMinute(59).withSecond(0).withNano(0);
     }
 }

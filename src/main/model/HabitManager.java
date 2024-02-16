@@ -7,6 +7,7 @@ import java.util.List;
 public class HabitManager {
     private final List<Habit> habits;
 
+    // EFFECTS: instantiates list of habits
     public HabitManager() {
         habits = new ArrayList<>();
     }

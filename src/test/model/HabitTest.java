@@ -14,13 +14,20 @@ public class HabitTest {
 
     private Habit h1;
     private Habit h2;
+    private Habit h3;
+    private Habit h4;
 
     @BeforeEach
     void runBefore() {
         c1 = getFixedClock("2024-02-16T17:00:00.00Z");
         c2 = getFixedClock("2024-05-02T23:59:00.00Z");
+        Clock c3 = getFixedClock("2024-03-15T10:30:00.00Z");
+        Clock c4 = getFixedClock("2024-06-30T23:59:00.00Z");
+
         h1 = new Habit("name", "description", Period.WEEKLY, 3, c1);
         h2 = new Habit("another name", "another description", Period.DAILY, 15, c2);
+        h3 = new Habit("and another name", "yet another description", Period.MONTHLY, 7, c3);
+        h4 = new Habit("please no more habits", "and no more descriptions", Period.MONTHLY, 5, c4);
     }
 
     @Test
@@ -216,6 +223,119 @@ public class HabitTest {
         h2.resetProgress();
         assertEquals(0, h2.getNumSuccess());
         checkResetStats(h2);
+    }
+
+    @Test
+    void testUpdateHabitNotAfterCurrentPeriodEnd() {
+        finishHabitNumTimes(h3, 7);
+        h3.updateHabit();
+        assertEquals(7, h3.getNumSuccess());
+        checkStats(h3, 1, 1, 7, 1, 0);
+        assertTrue(h3.isPreviousComplete());
+        assertEquals(LocalDateTime.of(2024, Month.MARCH, 31, 23, 59), h3.getCurrentPeriodEnd());
+        assertEquals(LocalDateTime.of(2024, Month.APRIL, 30, 23, 59), h3.getNextPeriodEnd());
+    }
+
+    @Test
+    void testUpdateHabitNotAfterCurrentPeriodEndBoundary() {
+        finishHabitNumTimes(h4, 5);
+        h4.updateHabit();
+        assertEquals(5, h4.getNumSuccess());
+        checkStats(h4, 1, 1, 5, 1, 0);
+        assertTrue(h4.isPreviousComplete());
+        assertEquals(LocalDateTime.of(2024, Month.JUNE, 30, 23, 59), h4.getCurrentPeriodEnd());
+        assertEquals(LocalDateTime.of(2024, Month.JULY, 31, 23, 59), h4.getNextPeriodEnd());
+    }
+
+    @Test
+    void testUpdateHabitAfterCurrentPeriodIsComplete() {
+        finishHabitNumTimes(h3, 7);
+        Clock clock = getFixedClock("2024-04-05T12:30:00.00Z");
+        h3.setClock(clock);
+        h3.updateHabit();
+        assertEquals(0, h3.getNumSuccess());
+        checkStats(h3, 1, 1, 7, 1, 1);
+        assertFalse(h3.isPreviousComplete());
+        assertEquals(LocalDateTime.of(2024, Month.APRIL, 30, 23, 59), h3.getCurrentPeriodEnd());
+        assertEquals(LocalDateTime.of(2024, Month.MAY, 31, 23, 59), h3.getNextPeriodEnd());
+    }
+
+    @Test
+    void testUpdateHabitAfterCurrentPeriodIsNotCompleteLowerBoundary() {
+        finishHabitNumTimes(h1, 2);
+        Clock clock = getFixedClock("2024-02-18T00:00:00.00Z");
+        h1.setClock(clock);
+        h1.updateHabit();
+        assertEquals(0, h1.getNumSuccess());
+        checkStats(h1, 0, 0, 2, 0, 1);
+        assertFalse(h1.isPreviousComplete());
+        assertEquals(LocalDateTime.of(2024, Month.FEBRUARY, 24, 23, 59), h1.getCurrentPeriodEnd());
+        assertEquals(LocalDateTime.of(2024, Month.MARCH, 2, 23, 59), h1.getNextPeriodEnd());
+    }
+
+    @Test
+    void testUpdateHabitAfterCurrentPeriodIsNotCompleteUpperBoundary() {
+        finishHabitNumTimes(h3, 6);
+        Clock clock = getFixedClock("2024-04-30T23:59:59.999Z");
+        h3.setClock(clock);
+        h3.updateHabit();
+        assertEquals(0, h3.getNumSuccess());
+        checkStats(h3, 0, 0, 6, 0, 1);
+        assertFalse(h3.isPreviousComplete());
+        assertEquals(LocalDateTime.of(2024, Month.APRIL, 30, 23, 59), h3.getCurrentPeriodEnd());
+        assertEquals(LocalDateTime.of(2024, Month.MAY, 31, 23, 59), h3.getNextPeriodEnd());
+    }
+
+    @Test
+    void testUpdateHabitAfterNextPeriod() {
+        finishHabitNumTimes(h4, 5);
+        Clock clock = getFixedClock("2025-05-30T20:59:00.00Z");
+        h4.setClock(clock);
+        h4.updateHabit();
+        assertEquals(0, h4.getNumSuccess());
+        checkStats(h4, 0, 1, 5, 1, 1);
+        assertFalse(h4.isPreviousComplete());
+        assertEquals(LocalDateTime.of(2025, Month.MAY, 31, 23, 59), h4.getCurrentPeriodEnd());
+        assertEquals(LocalDateTime.of(2025, Month.JUNE, 30, 23, 59), h4.getNextPeriodEnd());
+    }
+
+    @Test
+    void testUpdateHabitAfterNextPeriodBoundary() {
+        finishHabitNumTimes(h2, 15);
+        Clock clock = getFixedClock("2024-05-04T00:00:00.00Z");
+        h2.setClock(clock);
+        h2.updateHabit();
+        assertEquals(0, h2.getNumSuccess());
+        checkStats(h2, 0, 1, 15, 1, 1);
+        assertFalse(h2.isPreviousComplete());
+        assertEquals(LocalDateTime.of(2024, 5, 4, 23, 59), h2.getCurrentPeriodEnd());
+        assertEquals(LocalDateTime.of(2024, 5, 5, 23, 59), h2.getNextPeriodEnd());
+    }
+
+    @Test
+    void testUpdateDateTimeDaily() {
+        Clock clock = getFixedClock("2024-05-20T06:45:00.00Z");
+        h2.setClock(clock);
+        h2.updateDateTime();
+        assertEquals(LocalDateTime.of(2024, Month.MAY, 20, 23, 59), h2.getCurrentPeriodEnd());
+        assertEquals(LocalDateTime.of(2024, Month.MAY, 21, 23, 59), h2.getNextPeriodEnd());
+    }
+
+    @Test
+    void testUpdateDateTimeWeekly() {
+        Clock clock = getFixedClock("2024-12-16T17:00:00.00Z");
+        h1.setClock(clock);
+        h1.updateDateTime();
+        assertEquals(LocalDateTime.of(2024, Month.DECEMBER, 21, 23, 59), h1.getCurrentPeriodEnd());
+        assertEquals(LocalDateTime.of(2024, Month.DECEMBER, 28, 23, 59), h1.getNextPeriodEnd());
+    }
+    @Test
+    void testUpdateDateTimeMonthly() {
+        Clock clock = getFixedClock("2024-07-30T19:59:00.00Z");
+        h4.setClock(clock);
+        h4.updateDateTime();
+        assertEquals(LocalDateTime.of(2024, Month.JULY, 31, 23, 59), h4.getCurrentPeriodEnd());
+        assertEquals(LocalDateTime.of(2024, Month.AUGUST, 31, 23, 59), h4.getNextPeriodEnd());
     }
 
     private Clock getFixedClock(String parse) {

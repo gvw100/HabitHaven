@@ -16,8 +16,9 @@ habits.
 - Customizable notifications - users receive customizable reminders for each habit
 - Gamify habit formation
   - Badges for achieving streaks
-- Option to view in-depth statistics for a specific habit (completion rate, number of 
+- Ability to view in-depth statistics for a specific habit (completion rate, number of 
 completions, etc.)
+- Ability to see graphs of habit statistics and trends over time.
 - Optional additional notifications of recent milestones to keep morale high
 ## Personal Significance
  This project is of interest to me as a student interested in growth. Even now, I can 
