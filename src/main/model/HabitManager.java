@@ -5,7 +5,7 @@ import java.util.List;
 
 // Represents list of the user's habits
 public class HabitManager {
-    private List<Habit> habits;
+    private final List<Habit> habits;
 
     public HabitManager() {
         habits = new ArrayList<>();

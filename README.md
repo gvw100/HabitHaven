@@ -24,16 +24,13 @@ completions, etc.)
  think of many small habits that I can strive for. An app would help organize the 
  habit formation process, bringing the user one step closer to transforming their
  life.
- ## User Stories (I have implemented the first 5 so far)
+ ## User Stories (All but the last one have been implemented)
 - As a user, I want to be able to add a habit to my list of habits and specify the
-name, frequency/period, and description. 
+name, description, period, and frequency. 
 - As a user, I want to be able to mark a habit as completed for the current time period. (eg: 
-I did 20 push-ups successfully)
+I did 20 push-ups successfully today)
 - As a user, I want to be able to view a list of all my active habits.
 - As a user, I want to be able to edit my habits.
 - As a user, I want to be able to delete my habits.
-- As a user, I want to be able to view my streak so far for each habit.
-  - For now, I think streaks will be defined in terms of the cycle period. For
-  example, if someone wants to read twice per week, their streak would be three if 
-  this was done successfully for three weeks. 
-- As a user, I want to be able to customize notification reminders for each habit.
+- As a user, I want to be able to view my current streak, best streak, number of habit completions, number of successful periods, number of periods allotted, and habit success rate.
+- As a user, I want to be able to receive and customize notification reminders for each habit.

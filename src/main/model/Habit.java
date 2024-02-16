@@ -1,22 +1,34 @@
 package model;
 
-// Represents a habit with a name,description, frequency, period, and number of successes
-public class Habit {
+import java.time.Clock;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
+
+// Represents a habit with a name, description, frequency, period, number of successes,
+// end of current period, and end of next period.
+public class Habit extends HabitStatistics {
     private String name;
     private String description;
     private int frequency;
     private Period period;
     private int numSuccess;
-    private HabitStatistics statistics;
+    private LocalDateTime currentPeriodEnd;
+    private LocalDateTime nextPeriodEnd;
+    private Clock clock;
+    private boolean isPreviousComplete;
 
+    // REQUIRES: 0 < frequency < 16
     // EFFECTS: initializes habit
-    public Habit(String name, String description, Period period, int frequency) {
+    public Habit(String name, String description, Period period, int frequency, Clock clock) {
         this.numSuccess = 0;
         this.name = name;
-        this.frequency = 1;
-        setFrequency(frequency);
+        this.frequency = frequency;
         this.period = period;
         this.description = description;
+        this.clock = clock;
+        this.isPreviousComplete = false;
+        updateDateTime(clock);
     }
 
     public void setName(String name) {
@@ -27,20 +39,38 @@ public class Habit {
         this.description = description;
     }
 
+    // REQUIRES: 0 < frequency < 16
     // MODIFIES: this
-    // EFFECTS: set this.frequency if frequency is between 1 and 15, resets numSuccess
+    // EFFECTS: set this.frequency, resets progress if frequency != this.frequency
     public void setFrequency(int frequency) {
-        if (frequency > 0 && frequency < 16) {
-            this.frequency = frequency;
-            resetProgress();
+        if (this.frequency == frequency) {
+            return;
         }
+        this.frequency = frequency;
+        resetProgress();
     }
 
     // MODIFIES: this
-    // EFFECTS: set this.period, resets numSuccess
+    // EFFECTS: set this.period, resets progress if period != this.period , updates currentPeriodEnd and nextPeriodEnd
     public void setPeriod(Period period) {
+        if (this.period == period) {
+            return;
+        }
         this.period = period;
         resetProgress();
+        updateDateTime(clock);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: set this.clock, useful for testing purposes
+    public void setClock(Clock clock) {
+        this.clock = clock;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: set this.numSuccess, solely for testing purposes
+    public void setNumSuccess(int numSuccess) {
+        this.numSuccess = numSuccess;
     }
 
     public String getName() {
@@ -63,17 +93,135 @@ public class Habit {
         return this.numSuccess;
     }
 
+    public Clock getClock() {
+        return this.clock;
+    }
+
+    public LocalDateTime getCurrentPeriodEnd() {
+        return this.currentPeriodEnd;
+    }
+
+    public LocalDateTime getNextPeriodEnd() {
+        return this.nextPeriodEnd;
+    }
+
+    // EFFECTS: returns whether habit period is complete
+    public boolean isPeriodComplete() {
+        return frequency == numSuccess;
+    }
+
+    // REQUIRES: LocalDateTime.now(clock) is after currentPeriodEnd
+    // EFFECTS: returns whether previous period was completed successfully
+    public boolean isPreviousComplete() {
+        return this.isPreviousComplete;
+    }
+
     // MODIFIES: this
-    // EFFECTS: increments numSuccess given that it has not yet surpassed frequency
-    public void finishHabit() {
+    // EFFECTS: first updates habit based on current date time, then
+    //          if numSuccess < frequency, increments numSuccess and
+    //          updates habit statistics, returns whether habit was incremented
+    public boolean finishHabit() {
+        updateHabit();
         if (numSuccess < frequency) {
             numSuccess++;
+            super.incrementNumSuccess();
+            checkPeriodComplete();
+            return true;
+        }
+        return false;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: if isPreviousComplete(), then increments both super.numPeriodSuccess and super.streak
+    public void checkPeriodComplete() {
+        if (isPeriodComplete()) {
+            isPreviousComplete = true;
+            incrementNumPeriodSuccess();
+            incrementStreak();
+        }
+    }
+
+    // REQUIRES: LocalDateTime.now(clock) is after currentPeriodEnd
+    // MODIFIES: this
+    // EFFECTS: updates currentPeriodEnd and nextPeriodEnd, resets numSuccess to 0, increments super.numPeriod
+    public void nextHabitPeriod() {
+        updateDateTime(clock);
+        numSuccess = 0;
+        incrementNumPeriod();
+    }
+
+    // MODIFIES: this
+    // EFFECTS: resets numSuccess to 0 and resets habit statistics
+    public void resetProgress() {
+        numSuccess = 0;
+        super.resetStats();
+    }
+
+    // MODIFIES: this
+    // EFFECTS: updates currentPeriodEnd, nextPeriodEnd, and habit statistics based on current date time
+    //          if now is not after currentPeriodEnd, do nothing,
+    //          if now is between currentPeriodEnd and nextPeriodEnd, but if !isPreviousComplete(),
+    //          switch to next period, then reset streak,
+    //          if now is between currentPeriodEnd and nextPeriodEnd and isPreviousComplete(),
+    //          switch to next period and reset isPreviousComplete to false,
+    //          if now is after nextPeriodEnd, switch to next period, reset streak, and reset isPreviousComplete
+    public void updateHabit() {
+        LocalDateTime now = LocalDateTime.now(clock);
+        if (now.isAfter(currentPeriodEnd) && !now.isAfter(nextPeriodEnd)) {
+            nextHabitPeriod();
+            if (!isPreviousComplete()) {
+                super.resetStreak();
+            }
+            isPreviousComplete = false;
+        } else if (now.isAfter(nextPeriodEnd)) {
+            nextHabitPeriod();
+            super.resetStreak();
+            isPreviousComplete = false;
         }
     }
 
     // MODIFIES: this
-    // EFFECTS: resets numSuccess and streak to 0
-    public void resetProgress() {
-        numSuccess = 0;
+    // EFFECTS: updates currentPeriodEnd and nextPeriodEnd based on period
+    public void updateDateTime(Clock clock) {
+        switch (period) {
+            case DAILY:
+                updateDaily(clock);
+                break;
+            case WEEKLY:
+                updateWeekly(clock);
+                break;
+            case MONTHLY:
+                updateMonthly(clock);
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: sets currentPeriodEnd to 23:59 today nextPeriodEnd to 23:59 tomorrow
+    private void updateDaily(Clock clock) {
+        LocalDateTime now = LocalDateTime.now(clock);
+        currentPeriodEnd = now.withHour(23).withMinute(59);
+        nextPeriodEnd = now.plusDays(1).withHour(23).withMinute(59);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: sets currentPeriodEnd to 23:59 this Saturday and sets nextPeriodEnd to 23:59 next Saturday
+    private void updateWeekly(Clock clock) {
+        LocalDateTime now = LocalDateTime.now(clock);
+        LocalDateTime nextSaturday = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY));
+        LocalDateTime nextNextSaturday = nextSaturday.plusDays(7);
+        currentPeriodEnd = nextSaturday.withHour(23).withMinute(59);
+        nextPeriodEnd = nextNextSaturday.withHour(23).withMinute(59);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: sets currentPeriodEnd to 23:59 on the last day of the month
+    //          and sets nextPeriodEnd to 23:59 on the last day of next month
+    private void updateMonthly(Clock clock) {
+        LocalDateTime now = LocalDateTime.now(clock);
+        LocalDateTime lastDayOfMonth = now.with(TemporalAdjusters.lastDayOfMonth());
+        currentPeriodEnd = lastDayOfMonth.withHour(23).withMinute(59);
+        LocalDateTime firstDayOfNextMonth = now.with(TemporalAdjusters.firstDayOfNextMonth());
+        LocalDateTime lastDayOfNextMonth = firstDayOfNextMonth.with(TemporalAdjusters.lastDayOfMonth());
+        nextPeriodEnd = lastDayOfNextMonth.withHour(23).withMinute(59);
     }
 }
