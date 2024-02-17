@@ -188,8 +188,10 @@ public class Habit extends HabitStatistics {
         switch (period) {
             case DAILY:
                 updateDaily();
+                break;
             case WEEKLY:
                 updateWeekly();
+                break;
             default:
                 updateMonthly();
         }
