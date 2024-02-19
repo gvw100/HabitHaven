@@ -10,6 +10,7 @@ import java.util.Scanner;
 
 // Habit tracker application
 // Some of the code here is inspired from the TellerApp.java class in the CPSC 210 course
+// https://github.students.cs.ubc.ca/CPSC210/TellerApp
 public class HabitApp {
     private Scanner input;
     private final HabitManager habitManager;
