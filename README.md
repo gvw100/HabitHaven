@@ -25,7 +25,7 @@ completions, etc.)
  think of many small habits that I can strive for. An app would help organize the 
  habit formation process, bringing the user one step closer to transforming their
  life.
- ## User Stories (All but the last one have been implemented)
+ ## User Stories 
 - As a user, I want to be able to add a habit to my list of habits and specify the
 name, description, period, and frequency. 
 - As a user, I want to be able to mark a habit as completed for the current time period.
@@ -33,4 +33,8 @@ name, description, period, and frequency.
 - As a user, I want to be able to edit my habits.
 - As a user, I want to be able to delete my habits.
 - As a user, I want to be able to view in-depth statistics for each habit.
+- As a user, when I quit the application, I want to be reminded to save my habits to file and have the option to do so or not.
+- As a user, I want to be given the option to load my habits from file (if I so choose).
+- As a user, I want my habits to be autosaved whenever a change is made.
+- As a user, I want to be able to view graphs of habit statistics and trends over time.
 - As a user, I want to be able to receive and customize notification reminders for each habit.
