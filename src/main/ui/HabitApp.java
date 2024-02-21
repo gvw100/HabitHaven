@@ -327,12 +327,12 @@ public class HabitApp {
 
     // EFFECTS: displays in-depth habit statistics
     private void showStatistics(Habit habit) {
-        int streak = habit.getStreak();
-        int bestStreak = habit.getBestStreak();
-        int totalNumSuccess = habit.getTotalNumSuccess();
-        int numPeriodSuccess = habit.getNumPeriodSuccess();
-        int numPeriod = habit.getNumPeriod();
-        int successRate = habit.getSuccessRate(habit.isPeriodComplete());
+        int streak = habit.getHabitStats().getStreak();
+        int bestStreak = habit.getHabitStats().getBestStreak();
+        int totalNumSuccess = habit.getHabitStats().getTotalNumSuccess();
+        int numPeriodSuccess = habit.getHabitStats().getNumPeriodSuccess();
+        int numPeriod = habit.getHabitStats().getNumPeriod();
+        int successRate = habit.getHabitStats().getSuccessRate(habit.isPeriodComplete());
         boolean inputIsInvalid;
         do {
             String periodString = getPeriodString(habit.getPeriod(), "days", "weeks", "months");

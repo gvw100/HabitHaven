@@ -254,7 +254,7 @@ public class HabitTest {
         h1.setClock(nextWeek);
         h1.nextHabitPeriod();
         assertEquals(0, h1.getNumSuccess());
-        assertEquals(1, h1.getNumPeriod());
+        assertEquals(1, h1.getHabitStats().getNumPeriod());
         assertEquals(LocalDateTime.of(2024, Month.FEBRUARY, 24, 23, 59), h1.getCurrentPeriodEnd());
         assertEquals(LocalDateTime.of(2024, Month.MARCH, 2, 23, 59), h1.getNextPeriodEnd());
     }
@@ -265,7 +265,7 @@ public class HabitTest {
         h1.setClock(afterNextWeek);
         h1.nextHabitPeriod();
         assertEquals(0, h1.getNumSuccess());
-        assertEquals(1, h1.getNumPeriod());
+        assertEquals(1, h1.getHabitStats().getNumPeriod());
         assertEquals(LocalDateTime.of(2024, Month.APRIL, 6, 23, 59), h1.getCurrentPeriodEnd());
         assertEquals(LocalDateTime.of(2024, Month.APRIL, 13, 23, 59), h1.getNextPeriodEnd());
     }
@@ -482,18 +482,18 @@ public class HabitTest {
     }
 
     private void checkResetStats(Habit habit) {
-        assertEquals(0, habit.getStreak());
-        assertEquals(0, habit.getBestStreak());
-        assertEquals(0, habit.getTotalNumSuccess());
-        assertEquals(0, habit.getNumPeriodSuccess());
-        assertEquals(0, habit.getNumPeriod());
+        assertEquals(0, habit.getHabitStats().getStreak());
+        assertEquals(0, habit.getHabitStats().getBestStreak());
+        assertEquals(0, habit.getHabitStats().getTotalNumSuccess());
+        assertEquals(0, habit.getHabitStats().getNumPeriodSuccess());
+        assertEquals(0, habit.getHabitStats().getNumPeriod());
     }
 
     private void checkStats(Habit habit, int streak, int bestStreak, int totalNumSuccess, int numPeriodSuccess, int numPeriod) {
-        assertEquals(streak, habit.getStreak());
-        assertEquals(bestStreak, habit.getBestStreak());
-        assertEquals(totalNumSuccess, habit.getTotalNumSuccess());
-        assertEquals(numPeriodSuccess, habit.getNumPeriodSuccess());
-        assertEquals(numPeriod, habit.getNumPeriod());
+        assertEquals(streak, habit.getHabitStats().getStreak());
+        assertEquals(bestStreak, habit.getHabitStats().getBestStreak());
+        assertEquals(totalNumSuccess, habit.getHabitStats().getTotalNumSuccess());
+        assertEquals(numPeriodSuccess, habit.getHabitStats().getNumPeriodSuccess());
+        assertEquals(numPeriod, habit.getHabitStats().getNumPeriod());
     }
 }

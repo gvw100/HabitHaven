@@ -3,8 +3,6 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.Clock;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // test class for HabitStatistics
@@ -13,7 +11,7 @@ public class HabitStatisticsTest {
 
     @BeforeEach
     void runBefore() {
-        habitStats = new Habit("name", "description", Period.WEEKLY, 9, Clock.systemDefaultZone());
+        habitStats = new HabitStatistics();
     }
 
     @Test

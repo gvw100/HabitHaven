@@ -4,7 +4,7 @@ package model;
 // the all-time best streak, the number of times the habit was
 // marked as complete, the total number of successful periods,
 // and the number of periods tracked
-public abstract class HabitStatistics {
+public class HabitStatistics {
     private int streak;
     private int bestStreak;
     private int totalNumSuccess;

@@ -7,12 +7,13 @@ import java.time.temporal.TemporalAdjusters;
 
 // Represents a habit with a name, description, frequency, period, number of successes,
 // end of current period, and end of next period.
-public class Habit extends HabitStatistics {
+public class Habit {
     private String name;
     private String description;
     private int frequency;
     private Period period;
     private int numSuccess;
+    private final HabitStatistics habitStats;
     private LocalDateTime currentPeriodEnd;
     private LocalDateTime nextPeriodEnd;
     private Clock clock;
@@ -28,6 +29,7 @@ public class Habit extends HabitStatistics {
         this.description = description;
         this.clock = clock;
         this.isPreviousComplete = false;
+        this.habitStats = new HabitStatistics();
         updateDateTime();
     }
 
@@ -93,6 +95,10 @@ public class Habit extends HabitStatistics {
         return this.numSuccess;
     }
 
+    public HabitStatistics getHabitStats() {
+        return this.habitStats;
+    }
+
     public Clock getClock() {
         return this.clock;
     }
@@ -124,7 +130,7 @@ public class Habit extends HabitStatistics {
         updateHabit();
         if (numSuccess < frequency) {
             numSuccess++;
-            super.incrementTotalNumSuccess();
+            habitStats.incrementTotalNumSuccess();
             checkPeriodComplete();
             return true;
         }
@@ -132,30 +138,30 @@ public class Habit extends HabitStatistics {
     }
 
     // MODIFIES: this
-    // EFFECTS: if isPeriodComplete(), then increments both super.numPeriodSuccess
-    //          a super.streak, sets isPreviousComplete to true
+    // EFFECTS: if isPeriodComplete(), then increments both habitStats.numPeriodSuccess
+    //          a habitStats.streak, sets isPreviousComplete to true
     public void checkPeriodComplete() {
         if (isPeriodComplete()) {
             isPreviousComplete = true;
-            incrementNumPeriodSuccess();
-            incrementStreak();
+            habitStats.incrementNumPeriodSuccess();
+            habitStats.incrementStreak();
         }
     }
 
     // REQUIRES: LocalDateTime.now(clock) is after currentPeriodEnd
     // MODIFIES: this
-    // EFFECTS: updates currentPeriodEnd and nextPeriodEnd, resets numSuccess to 0, increments super.numPeriod
+    // EFFECTS: updates currentPeriodEnd and nextPeriodEnd, resets numSuccess to 0, increments numPeriod
     public void nextHabitPeriod() {
         updateDateTime();
         numSuccess = 0;
-        incrementNumPeriod();
+        habitStats.incrementNumPeriod();
     }
 
     // MODIFIES: this
     // EFFECTS: resets numSuccess to 0 and resets habit statistics
     public void resetProgress() {
         numSuccess = 0;
-        super.resetStats();
+        habitStats.resetStats();
     }
 
     // MODIFIES: this
@@ -172,12 +178,12 @@ public class Habit extends HabitStatistics {
         if (!now.isBefore(currentPeriodEnd.plusMinutes(1)) && now.isBefore(nextPeriodEnd.plusMinutes(1))) {
             nextHabitPeriod();
             if (!isPreviousComplete()) {
-                super.resetStreak();
+                habitStats.resetStreak();
             }
             isPreviousComplete = false;
         } else if (!now.isBefore(nextPeriodEnd.plusMinutes(1))) {
             nextHabitPeriod();
-            super.resetStreak();
+            habitStats.resetStreak();
             isPreviousComplete = false;
         }
     }
