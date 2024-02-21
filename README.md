@@ -35,6 +35,5 @@ name, description, period, and frequency.
 - As a user, I want to be able to view in-depth statistics for each habit.
 - As a user, when I quit the application, I want to be reminded to save my habits to file and have the option to do so or not.
 - As a user, I want to be given the option to load my habits from file (if I so choose).
-- As a user, I want my habits to be autosaved whenever a change is made.
 - As a user, I want to be able to view graphs of habit statistics and trends over time.
 - As a user, I want to be able to receive and customize notification reminders for each habit.
