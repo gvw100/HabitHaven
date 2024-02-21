@@ -5,6 +5,9 @@ import model.HabitManager;
 import model.Period;
 
 import java.time.Clock;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -85,7 +88,8 @@ public class HabitApp {
         String description = getHabitDescription();
         Period period = getHabitPeriod();
         int frequency = getHabitFrequency();
-        Habit habit = new Habit(name, description, period, frequency, clock);
+        boolean notificationEnabled = getNotificationEnabled();
+        Habit habit = new Habit(name, description, period, frequency, notificationEnabled, clock);
         habitManager.addHabit(habit);
     }
 
@@ -146,6 +150,16 @@ public class HabitApp {
         return frequency;
     }
 
+    // EFFECTS: returns whether the user wants to enable notifications
+    private boolean getNotificationEnabled() {
+        String command;
+        do {
+            System.out.println("Enable notifications? y/n");
+            command = input.next();
+        } while (!((command.equals("y")) || (command.equals("n"))));
+        return command.equals("y");
+    }
+
     // MODIFIES: this
     // EFFECTS: displays all habits and processes input
     private void viewHabits() {
@@ -182,7 +196,7 @@ public class HabitApp {
     }
 
     // MODIFIES: this
-    // EFFECTS: brings user to the appropriate habit tool according to input
+    // EFFECTS: brings user to the appropriate habit tool according to input, returns whether input is invalid
     private boolean processHabitInput(Habit habit) {
         switch (input.next()) {
             case "e":
@@ -196,6 +210,9 @@ public class HabitApp {
                 break;
             case "s":
                 showStatistics(habit);
+                break;
+            case "n":
+                customizeNotifications(habit);
                 break;
             case "h":
                 viewHabits();
@@ -352,6 +369,163 @@ public class HabitApp {
     // EFFECTS: processes input and returns whether the input is invalid
     private boolean processStatInput() {
         return !input.next().equals("b");
+    }
+
+    private void customizeNotifications(Habit habit) {
+        boolean inputIsInvalid;
+        do {
+            inputIsInvalid = false;
+            displayNotificationOptions();
+            switch (input.next()) {
+                case "e":
+                    enableNotifications(habit);
+                    break;
+                case "d":
+                    disableNotifications(habit);
+                    break;
+                case "c":
+                    customizeNotificationTimes(habit);
+                    break;
+                case "b":
+                    viewHabit(habit);
+                    break;
+                default:
+                    inputIsInvalid = true;
+            }
+        } while (inputIsInvalid);
+    }
+
+    private void displayNotificationOptions() {
+        System.out.println("\nSelect one of the following: \n");
+        System.out.println("\te -> Enable notifications");
+        System.out.println("\td -> Disable notifications");
+        System.out.println("\tc -> Customize notification time");
+        System.out.println("\tb -> Back to habit");
+    }
+
+    private void enableNotifications(Habit habit) {
+        habit.setNotifyEnabled(true);
+        System.out.println("\nNotifications enabled");
+    }
+
+    private void disableNotifications(Habit habit) {
+        habit.setNotifyEnabled(false);
+        System.out.println("\nNotifications disabled");
+    }
+
+    private void customizeNotificationTimes(Habit habit) {
+        String numMessage = "How many notifications would you like to receive" + getPeriodString(habit.getPeriod(),
+                "per day", "per week", "per month") + "?";
+        int numNotifications = getNumNotifications(numMessage);
+        ArrayList<LocalDateTime> reminders = new ArrayList<>();
+        for (int i = 0; i < numNotifications; i++) {
+            processTimeInput(habit, reminders, i);
+        }
+    }
+
+    private void processTimeInput(Habit habit, ArrayList<LocalDateTime> reminders, int i) {
+        switch (habit.getPeriod()) {
+            case DAILY:
+                processDailyTimeInput(habit, reminders, i);
+                break;
+            case WEEKLY:
+                processWeeklyTimeInput(habit, reminders, i);
+                break;
+            case MONTHLY:
+                processMonthlyTimeInput(habit, reminders, i);
+        }
+    }
+
+    private void processDailyTimeInput(Habit habit, ArrayList<LocalDateTime> reminders, int i) {
+        int hours = processHourInput(i);
+        int minutes = processMinuteInput(i);
+        LocalDateTime now = LocalDateTime.now(clock);
+        reminders.add(now.withHour(hours).withMinute(minutes).withSecond(0).withNano(0));
+    }
+
+    private void processWeeklyTimeInput(Habit habit, ArrayList<LocalDateTime> reminders, int i) {
+        DayOfWeek dayOfWeek = processDayOfWeekInput(i);
+        int hours = processHourInput(i);
+        int minutes = processMinuteInput(i);
+        LocalDateTime dayOfWeekTime = LocalDateTime.now(clock).with(dayOfWeek);
+        LocalDateTime reminderDateTime = dayOfWeekTime.withHour(hours).withMinute(minutes).withSecond(0).withNano(0);
+        reminders.add(reminderDateTime);
+    }
+
+    private void processMonthlyTimeInput(Habit habit, ArrayList<LocalDateTime> reminders, int i) {
+
+    }
+
+    private DayOfWeek processDayOfWeekInput(int i) {
+        DayOfWeek dayOfWeek = null;
+        boolean inputIsInvalid;
+        do {
+            inputIsInvalid = false;
+            String message = "Enter day of week (1 for Sunday, 2 for Monday, ...) for notification " + (i + 1) + ": ";
+            System.out.println(message);
+            if (input.hasNextInt()) {
+                int day = input.nextInt();
+                if (day >= 1 && day <= 7) {
+                    dayOfWeek = DayOfWeek.of(day);
+                } else {
+                    inputIsInvalid = true;
+                }
+            } else {
+                inputIsInvalid = true;
+                input.next();
+            }
+        } while (inputIsInvalid);
+        return dayOfWeek;
+    }
+
+    private int processHourInput(int i) {
+        int hours;
+        do {
+            System.out.println("Enter hour for notification " + (i + 1) + ": ");
+            if (input.hasNextInt()) {
+                hours = input.nextInt();
+                if (hours >= 0 && hours < 24) {
+                    break;
+                }
+            } else {
+                input.next();
+            }
+        } while (true);
+        return hours;
+    }
+
+    private int processMinuteInput(int i) {
+        int minutes;
+        do {
+            System.out.println("Enter minute for notification " + (i + 1) + ": ");
+            if (input.hasNextInt()) {
+                minutes = input.nextInt();
+                if (minutes >= 0 && minutes < 60) {
+                    break;
+                }
+            } else {
+                input.next();
+            }
+        } while (true);
+        return minutes;
+    }
+
+    private int getNumNotifications(String message) {
+        int numNotifications;
+        do {
+            System.out.println(message);
+            if (input.hasNextInt()) {
+                numNotifications = input.nextInt();
+                if (numNotifications > 0 && numNotifications < 16) {
+                    break;
+                } else {
+                    System.out.println("Number of notifications must be between 1 and 15");
+                }
+            } else {
+                input.next();
+            }
+        } while (true);
+        return numNotifications;
     }
 
     // EFFECTS: selects appropriate string based on the period

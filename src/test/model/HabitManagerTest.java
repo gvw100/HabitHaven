@@ -23,9 +23,9 @@ public class HabitManagerTest {
         Clock c2 = getFixedClock("2024-05-02T23:59:00.00Z");
         Clock c3 = getFixedClock("2024-03-15T10:30:00.00Z");
         habitManager = new HabitManager();
-        h1 = new Habit("name", "description", Period.WEEKLY, 3, c1);
-        h2 = new Habit("another name", "another description", Period.DAILY, 15, c2);
-        h3 = new Habit("and another name", "yet another description", Period.MONTHLY, 7, c3);
+        h1 = new Habit("name", "description", Period.WEEKLY, 3, false, c1);
+        h2 = new Habit("another name", "another description", Period.DAILY, 15, true, c2);
+        h3 = new Habit("and another name", "yet another description", Period.MONTHLY, 7, true, c3);
     }
 
     @Test

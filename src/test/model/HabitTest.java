@@ -24,10 +24,10 @@ public class HabitTest {
         Clock c3 = getFixedClock("2024-03-15T10:30:00.00Z");
         Clock c4 = getFixedClock("2024-06-30T23:59:00.00Z");
 
-        h1 = new Habit("name", "description", Period.WEEKLY, 3, c1);
-        h2 = new Habit("another name", "another description", Period.DAILY, 15, c2);
-        h3 = new Habit("and another name", "yet another description", Period.MONTHLY, 7, c3);
-        h4 = new Habit("please no more habits", "and no more descriptions", Period.MONTHLY, 5, c4);
+        h1 = new Habit("name", "description", Period.WEEKLY, 3, true, c1);
+        h2 = new Habit("another name", "another description", Period.DAILY, 15, false, c2);
+        h3 = new Habit("and another name", "yet another description", Period.MONTHLY, 7, true, c3);
+        h4 = new Habit("please no more habits", "and no more descriptions", Period.MONTHLY, 5, false, c4);
     }
 
     @Test
@@ -36,6 +36,7 @@ public class HabitTest {
         assertEquals("description", h1.getDescription());
         assertEquals(Period.WEEKLY, h1.getPeriod());
         assertEquals(3, h1.getFrequency());
+        assertTrue(h1.isNotifyEnabled());
         assertEquals(0, h1.getNumSuccess());
         assertEquals(c1, h1.getClock());
         assertFalse(h1.isPreviousComplete());
@@ -50,6 +51,7 @@ public class HabitTest {
         assertEquals("another description", h2.getDescription());
         assertEquals(Period.DAILY, h2.getPeriod());
         assertEquals(15, h2.getFrequency());
+        assertFalse(h2.isNotifyEnabled());
         assertEquals(0, h2.getNumSuccess());
         assertEquals(c2, h2.getClock());
         assertFalse(h1.isPreviousComplete());

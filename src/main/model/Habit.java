@@ -10,10 +10,12 @@ import java.time.temporal.TemporalAdjusters;
 public class Habit {
     private String name;
     private String description;
-    private int frequency;
     private Period period;
+    private int frequency;
+    private boolean notifyEnabled;
     private int numSuccess;
     private final HabitStatistics habitStats;
+    private HabitReminder habitReminder;
     private LocalDateTime currentPeriodEnd;
     private LocalDateTime nextPeriodEnd;
     private Clock clock;
@@ -21,15 +23,17 @@ public class Habit {
 
     // REQUIRES: 0 < frequency < 16
     // EFFECTS: initializes habit
-    public Habit(String name, String description, Period period, int frequency, Clock clock) {
+    public Habit(String name, String description, Period period, int frequency, boolean notifyEnabled, Clock clock) {
         this.numSuccess = 0;
         this.name = name;
         this.frequency = frequency;
         this.period = period;
         this.description = description;
+        this.notifyEnabled = notifyEnabled;
         this.clock = clock;
         this.isPreviousComplete = false;
         this.habitStats = new HabitStatistics();
+        this.habitReminder = this.notifyEnabled ? getNewReminder() : null;
         updateDateTime();
     }
 
@@ -41,6 +45,22 @@ public class Habit {
         this.description = description;
     }
 
+    //  MODIFIES: this
+    // EFFECTS: sets this.notifyEnabled to notifyEnabled, if notifyEnabled is true, then
+    //          if notifyEnabled != this.notifyEnabled, then habitReminder is reinitialized
+    //          if notifyEnabled is true, then habitReminder is reinitialized with period and frequency
+    //          if notifyEnabled is false, then habitReminder is set to null
+    public void setNotifyEnabled(boolean notifyEnabled) {
+        if (notifyEnabled == this.notifyEnabled) {
+            return;
+        }
+        if (notifyEnabled) {
+            habitReminder = getNewReminder();
+        } else {
+            habitReminder = null;
+        }
+    }
+
     // REQUIRES: 0 < frequency < 16
     // MODIFIES: this
     // EFFECTS: set this.frequency, resets progress if frequency != this.frequency
@@ -50,6 +70,10 @@ public class Habit {
         }
         this.frequency = frequency;
         resetProgress();
+        if (period == Period.DAILY) {
+            DailyReminder reminder = (DailyReminder) habitReminder;
+            reminder.setFrequency(frequency);
+        }
     }
 
     // MODIFIES: this
@@ -61,6 +85,18 @@ public class Habit {
         this.period = period;
         resetProgress();
         updateDateTime();
+        habitReminder = getNewReminder();
+    }
+
+    public HabitReminder getNewReminder() {
+        switch (period) {
+            case DAILY:
+                return new DailyReminder(frequency);
+            case WEEKLY:
+                return new WeeklyReminder();
+            default:
+                return new MonthlyReminder();
+        }
     }
 
     // MODIFIES: this
@@ -91,12 +127,21 @@ public class Habit {
         return this.period;
     }
 
+    // EFFECTS: returns whether notifications are enabled
+    public boolean isNotifyEnabled() {
+        return this.notifyEnabled;
+    }
+
     public int getNumSuccess() {
         return this.numSuccess;
     }
 
     public HabitStatistics getHabitStats() {
         return this.habitStats;
+    }
+
+    public HabitReminder getHabitReminder() {
+        return this.habitReminder;
     }
 
     public Clock getClock() {
@@ -150,11 +195,13 @@ public class Habit {
 
     // REQUIRES: LocalDateTime.now(clock) is after currentPeriodEnd
     // MODIFIES: this
-    // EFFECTS: updates currentPeriodEnd and nextPeriodEnd, resets numSuccess to 0, increments numPeriod
+    // EFFECTS: updates currentPeriodEnd and nextPeriodEnd, resets numSuccess to 0, increments numPeriod,
+    //          and updates habit notifications
     public void nextHabitPeriod() {
         updateDateTime();
         numSuccess = 0;
         habitStats.incrementNumPeriod();
+        habitReminder.updateReminders();
     }
 
     // MODIFIES: this
@@ -200,6 +247,7 @@ public class Habit {
                 break;
             default:
                 updateMonthly();
+                break;
         }
     }
 
