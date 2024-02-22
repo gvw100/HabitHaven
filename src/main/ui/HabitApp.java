@@ -1,15 +1,14 @@
 package ui;
 
-import model.Habit;
-import model.HabitManager;
-import model.Period;
+import javafx.util.Pair;
+import model.*;
 
 import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAdjusters;
+import java.util.*;
 
 // Habit tracker application
 // Some of the code here is inspired from the TellerApp.java class in the CPSC 210 course
@@ -197,6 +196,7 @@ public class HabitApp {
 
     // MODIFIES: this
     // EFFECTS: brings user to the appropriate habit tool according to input, returns whether input is invalid
+    @SuppressWarnings("methodlength")
     private boolean processHabitInput(Habit habit) {
         switch (input.next()) {
             case "e":
@@ -237,6 +237,7 @@ public class HabitApp {
         System.out.println("\td -> Delete habit");
         System.out.println("\tf -> Finish habit");
         System.out.println("\ts -> Show in-depth statistics");
+        System.out.println("\tn -> Customize notifications");
         System.out.println("\th -> Back to habit list");
         System.out.println("\tm -> Back to menu");
     }
@@ -399,89 +400,180 @@ public class HabitApp {
         System.out.println("\nSelect one of the following: \n");
         System.out.println("\te -> Enable notifications");
         System.out.println("\td -> Disable notifications");
-        System.out.println("\tc -> Customize notification time");
+        System.out.println("\tc -> Customize notification times");
         System.out.println("\tb -> Back to habit");
     }
 
     private void enableNotifications(Habit habit) {
-        habit.setNotifyEnabled(true);
-        System.out.println("\nNotifications enabled");
+        boolean wasChanged = habit.setNotifyEnabled(true);
+        if (wasChanged) {
+            System.out.println("\nNotifications enabled");
+        } else {
+            System.out.println("\nNotifications already enabled");
+        }
+        customizeNotifications(habit);
     }
 
     private void disableNotifications(Habit habit) {
-        habit.setNotifyEnabled(false);
-        System.out.println("\nNotifications disabled");
+        boolean wasChanged = habit.setNotifyEnabled(false);
+        if (wasChanged) {
+            System.out.println("\nNotifications disabled");
+        } else {
+            System.out.println("\nNotifications already disabled");
+        }
+        customizeNotifications(habit);
     }
 
     private void customizeNotificationTimes(Habit habit) {
+        if (!habit.isNotifyEnabled()) {
+            System.out.println("\nNotifications are disabled. Enable notifications to customize times");
+            customizeNotifications(habit);
+        }
+        if (!habit.getHabitReminder().isDefault() && processOverrideInput(habit)) {
+            customizeNotifications(habit);
+        }
         String numMessage = "How many notifications would you like to receive" + getPeriodString(habit.getPeriod(),
-                "per day", "per week", "per month") + "?";
+                " per day", " per week", " per month") + "?";
         int numNotifications = getNumNotifications(numMessage);
-        ArrayList<LocalDateTime> reminders = new ArrayList<>();
+        Set<LocalDateTime> reminders = new HashSet<>();
+        Set<Pair<Integer, LocalTime>> monthlyPairs = new HashSet<>();
         for (int i = 0; i < numNotifications; i++) {
-            processTimeInput(habit, reminders, i);
+            processTimeInput(habit, reminders, monthlyPairs, i);
+        }
+        storeNotifications(habit, reminders, monthlyPairs);
+        customizeNotifications(habit);
+    }
+
+    private boolean processOverrideInput(Habit habit) {
+        List<String> validInputs = new ArrayList<>(Arrays.asList("d", "k", "o"));
+        System.out.println("You have already customized notifications.");
+        System.out.println("\td -> Revert to default notifications");
+        System.out.println("\tk -> Keep current notifications");
+        System.out.println("\to -> Override current notifications");
+        String command;
+        do {
+            command = input.next();
+        } while (!validInputs.contains(command));
+        switch (command) {
+            case "d":
+                habit.getHabitReminder().setDefaultReminders();
+                return true;
+            case "k":
+                return true;
+            default:
+                return false;
         }
     }
 
-    private void processTimeInput(Habit habit, ArrayList<LocalDateTime> reminders, int i) {
+    private void storeNotifications(Habit habit, Set<LocalDateTime> reminders, Set<Pair<Integer, LocalTime>> pairs) {
+        if (habit.getPeriod() == Period.MONTHLY) {
+            MonthlyReminder monthlyReminder = (MonthlyReminder) habit.getHabitReminder();
+            monthlyReminder.setCustomMonthlyReminders(pairs);
+        } else {
+            habit.getHabitReminder().setCustomReminders(reminders);
+        }
+    }
+
+    private void processTimeInput(Habit habit, Set<LocalDateTime> times, Set<Pair<Integer, LocalTime>> pairs, int i) {
         switch (habit.getPeriod()) {
             case DAILY:
-                processDailyTimeInput(habit, reminders, i);
+                processDailyTimeInput(times, i);
                 break;
             case WEEKLY:
-                processWeeklyTimeInput(habit, reminders, i);
+                processWeeklyTimeInput(times, i);
                 break;
             case MONTHLY:
-                processMonthlyTimeInput(habit, reminders, i);
+                processMonthlyTimeInput(pairs, i);
         }
     }
 
-    private void processDailyTimeInput(Habit habit, ArrayList<LocalDateTime> reminders, int i) {
-        int hours = processHourInput(i);
-        int minutes = processMinuteInput(i);
-        LocalDateTime now = LocalDateTime.now(clock);
-        reminders.add(now.withHour(hours).withMinute(minutes).withSecond(0).withNano(0));
+    private void processDailyTimeInput(Set<LocalDateTime> reminders, int i) {
+        do {
+            int hours = processHourInput(i);
+            int minutes = processMinuteInput(i);
+            LocalDateTime reminder = DailyReminder.makeDailyReminder(LocalTime.of(hours, minutes), clock);
+            int size = reminders.size();
+            reminders.add(reminder);
+            if (size != reminders.size()) {
+                break;
+            } else {
+                System.out.println("Reminder already exists for that time");
+            }
+        } while (true);
     }
 
-    private void processWeeklyTimeInput(Habit habit, ArrayList<LocalDateTime> reminders, int i) {
-        DayOfWeek dayOfWeek = processDayOfWeekInput(i);
-        int hours = processHourInput(i);
-        int minutes = processMinuteInput(i);
-        LocalDateTime dayOfWeekTime = LocalDateTime.now(clock).with(dayOfWeek);
-        LocalDateTime reminderDateTime = dayOfWeekTime.withHour(hours).withMinute(minutes).withSecond(0).withNano(0);
-        reminders.add(reminderDateTime);
+    private void processWeeklyTimeInput(Set<LocalDateTime> reminders, int i) {
+        do {
+            DayOfWeek dayOfWeek = processDayOfWeekInput(i);
+            int hours = processHourInput(i);
+            int minutes = processMinuteInput(i);
+            LocalDateTime reminder = WeeklyReminder.makeWeeklyReminder(dayOfWeek, LocalTime.of(hours, minutes), clock);
+            int size = reminders.size();
+            reminders.add(reminder);
+            if (size != reminders.size()) {
+                break;
+            } else {
+                System.out.println("Reminder already exists for that time");
+            }
+        } while (true);
     }
 
-    private void processMonthlyTimeInput(Habit habit, ArrayList<LocalDateTime> reminders, int i) {
-
+    private void processMonthlyTimeInput(Set<Pair<Integer, LocalTime>> pairs, int i) {
+        do {
+            int dayOfMonth = processDayOfMonthInput(i);
+            int hours = processHourInput(i);
+            int minutes = processMinuteInput(i);
+            LocalTime time = LocalTime.of(hours, minutes);
+            Pair pair = new Pair<>(dayOfMonth, time);
+            int size = pairs.size();
+            pairs.add(pair);
+            if (size != pairs.size()) {
+                break;
+            } else {
+                System.out.println("Reminder already exists for that time");
+            }
+        } while (true);
     }
 
     private DayOfWeek processDayOfWeekInput(int i) {
-        DayOfWeek dayOfWeek = null;
-        boolean inputIsInvalid;
+        DayOfWeek dayOfWeek;
         do {
-            inputIsInvalid = false;
             String message = "Enter day of week (1 for Sunday, 2 for Monday, ...) for notification " + (i + 1) + ": ";
             System.out.println(message);
             if (input.hasNextInt()) {
                 int day = input.nextInt();
                 if (day >= 1 && day <= 7) {
-                    dayOfWeek = DayOfWeek.of(day);
-                } else {
-                    inputIsInvalid = true;
+                    int translatedDay = day == 1 ? 7 : day - 1;
+                    dayOfWeek = DayOfWeek.of(translatedDay);
+                    break;
                 }
             } else {
-                inputIsInvalid = true;
                 input.next();
             }
-        } while (inputIsInvalid);
+        } while (true);
         return dayOfWeek;
+    }
+
+    private int processDayOfMonthInput(int i) {
+        int dayOfMonth;
+        do {
+            System.out.println("Enter day of month (1-31) for notification " + (i + 1) + ": ");
+            if (input.hasNextInt()) {
+                dayOfMonth = input.nextInt();
+                if (dayOfMonth >= 1 && dayOfMonth <= 31) {
+                    break;
+                }
+            } else {
+                input.next();
+            }
+        } while (true);
+        return dayOfMonth;
     }
 
     private int processHourInput(int i) {
         int hours;
         do {
-            System.out.println("Enter hour for notification " + (i + 1) + ": ");
+            System.out.println("Enter hour (0-23) for notification " + (i + 1) + ": ");
             if (input.hasNextInt()) {
                 hours = input.nextInt();
                 if (hours >= 0 && hours < 24) {
@@ -497,7 +589,7 @@ public class HabitApp {
     private int processMinuteInput(int i) {
         int minutes;
         do {
-            System.out.println("Enter minute for notification " + (i + 1) + ": ");
+            System.out.println("Enter minute (0-59) for notification " + (i + 1) + ": ");
             if (input.hasNextInt()) {
                 minutes = input.nextInt();
                 if (minutes >= 0 && minutes < 60) {

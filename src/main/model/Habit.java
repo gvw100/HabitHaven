@@ -46,19 +46,23 @@ public class Habit {
     }
 
     //  MODIFIES: this
-    // EFFECTS: sets this.notifyEnabled to notifyEnabled, if notifyEnabled is true, then
+    // EFFECTS: sets this.notifyEnabled to notifyEnabled,
     //          if notifyEnabled != this.notifyEnabled, then habitReminder is reinitialized
-    //          if notifyEnabled is true, then habitReminder is reinitialized with period and frequency
-    //          if notifyEnabled is false, then habitReminder is set to null
-    public void setNotifyEnabled(boolean notifyEnabled) {
+    //          if notifyEnabled is true, then habitReminder is reinitialized to a new reminder
+    //          if notifyEnabled is false, then habitReminder is set to null,
+    //          returns whether notifyEnabled was changed
+    public boolean setNotifyEnabled(boolean notifyEnabled) {
         if (notifyEnabled == this.notifyEnabled) {
-            return;
+            return false;
         }
         if (notifyEnabled) {
+            this.notifyEnabled = true;
             habitReminder = getNewReminder();
         } else {
+            this.notifyEnabled = false;
             habitReminder = null;
         }
+        return true;
     }
 
     // REQUIRES: 0 < frequency < 16
@@ -91,11 +95,11 @@ public class Habit {
     public HabitReminder getNewReminder() {
         switch (period) {
             case DAILY:
-                return new DailyReminder(frequency);
+                return new DailyReminder(frequency, clock);
             case WEEKLY:
-                return new WeeklyReminder();
+                return new WeeklyReminder(clock);
             default:
-                return new MonthlyReminder();
+                return new MonthlyReminder(clock);
         }
     }
 
@@ -201,7 +205,9 @@ public class Habit {
         updateDateTime();
         numSuccess = 0;
         habitStats.incrementNumPeriod();
-        habitReminder.updateReminders();
+        if (habitReminder != null) {
+            habitReminder.updateReminders();
+        }
     }
 
     // MODIFIES: this

@@ -1,18 +1,19 @@
 package model;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.YearMonth;
+import javafx.util.Pair;
+
+import java.time.*;
 import java.util.HashSet;
 import java.util.Set;
 
 // Represents a list of monthly notifications for a habit
 public class MonthlyReminder extends HabitReminder {
 
-    
+    private Set<Pair<Integer, LocalTime>> customReminders;
 
-    MonthlyReminder() {
-        super();
+    MonthlyReminder(Clock clock) {
+        super(clock);
+        customReminders = null;
         distributeReminders();
     }
 
@@ -30,16 +31,38 @@ public class MonthlyReminder extends HabitReminder {
             reminders.add(reminderDateTime);
             reminderDateTime = reminderDateTime.plusDays(1);
         }
+        reminderScheduler.scheduleReminders(getActiveReminders());
     }
 
     /// MODIFIES: this
-    //  EFFECTS: updates custom monthly reminders by adding one month to each reminder,
-    //           ensures reminders are in the correct month, any duplicates are ignored
+    //  EFFECTS: updates custom monthly reminders based on customReminders,
+    //           ensures that all reminders are in the current month,
+    //           duplicates are ignored
     @Override
     public void updateCustomReminders() {
-        HashSet<LocalDateTime> newReminders = new HashSet<>();
-
+        Set<LocalDateTime> newReminders = new HashSet<>();
+        for (Pair<Integer, LocalTime> reminder : customReminders) {
+            int numDays = YearMonth.now(clock).lengthOfMonth();
+            LocalDateTime next;
+            if (reminder.getKey() > numDays) {
+                next = LocalDateTime.of(LocalDate.now(clock).withDayOfMonth(numDays), reminder.getValue());
+            } else {
+                next = LocalDateTime.of(LocalDate.now(clock).withDayOfMonth(reminder.getKey()), reminder.getValue());
+            }
+            newReminders.add(next);
+        }
         reminders.clear();
         reminders = newReminders;
+        reminderScheduler.scheduleReminders(getActiveReminders());
+    }
+
+    // MODIFIES: this
+    // EFFECTS: sets customReminders to newReminders,
+    //          sets isDefault to false,
+    //          distributes custom reminders,
+    public void setCustomMonthlyReminders(Set<Pair<Integer, LocalTime>> newReminders) {
+        customReminders = newReminders;
+        isDefault = false;
+        updateCustomReminders();
     }
 }

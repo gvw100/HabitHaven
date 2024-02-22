@@ -1,15 +1,18 @@
 package model;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashSet;
+import java.util.Set;
 
 // Represents a list of daily notifications for a habit
 public class DailyReminder extends HabitReminder {
     private int frequency;
 
-    public DailyReminder(int frequency) {
-        super();
+    public DailyReminder(int frequency, Clock clock) {
+        super(clock);
         this.frequency = frequency;
         distributeReminders();
     }
@@ -36,17 +39,25 @@ public class DailyReminder extends HabitReminder {
             reminders.add(reminderDateTime);
             reminderDateTime = reminderDateTime.plusHours(hours).plusMinutes(minutes);
         }
+        reminderScheduler.scheduleReminders(getActiveReminders());
     }
 
     // MODIFIES: this
     // EFFECTS: updates custom daily reminders by adding one day to each reminder
     @Override
     public void updateCustomReminders() {
-        HashSet<LocalDateTime> newReminders = new HashSet<>();
+        Set<LocalDateTime> newReminders = new HashSet<>();
         for (LocalDateTime dateTime : reminders) {
-            newReminders.add(dateTime.plusDays(1));
+            LocalDateTime newDateTime = makeDailyReminder(dateTime.toLocalTime(), clock);
+            newReminders.add(newDateTime);
         }
         reminders.clear();
         reminders = newReminders;
+        reminderScheduler.scheduleReminders(getActiveReminders());
+    }
+
+    // EFFECTS: returns a LocalDateTime object representing the reminder for the given time
+    public static LocalDateTime makeDailyReminder(LocalTime time, Clock clock) {
+        return LocalDateTime.of(LocalDate.now(clock), time);
     }
 }
