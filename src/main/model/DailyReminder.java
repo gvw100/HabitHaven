@@ -11,8 +11,8 @@ import java.util.Set;
 public class DailyReminder extends HabitReminder {
     private int frequency;
 
-    public DailyReminder(int frequency, Clock clock) {
-        super(clock);
+    public DailyReminder(int frequency, Clock clock, Habit habit) {
+        super(clock, habit);
         this.frequency = frequency;
         distributeReminders();
     }
@@ -39,7 +39,7 @@ public class DailyReminder extends HabitReminder {
             reminders.add(reminderDateTime);
             reminderDateTime = reminderDateTime.plusHours(hours).plusMinutes(minutes);
         }
-        reminderScheduler.scheduleReminders(getActiveReminders());
+        reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
     // MODIFIES: this
@@ -53,7 +53,7 @@ public class DailyReminder extends HabitReminder {
         }
         reminders.clear();
         reminders = newReminders;
-        reminderScheduler.scheduleReminders(getActiveReminders());
+        reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
     // EFFECTS: returns a LocalDateTime object representing the reminder for the given time

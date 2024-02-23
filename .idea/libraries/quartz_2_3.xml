@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="quartz-2.3">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/lib/spec/quartz-2.3.0-SNAPSHOT" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/lib/spec/quartz-2.3.0-SNAPSHOT" recursive="false" />
+  </library>
+</component>

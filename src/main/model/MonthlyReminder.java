@@ -11,8 +11,8 @@ public class MonthlyReminder extends HabitReminder {
 
     private Set<Pair<Integer, LocalTime>> customReminders;
 
-    MonthlyReminder(Clock clock) {
-        super(clock);
+    MonthlyReminder(Clock clock, Habit habit) {
+        super(clock, habit);
         customReminders = null;
         distributeReminders();
     }
@@ -31,7 +31,7 @@ public class MonthlyReminder extends HabitReminder {
             reminders.add(reminderDateTime);
             reminderDateTime = reminderDateTime.plusDays(1);
         }
-        reminderScheduler.scheduleReminders(getActiveReminders());
+        reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
     /// MODIFIES: this
@@ -53,7 +53,7 @@ public class MonthlyReminder extends HabitReminder {
         }
         reminders.clear();
         reminders = newReminders;
-        reminderScheduler.scheduleReminders(getActiveReminders());
+        reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
     // MODIFIES: this

@@ -13,13 +13,15 @@ public abstract class HabitReminder {
     protected Set<LocalDateTime> reminders;
     protected final Clock clock;
     protected boolean isDefault;
+    protected Habit habit;
     protected ReminderScheduler reminderScheduler;
 
     // EFFECTS: initializes habit reminders based on period and frequency
-    public HabitReminder(Clock clock) {
+    public HabitReminder(Clock clock, Habit habit) {
         this.isDefault = true;
         this.clock = clock;
-        this.reminderScheduler = new ReminderScheduler(this.clock);
+        this.habit = habit;
+        this.reminderScheduler = new ReminderScheduler();
     }
 
     public boolean isDefault() {
@@ -59,7 +61,7 @@ public abstract class HabitReminder {
     public void setCustomReminders(Set<LocalDateTime> newReminders) {
         isDefault = false;
         reminders = newReminders;
-        reminderScheduler.scheduleReminders(getActiveReminders());
+        reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
     // MODIFIES: this
@@ -67,5 +69,11 @@ public abstract class HabitReminder {
     public void setDefaultReminders() {
         isDefault = true;
         distributeReminders();
+    }
+
+    // MODIFIES: this
+    // EFFECTS: cancels all reminders in the current period
+    public void cancelReminders() {
+        reminderScheduler.cancelReminders();
     }
 }

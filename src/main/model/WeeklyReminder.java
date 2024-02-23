@@ -8,8 +8,8 @@ import java.util.Set;
 // Represents a list of weekly notifications for a habit
 public class WeeklyReminder extends HabitReminder {
 
-    WeeklyReminder(Clock clock) {
-        super(clock);
+    WeeklyReminder(Clock clock, Habit habit) {
+        super(clock, habit);
         distributeReminders();
     }
 
@@ -25,7 +25,7 @@ public class WeeklyReminder extends HabitReminder {
             reminders.add(reminderDateTime);
             reminderDateTime = reminderDateTime.plusDays(1);
         }
-        reminderScheduler.scheduleReminders(getActiveReminders());
+        reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
     // MODIFIES: this
@@ -39,7 +39,7 @@ public class WeeklyReminder extends HabitReminder {
         }
         reminders.clear();
         reminders = newReminders;
-        reminderScheduler.scheduleReminders(getActiveReminders());
+        reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
     // EFFECTS: returns a LocalDateTime object representing the reminder for the given day and time

@@ -1,2 +1,3 @@
 *.class
 workspace.xml
+/log4j.log

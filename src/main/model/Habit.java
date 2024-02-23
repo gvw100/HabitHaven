@@ -45,6 +45,18 @@ public class Habit {
         this.description = description;
     }
 
+    // MODIFIES: this
+    // EFFECTS: set this.clock, useful for testing purposes
+    public void setClock(Clock clock) {
+        this.clock = clock;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: set this.numSuccess, solely for testing purposes
+    public void setNumSuccess(int numSuccess) {
+        this.numSuccess = numSuccess;
+    }
+
     //  MODIFIES: this
     // EFFECTS: sets this.notifyEnabled to notifyEnabled,
     //          if notifyEnabled != this.notifyEnabled, then habitReminder is reinitialized
@@ -95,24 +107,12 @@ public class Habit {
     public HabitReminder getNewReminder() {
         switch (period) {
             case DAILY:
-                return new DailyReminder(frequency, clock);
+                return new DailyReminder(frequency, clock, this);
             case WEEKLY:
-                return new WeeklyReminder(clock);
+                return new WeeklyReminder(clock, this);
             default:
-                return new MonthlyReminder(clock);
+                return new MonthlyReminder(clock, this);
         }
-    }
-
-    // MODIFIES: this
-    // EFFECTS: set this.clock, useful for testing purposes
-    public void setClock(Clock clock) {
-        this.clock = clock;
-    }
-
-    // MODIFIES: this
-    // EFFECTS: set this.numSuccess, solely for testing purposes
-    public void setNumSuccess(int numSuccess) {
-        this.numSuccess = numSuccess;
     }
 
     public String getName() {
@@ -194,6 +194,7 @@ public class Habit {
             isPreviousComplete = true;
             habitStats.incrementNumPeriodSuccess();
             habitStats.incrementStreak();
+            habitReminder.cancelReminders();
         }
     }
 
