@@ -8,6 +8,7 @@ import java.util.Set;
 // Represents a list of weekly notifications for a habit
 public class WeeklyReminder extends HabitReminder {
 
+    // EFFECTS: constructs a weekly reminder with the given clock and habit
     WeeklyReminder(Clock clock, Habit habit) {
         super(clock, habit);
         distributeReminders();
@@ -29,7 +30,7 @@ public class WeeklyReminder extends HabitReminder {
     }
 
     // MODIFIES: this
-    // EFFECTS: updates custom weekly reminders by adding one week to each reminder
+    // EFFECTS: updates custom weekly reminders based on existing custom reminders
     @Override
     public void updateCustomReminders() {
         Set<LocalDateTime> newReminders = new HashSet<>();

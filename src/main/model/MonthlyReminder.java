@@ -11,6 +11,7 @@ public class MonthlyReminder extends HabitReminder {
 
     private Set<Pair<Integer, LocalTime>> customReminders;
 
+    // EFFECTS: constructs a MonthlyReminder with clock and habit
     MonthlyReminder(Clock clock, Habit habit) {
         super(clock, habit);
         customReminders = null;
@@ -35,9 +36,9 @@ public class MonthlyReminder extends HabitReminder {
     }
 
     /// MODIFIES: this
-    //  EFFECTS: updates custom monthly reminders based on customReminders,
+    //  EFFECTS: updates custom monthly reminders based on this.customReminders,
     //           ensures that all reminders are in the current month,
-    //           duplicates are ignored
+    //           duplicates are ignored (February 31 becomes February 28/29, etc.)
     @Override
     public void updateCustomReminders() {
         Set<LocalDateTime> newReminders = new HashSet<>();
@@ -56,11 +57,18 @@ public class MonthlyReminder extends HabitReminder {
         reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
+    // EFFECTS: throws UnsupportedOperationException, use setCustomMonthlyReminders instead
+    @Override
+    public void setCustomReminders(Set<LocalDateTime> newReminders) {
+        throw new UnsupportedOperationException("Monthly reminders do not support custom reminders");
+    }
+
     // MODIFIES: this
     // EFFECTS: sets customReminders to newReminders,
     //          sets isDefault to false,
-    //          distributes custom reminders,
+    //          distributes custom reminders based on current time
     public void setCustomMonthlyReminders(Set<Pair<Integer, LocalTime>> newReminders) {
+        cancelReminders();
         customReminders = newReminders;
         isDefault = false;
         updateCustomReminders();

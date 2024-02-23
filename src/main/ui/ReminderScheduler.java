@@ -26,13 +26,15 @@ public class ReminderScheduler {
         }
     }
 
-    // EFFECTS: schedules notifications to be sent, ignores reminders that have already passed
+    // EFFECTS: schedules notifications to be sent at the given times
     public void scheduleReminders(Set<LocalDateTime> reminders, Habit habit) {
         for (LocalDateTime reminder : reminders) {
             scheduleReminder(reminder, habit);
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: schedules a notification to be sent at the given time
     private void scheduleReminder(LocalDateTime reminder, Habit habit) {
         JobDataMap data = new JobDataMap();
         data.put("habit", habit);

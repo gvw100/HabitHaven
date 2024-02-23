@@ -6,9 +6,9 @@ import java.time.*;
 import java.util.HashSet;
 import java.util.Set;
 
-// Represents a list of notifications for a habit
+// Represents a list of customizable notifications for a habit
 public abstract class HabitReminder {
-    protected static final LocalTime DAY_START_TIME = LocalTime.of(8, 30);
+    protected static final LocalTime DAY_START_TIME = LocalTime.of(9, 0);
     protected static final int DAY_LENGTH = 12;
     protected Set<LocalDateTime> reminders;
     protected final Clock clock;
@@ -16,7 +16,7 @@ public abstract class HabitReminder {
     protected Habit habit;
     protected ReminderScheduler reminderScheduler;
 
-    // EFFECTS: initializes habit reminders based on period and frequency
+    // EFFECTS: constructs a default habit reminder with given clock and habit
     public HabitReminder(Clock clock, Habit habit) {
         this.isDefault = true;
         this.clock = clock;
@@ -24,16 +24,17 @@ public abstract class HabitReminder {
         this.reminderScheduler = new ReminderScheduler();
     }
 
+    // EFFECTS: returns true if the reminder is default, false if it is custom
     public boolean isDefault() {
         return isDefault;
     }
 
     // MODIFIES: this
-    // EFFECTS: distributes reminders based on period and frequency
+    // EFFECTS: distributes default reminders into this.reminders
     public abstract void distributeReminders();
 
     // MODIFIES: this
-    // EFFECTS: updates reminders after period has passed
+    // EFFECTS: updates reminders based on current time, only called after at least one full period has passed
     public void updateReminders() {
         if (isDefault) {
             distributeReminders();
@@ -43,9 +44,10 @@ public abstract class HabitReminder {
     }
 
     // MODIFIES: this
-    // EFFECTS: updates custom reminders based on period
+    // EFFECTS: updates custom reminders to match the current time
     public abstract void updateCustomReminders();
 
+    // EFFECTS: returns set of active reminders, reminders that are after the current time
     public Set<LocalDateTime> getActiveReminders() {
         Set<LocalDateTime> activeReminders = new HashSet<>();
         for (LocalDateTime reminder : reminders) {
@@ -57,16 +59,19 @@ public abstract class HabitReminder {
     }
 
     // MODIFIES: this
-    // EFFECTS: sets reminders to newReminders
+    // EFFECTS: sets reminders to newReminders, cancels old reminders, schedules new reminders,
+    //          cannot be called for instances of MonthlyReminder to avoid method overriding issues
     public void setCustomReminders(Set<LocalDateTime> newReminders) {
+        cancelReminders();
         isDefault = false;
         reminders = newReminders;
         reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
     // MODIFIES: this
-    // EFFECTS: reverts back to default reminders
+    // EFFECTS: reverts back to default reminders, cancels existing default reminders
     public void setDefaultReminders() {
+        cancelReminders();
         isDefault = true;
         distributeReminders();
     }

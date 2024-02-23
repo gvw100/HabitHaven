@@ -7,7 +7,6 @@ import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 // Habit tracker application
@@ -372,6 +371,8 @@ public class HabitApp {
         return !input.next().equals("b");
     }
 
+    // MODIFIES: this
+    // EFFECTS: displays notification options and processes input
     private void customizeNotifications(Habit habit) {
         boolean inputIsInvalid;
         do {
@@ -396,6 +397,7 @@ public class HabitApp {
         } while (inputIsInvalid);
     }
 
+    // EFFECTS: displays notification options
     private void displayNotificationOptions() {
         System.out.println("\nSelect one of the following: \n");
         System.out.println("\te -> Enable notifications");
@@ -404,6 +406,8 @@ public class HabitApp {
         System.out.println("\tb -> Back to habit");
     }
 
+    // MODIFIES: this
+    // EFFECTS: enables notifications for given habit
     private void enableNotifications(Habit habit) {
         boolean wasChanged = habit.setNotifyEnabled(true);
         if (wasChanged) {
@@ -414,6 +418,8 @@ public class HabitApp {
         customizeNotifications(habit);
     }
 
+    // MODIFIES: this
+    // EFFECTS: disables notifications for given habit
     private void disableNotifications(Habit habit) {
         boolean wasChanged = habit.setNotifyEnabled(false);
         if (wasChanged) {
@@ -424,6 +430,9 @@ public class HabitApp {
         customizeNotifications(habit);
     }
 
+    // MODIFIES: this
+    // EFFECTS: customizes notification times for given habit, if already customized, user can revert to default,
+    //          keep current notifications, or override current notifications
     private void customizeNotificationTimes(Habit habit) {
         if (!habit.isNotifyEnabled()) {
             System.out.println("\nNotifications are disabled. Enable notifications to customize times");
@@ -444,6 +453,7 @@ public class HabitApp {
         customizeNotifications(habit);
     }
 
+    // EFFECTS: processes input and returns false if user wants to override current notifications, true otherwise
     private boolean processOverrideInput(Habit habit) {
         List<String> validInputs = new ArrayList<>(Arrays.asList("d", "k", "o"));
         System.out.println("You have already customized notifications.");
@@ -465,6 +475,9 @@ public class HabitApp {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: stores notifications for given habit, sets LocalDateTime reminders for daily and weekly habits,
+    //          and sets Pair<Integer, LocalTime> reminders for monthly habits
     private void storeNotifications(Habit habit, Set<LocalDateTime> reminders, Set<Pair<Integer, LocalTime>> pairs) {
         if (habit.getPeriod() == Period.MONTHLY) {
             MonthlyReminder monthlyReminder = (MonthlyReminder) habit.getHabitReminder();
@@ -474,6 +487,7 @@ public class HabitApp {
         }
     }
 
+    // EFFECTS: processes time input for given habit, prompts user for time input based on period
     private void processTimeInput(Habit habit, Set<LocalDateTime> times, Set<Pair<Integer, LocalTime>> pairs, int i) {
         switch (habit.getPeriod()) {
             case DAILY:
@@ -487,6 +501,7 @@ public class HabitApp {
         }
     }
 
+    // EFFECTS: prompts user for time input for daily reminders
     private void processDailyTimeInput(Set<LocalDateTime> reminders, int i) {
         do {
             int hours = processHourInput(i);
@@ -502,6 +517,7 @@ public class HabitApp {
         } while (true);
     }
 
+    // EFFECTS: prompts user for time input for weekly reminders
     private void processWeeklyTimeInput(Set<LocalDateTime> reminders, int i) {
         do {
             DayOfWeek dayOfWeek = processDayOfWeekInput(i);
@@ -518,13 +534,14 @@ public class HabitApp {
         } while (true);
     }
 
+    // EFFECTS: prompts user for time input for monthly reminders
     private void processMonthlyTimeInput(Set<Pair<Integer, LocalTime>> pairs, int i) {
         do {
             int dayOfMonth = processDayOfMonthInput(i);
             int hours = processHourInput(i);
             int minutes = processMinuteInput(i);
             LocalTime time = LocalTime.of(hours, minutes);
-            Pair pair = new Pair<>(dayOfMonth, time);
+            Pair<Integer, LocalTime> pair = new Pair<>(dayOfMonth, time);
             int size = pairs.size();
             pairs.add(pair);
             if (size != pairs.size()) {
@@ -535,6 +552,7 @@ public class HabitApp {
         } while (true);
     }
 
+    // EFFECTS: prompts user for day of week input
     private DayOfWeek processDayOfWeekInput(int i) {
         DayOfWeek dayOfWeek;
         do {
@@ -554,6 +572,7 @@ public class HabitApp {
         return dayOfWeek;
     }
 
+    // EFFECTS: prompts user for day of month input
     private int processDayOfMonthInput(int i) {
         int dayOfMonth;
         do {
@@ -570,6 +589,7 @@ public class HabitApp {
         return dayOfMonth;
     }
 
+    // EFFECTS: prompts user for hour input
     private int processHourInput(int i) {
         int hours;
         do {
@@ -586,6 +606,7 @@ public class HabitApp {
         return hours;
     }
 
+    // EFFECTS: prompts user for minute input
     private int processMinuteInput(int i) {
         int minutes;
         do {
@@ -602,6 +623,7 @@ public class HabitApp {
         return minutes;
     }
 
+    // EFFECTS: prompts user for number of notifications, restricted between 1 and 15, inclusive
     private int getNumNotifications(String message) {
         int numNotifications;
         do {

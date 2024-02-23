@@ -15,9 +15,12 @@ public class SendReminder implements Job {
     private int habitStreak;
     private int bestStreak;
 
+    // EFFECTS: constructs a new SendReminder
     public SendReminder() {
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets fields to the given habit's fields
     public void setHabit(Habit habit) {
         this.habitName = habit.getName();
         this.habitFrequency = habit.getFrequency();
@@ -42,6 +45,7 @@ public class SendReminder implements Job {
                 + "\n\n" + messageStreak);
     }
 
+    // EFFECTS: returns a message about the user's progress
     String getMessageProgress() {
         if (habitNumSuccesses > 0) {
             return "You've already completed this habit " + habitNumSuccesses + " times! "
@@ -53,6 +57,7 @@ public class SendReminder implements Job {
         }
     }
 
+    // EFFECTS: returns a message about the user's streak
     String getMessageStreak() {
         if (habitStreak > 0 && habitStreak < bestStreak) {
             return "With a streak of " + habitStreak + " days, you're making amazing progress! "
@@ -65,6 +70,7 @@ public class SendReminder implements Job {
         }
     }
 
+    // EFFECTS: returns a string based on the habit's period
     String obtainPeriodString(String day, String week, String month) {
         switch (habitPeriod) {
             case DAILY:
