@@ -4,6 +4,7 @@ import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
+import java.util.UUID;
 
 // Represents a habit with a name, description, frequency, period, number of success, habit statistics,
 // and habit notifications
@@ -12,6 +13,7 @@ public class Habit {
     private String description;
     private Period period;
     private int frequency;
+    private final UUID id = UUID.randomUUID();
     private boolean notifyEnabled;
     private int numSuccess;
     private final HabitStatistics habitStats;
@@ -46,9 +48,13 @@ public class Habit {
     }
 
     // MODIFIES: this
-    // EFFECTS: set this.clock, useful for testing purposes
+    // EFFECTS: set this.clock, useful for testing purposes, solely for testing purposes
+    //          other clocks also updated to prevent exceptions in tests
     public void setClock(Clock clock) {
         this.clock = clock;
+        if (isNotifyEnabled()) {
+            habitReminder.clock = clock;
+        }
     }
 
     // MODIFIES: this
@@ -91,12 +97,10 @@ public class Habit {
         }
         this.frequency = frequency;
         resetProgress();
-        if (period == Period.DAILY && isNotifyEnabled()) {
-            if (habitReminder.isDefault()) {
-                habitReminder.cancelReminders();
-                DailyReminder reminder = (DailyReminder) habitReminder;
-                reminder.setFrequency(frequency);
-            }
+        if (period == Period.DAILY && isNotifyEnabled() && habitReminder.isDefault()) {
+            habitReminder.cancelReminders();
+            DailyReminder reminder = (DailyReminder) habitReminder;
+            reminder.setFrequency(frequency);
         }
         return true;
     }
@@ -146,6 +150,10 @@ public class Habit {
 
     public Period getPeriod() {
         return this.period;
+    }
+
+    public UUID getId() {
+        return this.id;
     }
 
     // EFFECTS: returns whether notifications are enabled

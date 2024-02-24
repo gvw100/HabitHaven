@@ -17,7 +17,7 @@ public class UpdateHabits implements Job {
 
     // EFFECTS: updates all habits in habit manager
     public void execute(JobExecutionContext context) {
-        System.out.println("Updating habits...");
+        System.out.println("\nUpdating habits...");
         updateHabits.run();
     }
 }

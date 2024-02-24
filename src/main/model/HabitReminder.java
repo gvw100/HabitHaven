@@ -11,10 +11,10 @@ public abstract class HabitReminder {
     protected static final LocalTime DAY_START_TIME = LocalTime.of(9, 0);
     protected static final int DAY_LENGTH = 12;
     protected Set<LocalDateTime> reminders;
-    protected final Clock clock;
+    protected Clock clock;
     protected boolean isDefault;
-    protected Habit habit;
-    protected ReminderScheduler reminderScheduler;
+    protected final Habit habit;
+    protected final ReminderScheduler reminderScheduler;
 
     // EFFECTS: constructs a default habit reminder with given clock and habit
     public HabitReminder(Clock clock, Habit habit) {
@@ -22,6 +22,12 @@ public abstract class HabitReminder {
         this.clock = clock;
         this.habit = habit;
         this.reminderScheduler = new ReminderScheduler();
+    }
+
+    // MODIFIES: this
+    // EFFECTS: sets the clock to the given clock, solely for testing purposes
+    public void setClock(Clock clock) {
+        this.clock = clock;
     }
 
     // EFFECTS: returns true if the reminder is default, false if it is custom
@@ -79,6 +85,10 @@ public abstract class HabitReminder {
     // MODIFIES: this
     // EFFECTS: cancels all reminders in the current period
     public void cancelReminders() {
-        reminderScheduler.cancelReminders();
+        for (LocalDateTime reminder : getActiveReminders()) {
+            String jobId = reminder.toString();
+            String groupId = habit.getId().toString();
+            reminderScheduler.cancelReminder(jobId, groupId);
+        }
     }
 }

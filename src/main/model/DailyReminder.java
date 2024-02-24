@@ -26,6 +26,11 @@ public class DailyReminder extends HabitReminder {
         distributeReminders();
     }
 
+    // EFFECTS: returns frequency of reminders per day, for testing purposes
+    public int getFrequency() {
+        return this.frequency;
+    }
+
     // MODIFIES: this
     // EFFECTS: distributes daily reminders starting from DAY_START_TIME
     @Override

@@ -47,7 +47,8 @@ public class HabitApp {
                 .usingJobData(data)
                 .build();
         Trigger trigger = newTrigger()
-                .withSchedule(dailyAtHourAndMinute(0, 0))
+                .withSchedule(dailyAtHourAndMinute(0, 0)
+                        .withMisfireHandlingInstructionFireAndProceed())
                 .forJob(job)
                 .build();
         try {

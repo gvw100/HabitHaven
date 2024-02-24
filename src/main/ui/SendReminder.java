@@ -5,6 +5,9 @@ import model.Period;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 // Represents a job to send a notification to the user
 public class SendReminder implements Job {
 
@@ -14,6 +17,7 @@ public class SendReminder implements Job {
     private int habitNumSuccesses;
     private int habitStreak;
     private int bestStreak;
+    private LocalDateTime dateTime;
 
     // EFFECTS: constructs a new SendReminder
     public SendReminder() {
@@ -30,10 +34,16 @@ public class SendReminder implements Job {
         this.bestStreak = habit.getHabitStats().getBestStreak();
     }
 
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
     // EFFECTS: sends a motivational reminder to the user
     @Override
     public void execute(JobExecutionContext context) {
-        String messageTitle = "\nHabit Reminder: " + habitName;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("LLL d, uuuu h:mm a");
+        String messageTime = dateTime.format(formatter);
+        String messageTitle = "\n" + messageTime + "\nHabit Reminder: " + habitName;
         String messageIntro = "Hey there, remember to focus on your habit: "
                 + habitName + "! You're on track to greatness!";
         String periodString = obtainPeriodString("day", "week", "month");

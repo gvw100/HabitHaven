@@ -27,6 +27,11 @@ public class ReminderScheduler {
         }
     }
 
+    // EFFECTS: returns the scheduler, for testing purposes
+    public Scheduler getScheduler() {
+        return this.scheduler;
+    }
+
     // EFFECTS: schedules notifications to be sent at the given times
     public void scheduleReminders(Set<LocalDateTime> reminders, Habit habit) {
         for (LocalDateTime reminder : reminders) {
@@ -37,10 +42,14 @@ public class ReminderScheduler {
     // MODIFIES: this
     // EFFECTS: schedules a notification to be sent at the given time
     private void scheduleReminder(LocalDateTime reminder, Habit habit) {
+        String jobId = reminder.toString();
+        String groupId = habit.getId().toString();
         JobDataMap data = new JobDataMap();
         data.put("habit", habit);
+        data.put("dateTime", reminder);
         Date date = Date.from(reminder.atZone(ZoneId.systemDefault()).toInstant());
         JobDetail job = newJob(SendReminder.class)
+                .withIdentity(jobId, groupId)
                 .usingJobData(data)
                 .build();
         SimpleTrigger trigger = newTrigger()
@@ -58,10 +67,10 @@ public class ReminderScheduler {
     }
 
     // MODIFIES: this
-    // EFFECTS: cancels all scheduled reminders
-    public void cancelReminders() {
+    // EFFECTS: cancels reminder with given jobId and groupId
+    public void cancelReminder(String jobId, String groupId) {
         try {
-            scheduler.clear();
+            scheduler.deleteJob(new JobKey(jobId, groupId));
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
