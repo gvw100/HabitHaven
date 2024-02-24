@@ -16,7 +16,7 @@ public class HabitManager {
         return this.habits;
     }
 
-    // EFFECTS: returns size of habits
+    // EFFECTS: returns size of habits, solely for testing purposes
     public int getSize() {
         return this.habits.size();
     }

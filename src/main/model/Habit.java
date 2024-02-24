@@ -4,16 +4,20 @@ import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
+import java.util.UUID;
 
-// Represents a habit with a name, description, frequency, period, number of successes,
-// end of current period, and end of next period.
+// Represents a habit with a name, description, frequency, period, number of success, habit statistics,
+// and habit notifications
 public class Habit {
     private String name;
     private String description;
-    private int frequency;
     private Period period;
+    private int frequency;
+    private final UUID id = UUID.randomUUID();
+    private boolean notifyEnabled;
     private int numSuccess;
     private final HabitStatistics habitStats;
+    private HabitReminder habitReminder;
     private LocalDateTime currentPeriodEnd;
     private LocalDateTime nextPeriodEnd;
     private Clock clock;
@@ -21,15 +25,17 @@ public class Habit {
 
     // REQUIRES: 0 < frequency < 16
     // EFFECTS: initializes habit
-    public Habit(String name, String description, Period period, int frequency, Clock clock) {
+    public Habit(String name, String description, Period period, int frequency, boolean notifyEnabled, Clock clock) {
         this.numSuccess = 0;
         this.name = name;
         this.frequency = frequency;
         this.period = period;
         this.description = description;
+        this.notifyEnabled = notifyEnabled;
         this.clock = clock;
         this.isPreviousComplete = false;
         this.habitStats = new HabitStatistics();
+        this.habitReminder = this.notifyEnabled ? getNewReminder() : null;
         updateDateTime();
     }
 
@@ -41,38 +47,94 @@ public class Habit {
         this.description = description;
     }
 
-    // REQUIRES: 0 < frequency < 16
     // MODIFIES: this
-    // EFFECTS: set this.frequency, resets progress if frequency != this.frequency
-    public void setFrequency(int frequency) {
-        if (this.frequency == frequency) {
-            return;
-        }
-        this.frequency = frequency;
-        resetProgress();
-    }
-
-    // MODIFIES: this
-    // EFFECTS: set this.period, resets progress if period != this.period , updates currentPeriodEnd and nextPeriodEnd
-    public void setPeriod(Period period) {
-        if (this.period == period) {
-            return;
-        }
-        this.period = period;
-        resetProgress();
-        updateDateTime();
-    }
-
-    // MODIFIES: this
-    // EFFECTS: set this.clock, useful for testing purposes
+    // EFFECTS: set this.clock, useful for testing purposes, solely for testing purposes
+    //          other clocks also updated to prevent exceptions in tests
     public void setClock(Clock clock) {
         this.clock = clock;
+        if (isNotifyEnabled()) {
+            habitReminder.clock = clock;
+        }
     }
 
     // MODIFIES: this
     // EFFECTS: set this.numSuccess, solely for testing purposes
     public void setNumSuccess(int numSuccess) {
         this.numSuccess = numSuccess;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: sets this.notifyEnabled to notifyEnabled,
+    //          if notifyEnabled != this.notifyEnabled, then habitReminder is reinitialized
+    //          if notifyEnabled is true, then habitReminder is reinitialized to a new reminder
+    //          if notifyEnabled is false, then habitReminder is set to null and all reminders are cancelled
+    //          returns whether notifyEnabled was changed
+    public boolean setNotifyEnabled(boolean notifyEnabled) {
+        if (notifyEnabled == this.notifyEnabled) {
+            return false;
+        }
+        if (notifyEnabled) {
+            this.notifyEnabled = true;
+            habitReminder = getNewReminder();
+        } else {
+            this.notifyEnabled = false;
+            habitReminder.cancelReminders();
+            habitReminder = null;
+        }
+        return true;
+    }
+
+    // REQUIRES: 0 < frequency < 16
+    // MODIFIES: this
+    // EFFECTS: set this.frequency,
+    //          if frequency != this.frequency, reset progress,
+    //          if period == Period.DAILY and notifyEnabled and habitReminder is default,
+    //          then habitReminders are cancelled and a new DailyReminder is created with the new frequency
+    //          returns whether frequency was changed
+    public boolean setFrequency(int frequency) {
+        if (this.frequency == frequency) {
+            return false;
+        }
+        this.frequency = frequency;
+        resetProgress();
+        if (period == Period.DAILY && isNotifyEnabled() && habitReminder.isDefault()) {
+            habitReminder.cancelReminders();
+            DailyReminder reminder = (DailyReminder) habitReminder;
+            reminder.setFrequency(frequency);
+        }
+        return true;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: set this.period,
+    //          if this.period != period, resets progress, updates currentPeriodEnd and nextPeriodEnd
+    //          if notifyEnabled, then reminders are cancelled and a new reminder with default notifications is created
+    //          returns whether period was changed
+    public boolean setPeriod(Period period) {
+        if (this.period == period) {
+            return false;
+        }
+        this.period = period;
+        resetProgress();
+        updateDateTime();
+        if (isNotifyEnabled()) {
+            habitReminder.cancelReminders();
+            habitReminder = getNewReminder();
+        }
+        return true;
+    }
+
+    // REQUIRES: notifyEnabled is true and no reminders have been scheduled
+    // EFFECTS: returns new habit reminder with default notifications based on period
+    public HabitReminder getNewReminder() {
+        switch (period) {
+            case DAILY:
+                return new DailyReminder(frequency, clock, this);
+            case WEEKLY:
+                return new WeeklyReminder(clock, this);
+            default:
+                return new MonthlyReminder(clock, this);
+        }
     }
 
     public String getName() {
@@ -91,12 +153,25 @@ public class Habit {
         return this.period;
     }
 
+    public UUID getId() {
+        return this.id;
+    }
+
+    // EFFECTS: returns whether notifications are enabled
+    public boolean isNotifyEnabled() {
+        return this.notifyEnabled;
+    }
+
     public int getNumSuccess() {
         return this.numSuccess;
     }
 
     public HabitStatistics getHabitStats() {
         return this.habitStats;
+    }
+
+    public HabitReminder getHabitReminder() {
+        return this.habitReminder;
     }
 
     public Clock getClock() {
@@ -123,11 +198,9 @@ public class Habit {
     }
 
     // MODIFIES: this
-    // EFFECTS: first updates habit based on current date time, then
-    //          if numSuccess < frequency, increments numSuccess and
+    // EFFECTS: if numSuccess < frequency, increments numSuccess and
     //          updates habit statistics, returns whether habit was incremented
     public boolean finishHabit() {
-        updateHabit();
         if (numSuccess < frequency) {
             numSuccess++;
             habitStats.incrementTotalNumSuccess();
@@ -139,22 +212,29 @@ public class Habit {
 
     // MODIFIES: this
     // EFFECTS: if isPeriodComplete(), then increments both habitStats.numPeriodSuccess
-    //          a habitStats.streak, sets isPreviousComplete to true
+    //          a habitStats.streak, sets isPreviousComplete to true, and cancels reminders if notifyEnabled
     public void checkPeriodComplete() {
         if (isPeriodComplete()) {
             isPreviousComplete = true;
             habitStats.incrementNumPeriodSuccess();
             habitStats.incrementStreak();
+            if (isNotifyEnabled()) {
+                habitReminder.cancelReminders();
+            }
         }
     }
 
     // REQUIRES: LocalDateTime.now(clock) is after currentPeriodEnd
     // MODIFIES: this
-    // EFFECTS: updates currentPeriodEnd and nextPeriodEnd, resets numSuccess to 0, increments numPeriod
+    // EFFECTS: updates currentPeriodEnd and nextPeriodEnd, resets numSuccess to 0, increments numPeriod,
+    //          if notifyEnabled, then cancels old reminders and updates to new reminders
     public void nextHabitPeriod() {
         updateDateTime();
         numSuccess = 0;
         habitStats.incrementNumPeriod();
+        if (isNotifyEnabled()) {
+            habitReminder.updateReminders();
+        }
     }
 
     // MODIFIES: this
@@ -200,6 +280,7 @@ public class Habit {
                 break;
             default:
                 updateMonthly();
+                break;
         }
     }
 
