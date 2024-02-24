@@ -2,12 +2,18 @@ package ui;
 
 import javafx.util.Pair;
 import model.*;
+import org.quartz.*;
+import org.quartz.impl.StdSchedulerFactory;
 
 import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+
+import static org.quartz.CronScheduleBuilder.dailyAtHourAndMinute;
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.TriggerBuilder.newTrigger;
 
 // Habit tracker application
 // Some of the code here is inspired from the TellerApp.java class in the CPSC 210 course
@@ -27,8 +33,38 @@ public class HabitApp {
     // MODIFIES: this
     // EFFECTS: setup scanner, display menu, and process input
     private void startApp() {
+        scheduleHabitUpdates();
         setupScanner();
         menu();
+    }
+
+    // EFFECTS: schedules habit updates to occur daily at midnight
+    private void scheduleHabitUpdates() {
+        Runnable updateAllHabits = this::updateAllHabits;
+        JobDataMap data = new JobDataMap();
+        data.put("updateHabits", updateAllHabits);
+        JobDetail job = newJob(UpdateHabits.class)
+                .usingJobData(data)
+                .build();
+        Trigger trigger = newTrigger()
+                .withSchedule(dailyAtHourAndMinute(0, 0))
+                .forJob(job)
+                .build();
+        try {
+            Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
+            scheduler.start();
+            scheduler.scheduleJob(job, trigger);
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: updates all habits in habit manager based on current time
+    private void updateAllHabits() {
+        for (Habit habit : habitManager.getHabits()) {
+            habit.updateHabit();
+        }
     }
 
     // MODIFIES: this
@@ -187,7 +223,6 @@ public class HabitApp {
     private void viewHabit(Habit habit) {
         boolean inputIsInvalid;
         do {
-            habit.updateHabit();
             displayHabit(habit);
             inputIsInvalid = processHabitInput(habit);
         } while (inputIsInvalid);
@@ -294,14 +329,18 @@ public class HabitApp {
     // MODIFIES: this
     // EFFECTS: changes period to period selected by user
     private void changePeriod(Habit habit) {
-        habit.setPeriod(getHabitPeriod());
+        if (!habit.setPeriod(getHabitPeriod())) {
+            System.out.println("\nPeriod already set to " + habit.getPeriod());
+        }
         editHabit(habit);
     }
 
     // MODIFIES: this
     // EFFECTS: changes frequency to frequency selected by user between 1 and 15
     private void changeFrequency(Habit habit) {
-        habit.setFrequency(getHabitFrequency());
+        if (!habit.setFrequency(getHabitFrequency())) {
+            System.out.println("\nFrequency already set to " + habit.getFrequency());
+        }
         editHabit(habit);
     }
 

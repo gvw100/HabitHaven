@@ -84,9 +84,10 @@ public class Habit {
     //          if frequency != this.frequency, reset progress,
     //          if period == Period.DAILY and notifyEnabled and habitReminder is default,
     //          then habitReminders are cancelled and a new DailyReminder is created with the new frequency
-    public void setFrequency(int frequency) {
+    //          returns whether frequency was changed
+    public boolean setFrequency(int frequency) {
         if (this.frequency == frequency) {
-            return;
+            return false;
         }
         this.frequency = frequency;
         resetProgress();
@@ -97,15 +98,17 @@ public class Habit {
                 reminder.setFrequency(frequency);
             }
         }
+        return true;
     }
 
     // MODIFIES: this
     // EFFECTS: set this.period,
-    // if this.period != period, resets progress, updates currentPeriodEnd and nextPeriodEnd
-    // if notifyEnabled, then reminders are cancelled and a new reminder with default notifications is created
-    public void setPeriod(Period period) {
+    //          if this.period != period, resets progress, updates currentPeriodEnd and nextPeriodEnd
+    //          if notifyEnabled, then reminders are cancelled and a new reminder with default notifications is created
+    //          returns whether period was changed
+    public boolean setPeriod(Period period) {
         if (this.period == period) {
-            return;
+            return false;
         }
         this.period = period;
         resetProgress();
@@ -114,6 +117,7 @@ public class Habit {
             habitReminder.cancelReminders();
             habitReminder = getNewReminder();
         }
+        return true;
     }
 
     // EFFECTS: returns new habit reminder with default notifications based on period
@@ -185,11 +189,9 @@ public class Habit {
     }
 
     // MODIFIES: this
-    // EFFECTS: first updates habit based on current date time, then
-    //          if numSuccess < frequency, increments numSuccess and
+    // EFFECTS: if numSuccess < frequency, increments numSuccess and
     //          updates habit statistics, returns whether habit was incremented
     public boolean finishHabit() {
-        updateHabit();
         if (numSuccess < frequency) {
             numSuccess++;
             habitStats.incrementTotalNumSuccess();
@@ -222,7 +224,6 @@ public class Habit {
         numSuccess = 0;
         habitStats.incrementNumPeriod();
         if (isNotifyEnabled()) {
-            habitReminder.cancelReminders();
             habitReminder.updateReminders();
         }
     }

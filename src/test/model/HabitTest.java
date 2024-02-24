@@ -78,7 +78,7 @@ public class HabitTest {
     void testSetFrequencyDifferentFromBefore() {
         finishHabitNumTimes(h1,3);
         assertEquals(3, h1.getNumSuccess());
-        h1.setFrequency(7);
+        assertTrue(h1.setFrequency(7));
         assertEquals(7, h1.getFrequency());
         assertEquals(0, h1.getNumSuccess());
         checkResetStats(h1);
@@ -88,12 +88,12 @@ public class HabitTest {
     void testSetFrequencySameAsBefore() {
         h1.finishHabit();
         assertEquals(1, h1.getNumSuccess());
-        h1.setFrequency(5);
+        assertTrue(h1.setFrequency(5));
         assertEquals(5, h1.getFrequency());
         assertEquals(0, h1.getNumSuccess());
         checkResetStats(h1);
         finishHabitNumTimes(h1,5);
-        h1.setFrequency(5);
+        assertFalse(h1.setFrequency(5));
         assertEquals(5, h1.getFrequency());
         assertEquals(5, h1.getNumSuccess());
         checkStats(h1, 1, 1, 5, 1, 0);
@@ -103,7 +103,7 @@ public class HabitTest {
     void testSetPeriodDifferentFromBefore() {
         finishHabitNumTimes(h1, 3);
         assertEquals(3, h1.getNumSuccess());
-        h1.setPeriod(Period.DAILY);
+        assertTrue(h1.setPeriod(Period.DAILY));
         assertEquals(Period.DAILY, h1.getPeriod());
         assertEquals(0, h1.getNumSuccess());
         checkResetStats(h1);
@@ -113,12 +113,12 @@ public class HabitTest {
     void testSetPeriodSameAsBefore() {
         h1.finishHabit();
         assertEquals(1, h1.getNumSuccess());
-        h1.setPeriod(Period.DAILY);
+        assertTrue(h1.setPeriod(Period.DAILY));
         assertEquals(Period.DAILY, h1.getPeriod());
         assertEquals(0, h1.getNumSuccess());
         checkResetStats(h1);
         finishHabitNumTimes(h1,3);
-        h1.setPeriod(Period.DAILY);
+        assertFalse(h1.setPeriod(Period.DAILY));
         assertEquals(Period.DAILY, h1.getPeriod());
         assertEquals(3, h1.getNumSuccess());
         checkStats(h1, 1, 1, 3, 1, 0);
@@ -187,45 +187,6 @@ public class HabitTest {
         assertFalse(finishHabitNumTimes(h2, 16));
         assertEquals(15, h2.getNumSuccess());
         checkStats(h2, 1, 1, 15, 1, 0);
-    }
-
-    @Test
-    void testFinishHabitNextPeriodButPeriodNotComplete() {
-        assertTrue(finishHabitNumTimes(h2, 10));
-        assertEquals(10, h2.getNumSuccess());
-        checkStats(h2, 0, 0, 10, 0, 0);
-        Clock tomorrow = getFixedClock("2024-05-03T23:59:00.00Z");
-        h2.setClock(tomorrow);
-        assertTrue(finishHabitNumTimes(h2, 3));
-        checkStats(h2, 0, 0, 13, 0, 1);
-        assertEquals(3, h2.getNumSuccess());
-    }
-
-    @Test
-    void testFinishHabitNextPeriodAndPeriodIsComplete() {
-        assertFalse(finishHabitNumTimes(h1, 4));
-        assertEquals(3, h1.getNumSuccess());
-        checkStats(h1, 1, 1, 3, 1, 0);
-        Clock nextWeek = getFixedClock("2024-02-23T17:00:00.00Z");
-        h1.setClock(nextWeek);
-        assertTrue(h1.finishHabit());
-        assertEquals(1, h1.getNumSuccess());
-        checkStats(h1, 1, 1, 4, 1, 1);
-        assertTrue(finishHabitNumTimes(h1,2));
-        assertEquals(3, h1.getNumSuccess());
-        checkStats(h1, 2, 2, 6, 2, 1);
-    }
-
-    @Test
-    void testFinishHabitAfterNextPeriodEnd() {
-        assertFalse(finishHabitNumTimes(h2, 16));
-        assertEquals(15, h2.getNumSuccess());
-        checkStats(h2, 1, 1, 15, 1, 0);
-        Clock afterTomorrow = getFixedClock("2024-05-04T00:00:00.00Z");
-        h2.setClock(afterTomorrow);
-        assertTrue(h2.finishHabit());
-        assertEquals(1, h2.getNumSuccess());
-        checkStats(h2, 0, 1, 16, 1, 1);
     }
 
     @Test

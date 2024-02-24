@@ -4,6 +4,7 @@ import model.Habit;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import static org.quartz.JobBuilder.*;
+import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.*;
 
 import java.time.LocalDateTime;
@@ -42,8 +43,11 @@ public class ReminderScheduler {
         JobDetail job = newJob(SendReminder.class)
                 .usingJobData(data)
                 .build();
-        SimpleTrigger trigger = (SimpleTrigger) newTrigger()
+        SimpleTrigger trigger = newTrigger()
                 .startAt(date)
+                .withSchedule(simpleSchedule()
+                        .withRepeatCount(0)
+                        .withMisfireHandlingInstructionNextWithRemainingCount())
                 .forJob(job)
                 .build();
         try {
