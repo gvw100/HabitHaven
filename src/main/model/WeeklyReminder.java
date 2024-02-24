@@ -14,6 +14,7 @@ public class WeeklyReminder extends HabitReminder {
         distributeReminders();
     }
 
+    // REQUIRES: no reminders scheduled yet for this period, isDefault is true
     // MODIFIES: this
     // EFFECTS: distributes reminders once per day over the week
     @Override
@@ -29,6 +30,7 @@ public class WeeklyReminder extends HabitReminder {
         reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
+    // REQUIRES: no reminders scheduled yet for this period, isDefault is false
     // MODIFIES: this
     // EFFECTS: updates custom weekly reminders based on existing custom reminders
     @Override

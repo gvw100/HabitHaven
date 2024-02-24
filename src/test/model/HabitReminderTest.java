@@ -25,7 +25,7 @@ public class HabitReminderTest {
     private Clock mc;
 
     @BeforeEach
-    public void runBefore() {
+    void runBefore() {
         dc = getFixedClock("2024-01-01T09:00:00Z");
         wc = getFixedClock("2024-04-01T09:00:00Z");
         mc = getFixedClock("2024-07-01T09:00:00Z");

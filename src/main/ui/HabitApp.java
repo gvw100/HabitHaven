@@ -483,7 +483,7 @@ public class HabitApp {
         }
         String numMessage = "How many notifications would you like to receive" + getPeriodString(habit.getPeriod(),
                 " per day", " per week", " per month") + "?";
-        int numNotifications = getNumNotifications(numMessage);
+        int numNotifications = getNumNotifications(numMessage, habit.getPeriod());
         Set<LocalDateTime> reminders = new HashSet<>();
         Set<Pair<Integer, LocalTime>> monthlyPairs = new HashSet<>();
         for (int i = 0; i < numNotifications; i++) {
@@ -664,16 +664,17 @@ public class HabitApp {
     }
 
     // EFFECTS: prompts user for number of notifications, restricted between 1 and 15, inclusive
-    private int getNumNotifications(String message) {
+    private int getNumNotifications(String message, Period period) {
+        int max = period == Period.MONTHLY ? 31 : 15;
         int numNotifications;
         do {
             System.out.println(message);
             if (input.hasNextInt()) {
                 numNotifications = input.nextInt();
-                if (numNotifications > 0 && numNotifications < 16) {
+                if (numNotifications > 0 && numNotifications <= max) {
                     break;
                 } else {
-                    System.out.println("Number of notifications must be between 1 and 15");
+                    System.out.println("Number of notifications must be between 1 and " + max);
                 }
             } else {
                 input.next();

@@ -124,6 +124,7 @@ public class Habit {
         return true;
     }
 
+    // REQUIRES: notifyEnabled is true and no reminders have been scheduled
     // EFFECTS: returns new habit reminder with default notifications based on period
     public HabitReminder getNewReminder() {
         switch (period) {

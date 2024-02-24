@@ -18,6 +18,12 @@ public class MonthlyReminder extends HabitReminder {
         distributeReminders();
     }
 
+    // EFFECTS: returns set of custom reminder pairs, for testing purposes
+    Set<Pair<Integer, LocalTime>> getCustomReminders() {
+        return this.customReminders;
+    }
+
+    // REQUIRES: no reminders scheduled yet for this period, isDefault is true
     // MODIFIES: this
     // EFFECTS: distributes reminders once per day over the month
     @Override
@@ -35,6 +41,7 @@ public class MonthlyReminder extends HabitReminder {
         reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
+    // REQUIRES: no reminders scheduled yet for this period, isDefault is false
     /// MODIFIES: this
     //  EFFECTS: updates custom monthly reminders based on this.customReminders,
     //           ensures that all reminders are in the current month,
@@ -65,6 +72,7 @@ public class MonthlyReminder extends HabitReminder {
 
     // MODIFIES: this
     // EFFECTS: sets customReminders to newReminders,
+    //          cancels old reminders,
     //          sets isDefault to false,
     //          distributes custom reminders based on current time
     public void setCustomMonthlyReminders(Set<Pair<Integer, LocalTime>> newReminders) {

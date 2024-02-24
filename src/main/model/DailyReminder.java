@@ -18,11 +18,11 @@ public class DailyReminder extends HabitReminder {
         distributeReminders();
     }
 
+    // REQUIRES: isDefault is true, no reminders are active
     // MODIFIES: this
-    // EFFECTS: sets frequency to given frequency, isDefault is true, notifications redistributed
+    // EFFECTS: sets frequency to given frequency, notifications redistributed
     public void setFrequency(int frequency) {
         this.frequency = frequency;
-        isDefault = true;
         distributeReminders();
     }
 
@@ -31,8 +31,9 @@ public class DailyReminder extends HabitReminder {
         return this.frequency;
     }
 
+    // REQUIRES: no reminders scheduled yet for this period, isDefault is true
     // MODIFIES: this
-    // EFFECTS: distributes daily reminders starting from DAY_START_TIME
+    // EFFECTS: distributes default daily reminders starting from DAY_START_TIME
     @Override
     public void distributeReminders() {
         reminders = new HashSet<>();
@@ -48,6 +49,7 @@ public class DailyReminder extends HabitReminder {
         reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
+    // REQUIRES: no reminders scheduled yet for this period, isDefault is false
     // MODIFIES: this
     // EFFECTS: updates custom daily reminders based on existing custom reminders
     @Override
