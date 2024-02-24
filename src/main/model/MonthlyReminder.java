@@ -67,7 +67,7 @@ public class MonthlyReminder extends HabitReminder {
     // EFFECTS: throws UnsupportedOperationException, use setCustomMonthlyReminders instead
     @Override
     public void setCustomReminders(Set<LocalDateTime> newReminders) {
-        throw new UnsupportedOperationException("Monthly reminders do not support custom reminders");
+        throw new UnsupportedOperationException("Use setCustomMonthlyReminders instead for MonthlyReminder");
     }
 
     // MODIFIES: this

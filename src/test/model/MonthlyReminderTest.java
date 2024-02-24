@@ -170,7 +170,7 @@ public class MonthlyReminderTest {
         reminders.add(LocalDateTime.now(c1).plusDays(1));
         reminders.add(LocalDateTime.now(c1).plusDays(2));
         Exception e = assertThrows(UnsupportedOperationException.class, () -> mr1.setCustomReminders(reminders));
-        assertEquals("Monthly reminders do not support custom reminders", e.getMessage());
+        assertEquals("Use setCustomMonthlyReminders instead for MonthlyReminder", e.getMessage());
     }
 
     @Test
