@@ -46,7 +46,7 @@ public class DailyReminder extends HabitReminder {
         return this.frequency;
     }
 
-    // REQUIRES: isDefault is true
+    // REQUIRES: no reminders scheduled yet for this period, isDefault is true
     // MODIFIES: this
     // EFFECTS: distributes default daily reminders starting from DAY_START_TIME
     @Override
@@ -64,7 +64,7 @@ public class DailyReminder extends HabitReminder {
         reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
-    // REQUIRES: isDefault is false
+    // REQUIRES: no reminders scheduled yet for this period, isDefault is false
     // MODIFIES: this
     // EFFECTS: updates custom daily reminders based on existing custom reminders
     @Override

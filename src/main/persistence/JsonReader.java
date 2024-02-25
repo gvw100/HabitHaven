@@ -125,12 +125,11 @@ public class JsonReader {
     }
 
     private HabitReminder parseMonthlyReminder(JSONObject jsonObject, Habit habit) {
+        boolean isDefault = jsonObject.getBoolean("isDefault");
         Set<Pair<Integer, LocalTime>> customReminders =
-                jsonObject == null ? null : parseCustomMonthlyPairs(jsonObject.getJSONArray("customReminders"));
-        assert jsonObject != null;
+                isDefault ? null : parseCustomMonthlyPairs(jsonObject.getJSONArray("customReminders"));
         Set<LocalDateTime> reminders = parseReminderDateTimes(jsonObject.getJSONArray("reminders"));
         Clock clock = Clock.systemDefaultZone();
-        boolean isDefault = jsonObject.getBoolean("isDefault");
         ReminderScheduler reminderScheduler = new ReminderScheduler();
         return new MonthlyReminder(customReminders, reminders, clock, isDefault, habit, reminderScheduler);
     }

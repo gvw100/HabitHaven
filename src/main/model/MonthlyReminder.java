@@ -37,7 +37,7 @@ public class MonthlyReminder extends HabitReminder {
         return this.customReminders;
     }
 
-    // REQUIRES: isDefault is true
+    // REQUIRES: no reminders scheduled yet for this period, isDefault is true
     // MODIFIES: this
     // EFFECTS: distributes reminders once per day over the month
     @Override
@@ -55,7 +55,7 @@ public class MonthlyReminder extends HabitReminder {
         reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
-    // REQUIRES: isDefault is false
+    // REQUIRES: no reminders scheduled yet for this period, isDefault is false
     /// MODIFIES: this
     //  EFFECTS: updates custom monthly reminders based on this.customReminders,
     //           ensures that all reminders are in the current month,

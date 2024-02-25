@@ -7,7 +7,7 @@ public class UpdateHabits implements Job {
 
     private Runnable updateHabits;
 
-    // EFFECTS: constructs a UpdateHabits
+    // EFFECTS: constructs UpdateHabits
     public UpdateHabits() {
     }
 

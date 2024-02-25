@@ -116,6 +116,7 @@ public class Habit {
     //          if frequency != this.frequency, reset progress,
     //          if period == Period.DAILY and notifyEnabled and habitReminder is default,
     //          then habitReminders are cancelled and a new DailyReminder is created with the new frequency
+    //          otherwise, if notifyEnabled and period is complete, then habitReminders are updated and rescheduled
     //          returns whether frequency was changed
     public boolean setFrequency(int frequency) {
         if (this.frequency == frequency) {
@@ -265,9 +266,10 @@ public class Habit {
     }
 
     // MODIFIES: this
-    // EFFECTS: resets numSuccess to 0 and resets habit statistics
+    // EFFECTS: resets numSuccess to 0, isPreviousComplete to false, and resets habit statistics
     public void resetProgress() {
         numSuccess = 0;
+        isPreviousComplete = false;
         habitStats.resetStats();
     }
 

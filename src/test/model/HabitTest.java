@@ -260,6 +260,22 @@ public class HabitTest extends HabitHelperTest {
     }
 
     @Test
+    void setFrequencyNotificationsEnabledAndPeriodWasComplete() {
+        testJobSize(h1.getHabitReminder(), 1);
+        finishHabitNumTimes(h1, 3);
+        testJobSize(h1.getHabitReminder(), 0);
+        assertTrue(h1.isPreviousComplete());
+        assertTrue(h1.isPeriodComplete());
+        assertTrue(h1.setFrequency(7));
+        testJobSize(h1.getHabitReminder(), 1);
+        assertEquals(7, h1.getFrequency());
+        assertFalse(h1.isPreviousComplete());
+        assertFalse(h1.isPeriodComplete());
+        assertEquals(0, h1.getNumSuccess());
+        checkResetStats(h1);
+    }
+
+    @Test
     void testSetPeriodDifferentFromBefore() {
         finishHabitNumTimes(h1, 3);
         assertEquals(3, h1.getNumSuccess());
@@ -490,6 +506,7 @@ public class HabitTest extends HabitHelperTest {
         checkStats(h2, 1, 1, 15, 1, 0);
         h2.resetProgress();
         assertEquals(0, h2.getNumSuccess());
+        assertFalse(h2.isPreviousComplete());
         checkResetStats(h2);
     }
 
@@ -578,6 +595,28 @@ public class HabitTest extends HabitHelperTest {
         assertFalse(h2.isPreviousComplete());
         assertEquals(LocalDateTime.of(2024, 5, 4, 23, 59), h2.getCurrentPeriodEnd());
         assertEquals(LocalDateTime.of(2024, 5, 5, 23, 59), h2.getNextPeriodEnd());
+    }
+
+    @Test
+    void updateHabitAndNotifyEnabledPeriodNotComplete() {
+        finishHabitNumTimes(h1, 2);
+        h1.getHabitReminder().cancelReminders();
+        h1.setClock(getFixedClock("2024-02-18T00:00:00.00Z"));
+        h1.updateHabit();
+        assertEquals(0, h1.getNumSuccess());
+        checkStats(h1, 0, 0, 2, 0, 1);
+        assertFalse(h1.isPreviousComplete());
+        assertEquals(LocalDateTime.of(2024, Month.FEBRUARY, 24, 23, 59), h1.getCurrentPeriodEnd());
+        assertEquals(LocalDateTime.of(2024, Month.MARCH, 2, 23, 59), h1.getNextPeriodEnd());
+        testJobSize(h1.getHabitReminder(), 7);
+    }
+
+    @Test
+    void updateHabitAndNotifyEnabledPeriodComplete() {
+        h1.setNumSuccess(3);
+        testJobSize(h1.getHabitReminder(), 1);
+        h1.updateHabit();
+        testJobSize(h1.getHabitReminder(), 0);
     }
 
     @Test

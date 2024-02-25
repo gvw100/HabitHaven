@@ -45,7 +45,7 @@ public abstract class HabitReminder {
         return isDefault;
     }
 
-    // REQUIRES: isDefault is true
+    // REQUIRES: no reminders scheduled yet for this period, isDefault is true
     // MODIFIES: this
     // EFFECTS: distributes default reminders into this.reminders
     public abstract void distributeReminders();

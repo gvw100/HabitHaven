@@ -48,8 +48,6 @@ public class HabitReminderTest extends HabitHelperTest {
 
     @Test
     void testUpdateDefaultReminders() {
-        dr.cancelReminders();
-        dr.setClock(getFixedClock("2024-01-02T09:00:00Z"));
         dr.updateReminders();
         assertEquals(5, dr.reminders.size());
         testJobSize(dr, 4);

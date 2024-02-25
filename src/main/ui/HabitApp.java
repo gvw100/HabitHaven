@@ -210,6 +210,7 @@ public class HabitApp {
         boolean notificationEnabled = getNotificationEnabled();
         Habit habit = new Habit(name, description, period, frequency, notificationEnabled, clock);
         habitManager.addHabit(habit);
+        isSaved = false;
     }
 
     // EFFECTS: returns habit name entered by user
@@ -401,6 +402,7 @@ public class HabitApp {
     // EFFECTS: changes name to input provided by user
     private void changeName(Habit habit) {
         habit.setName(getHabitName());
+        isSaved = false;
         editHabit(habit);
     }
 
@@ -408,6 +410,7 @@ public class HabitApp {
     // EFFECTS: changes description to input provided by user
     private void changeDescription(Habit habit) {
         habit.setDescription(getHabitDescription());
+        isSaved = false;
         editHabit(habit);
     }
 
@@ -425,6 +428,8 @@ public class HabitApp {
         }
         if (!habit.setPeriod(getHabitPeriod())) {
             System.out.println("\nPeriod already set to " + habit.getPeriod());
+        } else {
+            isSaved = false;
         }
         editHabit(habit);
     }
@@ -443,6 +448,8 @@ public class HabitApp {
         }
         if (!habit.setFrequency(getHabitFrequency())) {
             System.out.println("\nFrequency already set to " + habit.getFrequency());
+        } else {
+            isSaved = false;
         }
         editHabit(habit);
     }
@@ -458,6 +465,7 @@ public class HabitApp {
         if (command.equals("y")) {
             habitManager.deleteHabit(habit);
             System.out.println("\nHabit deleted successfully");
+            isSaved = false;
             viewHabits();
         } else {
             System.out.println();
@@ -476,10 +484,12 @@ public class HabitApp {
             System.out.println("\nYou successfully completed " + habit.getName() + " " + habit.getFrequency()
                     + " times " + periodString);
             System.out.println("Great job!");
+            isSaved = false;
         } else {
             String message = "\nYou completed " + habit.getName() + " " + habit.getNumSuccess()
                     + " times so far " + periodString + " Keep it up!";
             System.out.println(message);
+            isSaved = false;
         }
         viewHabit(habit);
     }
@@ -554,6 +564,7 @@ public class HabitApp {
         boolean wasChanged = habit.setNotifyEnabled(true);
         if (wasChanged) {
             System.out.println("\nNotifications enabled");
+            isSaved = false;
         } else {
             System.out.println("\nNotifications already enabled");
         }
@@ -566,6 +577,7 @@ public class HabitApp {
         boolean wasChanged = habit.setNotifyEnabled(false);
         if (wasChanged) {
             System.out.println("\nNotifications disabled");
+            isSaved = false;
         } else {
             System.out.println("\nNotifications already disabled");
         }
@@ -592,6 +604,7 @@ public class HabitApp {
             processTimeInput(habit, reminders, monthlyPairs, i);
         }
         storeNotifications(habit, reminders, monthlyPairs);
+        isSaved = false;
         customizeNotifications(habit);
     }
 
@@ -609,6 +622,7 @@ public class HabitApp {
         switch (command) {
             case "d":
                 habit.getHabitReminder().setDefaultReminders();
+                isSaved = false;
                 return true;
             case "k":
                 return true;

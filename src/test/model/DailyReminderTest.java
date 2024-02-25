@@ -69,12 +69,10 @@ public class DailyReminderTest extends HabitHelperTest {
 
     @Test
     void testSetFrequency() {
-        dr1.cancelReminders();
         dr1.setFrequency(3);
         assertEquals(3, dr1.getFrequency());
         assertTrue(dr1.isDefault());
         testJobSize(dr1, 2);
-        dr1.cancelReminders();
         dr1.setFrequency(7);
         assertEquals(7, dr1.getFrequency());
         assertTrue(dr1.isDefault());
