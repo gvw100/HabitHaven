@@ -1,5 +1,8 @@
 package model;
 
+import org.json.JSONObject;
+import ui.ReminderScheduler;
+
 import java.time.*;
 import java.time.temporal.TemporalAdjusters;
 import java.util.HashSet;
@@ -9,9 +12,18 @@ import java.util.Set;
 public class WeeklyReminder extends HabitReminder {
 
     // EFFECTS: constructs a weekly reminder with the given clock and habit
-    WeeklyReminder(Clock clock, Habit habit) {
+    public WeeklyReminder(Clock clock, Habit habit) {
         super(clock, habit);
         distributeReminders();
+    }
+
+    public WeeklyReminder(Set<LocalDateTime> reminders, Clock clock, boolean isDefault,
+                   Habit habit, ReminderScheduler reminderScheduler) {
+        this.reminders = reminders;
+        this.clock = clock;
+        this.isDefault = isDefault;
+        this.habit = habit;
+        this.reminderScheduler = reminderScheduler;
     }
 
     // REQUIRES: no reminders scheduled yet for this period, isDefault is true
@@ -58,5 +70,13 @@ public class WeeklyReminder extends HabitReminder {
             dayOfWeek = LocalDate.now(clock).with(TemporalAdjusters.next(day));
         }
         return LocalDateTime.of(dayOfWeek, time);
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("reminders", remindersToJson());
+        json.put("isDefault", isDefault);
+        return json;
     }
 }

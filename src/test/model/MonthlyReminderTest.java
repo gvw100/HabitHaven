@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.quartz.SchedulerException;
 import org.quartz.impl.matchers.GroupMatcher;
+import ui.ReminderScheduler;
 
 import java.time.*;
 import java.time.temporal.TemporalAdjusters;
@@ -61,6 +62,23 @@ public class MonthlyReminderTest {
         assertNull(mr1.getCustomReminders());
         assertNull(mr2.getCustomReminders());
         assertNull(mr3.getCustomReminders());
+    }
+
+    @Test
+    void testLoadConstructor() {
+        Set<LocalDateTime> reminders1 = new HashSet<>();
+        for (int i = 0; i < 31; i++) {
+            reminders1.add(LocalDateTime.of(2024, 1, i + 1, 9, 0));
+        }
+        Set<Pair<Integer, LocalTime>> customReminders = new HashSet<>();
+        customReminders.add(new Pair<>(1, LocalTime.of(9, 0)));
+        customReminders.add(new Pair<>(5, LocalTime.of(9, 0)));
+        customReminders.add(new Pair<>(15, LocalTime.of(13, 0)));
+        MonthlyReminder mr = new MonthlyReminder(customReminders, reminders1, c1, false, h1, new ReminderScheduler());
+        assertEquals(customReminders, mr.getCustomReminders());
+        assertEquals(reminders1, mr.reminders);
+        assertEquals(c1, mr.clock);
+        assertFalse(mr.isDefault());
     }
 
     @Test

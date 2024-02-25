@@ -1,5 +1,9 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import ui.HabitApp;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,5 +36,20 @@ public class HabitManager {
     // EFFECTS: habit deleted from list of habits
     public void deleteHabit(Habit habit) {
         habits.remove(habit);
+    }
+
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("username", HabitApp.getUsername());
+        json.put("habits", habitsToJson());
+        return json;
+    }
+
+    private JSONArray habitsToJson() {
+        JSONArray jsonArray = new JSONArray();
+        for (Habit h : habits) {
+            jsonArray.put(h.toJson());
+        }
+        return jsonArray;
     }
 }

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // test class for HabitStatistics
-public class HabitStatisticsTest {
+public class HabitStatisticsTest extends HabitHelperTest {
     private HabitStatistics habitStats;
 
     @BeforeEach
@@ -124,13 +124,5 @@ public class HabitStatisticsTest {
             habitStats.incrementNumPeriod();
         }
         checkStats(habitStats, 0, 0, 7, 6, 11);
-    }
-
-    private void checkStats(HabitStatistics stat, int streak, int bestStreak, int totalNumSuccess, int numPeriodSuccess, int numPeriod) {
-        assertEquals(streak, stat.getStreak());
-        assertEquals(bestStreak, stat.getBestStreak());
-        assertEquals(totalNumSuccess, stat.getTotalNumSuccess());
-        assertEquals(numPeriodSuccess, stat.getNumPeriodSuccess());
-        assertEquals(numPeriod, stat.getNumPeriod());
     }
 }

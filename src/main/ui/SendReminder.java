@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 // Represents a job to send a notification to the user
 public class SendReminder implements Job {
 
+    private String username;
     private String habitName;
     private int habitFrequency;
     private Period habitPeriod;
@@ -26,6 +27,7 @@ public class SendReminder implements Job {
     // MODIFIES: this
     // EFFECTS: sets fields to the given habit's fields
     public void setHabit(Habit habit) {
+        this.username = HabitApp.getUsername();
         this.habitName = habit.getName();
         this.habitFrequency = habit.getFrequency();
         this.habitPeriod = habit.getPeriod();
@@ -44,7 +46,7 @@ public class SendReminder implements Job {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("LLL d, uuuu h:mm a");
         String messageTime = dateTime.format(formatter);
         String messageTitle = "\n" + messageTime + "\nHabit Reminder: " + habitName;
-        String messageIntro = "Hey there, remember to focus on your habit: "
+        String messageIntro = "Hey " + username + "! Remember to focus on your habit: "
                 + habitName + "! You're on track to greatness!";
         String periodString = obtainPeriodString("day", "week", "month");
         String messageGoals = "You're aiming to do this habit " + habitFrequency + " times per "

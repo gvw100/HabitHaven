@@ -32,6 +32,7 @@ public class ReminderScheduler {
         return this.scheduler;
     }
 
+    // MODIFIES: this
     // EFFECTS: schedules notifications to be sent at the given times
     public void scheduleReminders(Set<LocalDateTime> reminders, Habit habit) {
         for (LocalDateTime reminder : reminders) {

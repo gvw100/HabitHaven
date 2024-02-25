@@ -1,5 +1,8 @@
 package model;
 
+import org.json.JSONObject;
+import ui.ReminderScheduler;
+
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,10 +21,22 @@ public class DailyReminder extends HabitReminder {
         distributeReminders();
     }
 
-    // REQUIRES: isDefault is true, no reminders are active
+    // EFFECTS: constructs a daily reminder for returning user
+    public DailyReminder(int frequency, Set<LocalDateTime> reminders, Clock clock,
+                         boolean isDefault, Habit habit, ReminderScheduler reminderScheduler) {
+        this.frequency = frequency;
+        this.reminders = reminders;
+        this.clock = clock;
+        this.isDefault = isDefault;
+        this.habit = habit;
+        this.reminderScheduler = reminderScheduler;
+    }
+
+    // REQUIRES: isDefault is true
     // MODIFIES: this
-    // EFFECTS: sets frequency to given frequency, notifications redistributed
+    // EFFECTS: sets frequency to given frequency, existing notifications cancelled, notifications redistributed
     public void setFrequency(int frequency) {
+        cancelReminders();
         this.frequency = frequency;
         distributeReminders();
     }
@@ -31,7 +46,7 @@ public class DailyReminder extends HabitReminder {
         return this.frequency;
     }
 
-    // REQUIRES: no reminders scheduled yet for this period, isDefault is true
+    // REQUIRES: isDefault is true
     // MODIFIES: this
     // EFFECTS: distributes default daily reminders starting from DAY_START_TIME
     @Override
@@ -49,7 +64,7 @@ public class DailyReminder extends HabitReminder {
         reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
-    // REQUIRES: no reminders scheduled yet for this period, isDefault is false
+    // REQUIRES: isDefault is false
     // MODIFIES: this
     // EFFECTS: updates custom daily reminders based on existing custom reminders
     @Override
@@ -67,5 +82,14 @@ public class DailyReminder extends HabitReminder {
     // EFFECTS: returns a LocalDateTime object representing the reminder at the given time today
     public static LocalDateTime makeDailyReminder(LocalTime time, Clock clock) {
         return LocalDateTime.of(LocalDate.now(clock), time);
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("frequency", frequency);
+        json.put("reminders", remindersToJson());
+        json.put("isDefault", isDefault);
+        return json;
     }
 }

@@ -4,7 +4,11 @@ import javafx.util.Pair;
 import model.*;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+import persistence.JsonReader;
+import persistence.JsonWriter;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -16,26 +20,37 @@ import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
 // Habit tracker application
-// Some of the code here is inspired from the TellerApp.java class in the CPSC 210 course
-// https://github.students.cs.ubc.ca/CPSC210/TellerApp
+// Citation: Some of the code here is inspired from the TellerApp.java class in the CPSC 210 course
+//           https://github.students.cs.ubc.ca/CPSC210/TellerApp
 public class HabitApp {
+    private static final String HABIT_MANAGER_STORE = "./data/habitManager.json";
     private Scanner input;
-    private final HabitManager habitManager;
+    private HabitManager habitManager;
     private final Clock clock;
+    private static String username;
+    private boolean isSaved;
 
     // EFFECTS: starts the application
     HabitApp() {
-        habitManager = new HabitManager();
         clock = Clock.systemDefaultZone();
+        isSaved = false;
         startApp();
+    }
+
+    public static String getUsername() {
+        return username;
+    }
+
+    public static void setUserName(String username) {
+        HabitApp.username = username;
     }
 
     // MODIFIES: this
     // EFFECTS: setup scanner, display menu, and process input
     private void startApp() {
-        scheduleHabitUpdates();
         setupScanner();
-        menu();
+        scheduleHabitUpdates();
+        loadOrCreateUser();
     }
 
     // EFFECTS: schedules habit updates to occur daily at midnight
@@ -63,9 +78,51 @@ public class HabitApp {
     // MODIFIES: this
     // EFFECTS: updates all habits in habit manager based on current time
     private void updateAllHabits() {
+        System.out.println("Updating habits...");
         for (Habit habit : habitManager.getHabits()) {
             habit.updateHabit();
         }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: loads from habit data from file or creates a new user
+    private void loadOrCreateUser() {
+        String command;
+        do {
+            System.out.println("Welcome to HabitHaven!");
+            System.out.println("\tn -> New user");
+            System.out.println("\tl -> Load from file");
+            command = input.next();
+        } while (!(command.equals("n") || command.equals("l")));
+        if (command.equals("n")) {
+            newUser();
+        } else {
+            loadUser();
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: sets username to input provided by user and displays menu
+    private void newUser() {
+        habitManager = new HabitManager();
+        System.out.println("Enter your name: ");
+        username = input.next();
+        System.out.println("Welcome, " + username + "!");
+        menu();
+    }
+
+    // MODIFIES: this
+    // EFFECTS: loads user data from file and displays menu
+    private void loadUser() {
+        JsonReader jsonReader = new JsonReader(HABIT_MANAGER_STORE);
+        try {
+            habitManager = jsonReader.read();
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + HABIT_MANAGER_STORE);
+            System.exit(-1);
+        }
+        updateAllHabits();
+        menu();
     }
 
     // MODIFIES: this
@@ -77,12 +134,35 @@ public class HabitApp {
             command = input.next().toLowerCase();
 
             if (command.equals("q")) {
-                System.out.println("\nGoodbye!");
-                System.exit(0);
+                if (!isSaved) {
+                    confirmSave();
+                } else {
+                    break;
+                }
             } else {
                 processMenuInput(command);
             }
         } while (true);
+        closeApp();
+    }
+
+    private void confirmSave() {
+        String command;
+        do {
+            System.out.println("Save changes? y/n");
+            command = input.next();
+        } while (!(command.equals("y") || command.equals("n")));
+        if (command.equals("y")) {
+            saveHabitManager();
+            closeApp();
+        } else {
+            closeApp();
+        }
+    }
+
+    private void closeApp() {
+        System.out.println("\nGoodbye!");
+        System.exit(0);
     }
 
     // MODIFIES: this
@@ -98,6 +178,7 @@ public class HabitApp {
         System.out.println("Select from:");
         System.out.println("\tc -> Create habit ");
         System.out.println("\tv -> View habit list");
+        System.out.println("\ts -> Save to file");
         System.out.println("\tq -> Quit");
     }
 
@@ -110,6 +191,9 @@ public class HabitApp {
                 break;
             case "v":
                 viewHabits();
+                break;
+            case "s":
+                saveHabitManager();
                 break;
             default:
                 System.out.println("\nInvalid command");
@@ -330,6 +414,15 @@ public class HabitApp {
     // MODIFIES: this
     // EFFECTS: changes period to period selected by user
     private void changePeriod(Habit habit) {
+        String command;
+        do {
+            System.out.println("\nWarning: Changing habit period will reset habit progress and statistics. "
+                    + "Are you sure you want to continue? y/n");
+            command = input.next();
+        } while (!(command.equals("y") || command.equals("n")));
+        if (command.equals("n")) {
+            editHabit(habit);
+        }
         if (!habit.setPeriod(getHabitPeriod())) {
             System.out.println("\nPeriod already set to " + habit.getPeriod());
         }
@@ -339,6 +432,15 @@ public class HabitApp {
     // MODIFIES: this
     // EFFECTS: changes frequency to frequency selected by user between 1 and 15
     private void changeFrequency(Habit habit) {
+        String command;
+        do {
+            System.out.println("\nWarning: Changing habit frequency will reset habit progress and statistics. "
+                    + "Are you sure you want to continue? y/n");
+            command = input.next();
+        } while (!(command.equals("y") || command.equals("n")));
+        if (command.equals("n")) {
+            editHabit(habit);
+        }
         if (!habit.setFrequency(getHabitFrequency())) {
             System.out.println("\nFrequency already set to " + habit.getFrequency());
         }
@@ -496,12 +598,12 @@ public class HabitApp {
     // EFFECTS: processes input and returns false if user wants to override current notifications, true otherwise
     private boolean processOverrideInput(Habit habit) {
         List<String> validInputs = new ArrayList<>(Arrays.asList("d", "k", "o"));
-        System.out.println("You have already customized notifications.");
-        System.out.println("\td -> Revert to default notifications");
-        System.out.println("\tk -> Keep current notifications");
-        System.out.println("\to -> Override current notifications");
         String command;
         do {
+            System.out.println("You have already customized notifications.");
+            System.out.println("\td -> Revert to default notifications");
+            System.out.println("\tk -> Keep current notifications");
+            System.out.println("\to -> Override current notifications");
             command = input.next();
         } while (!validInputs.contains(command));
         switch (command) {
@@ -697,5 +799,18 @@ public class HabitApp {
                 periodString = month;
         }
         return periodString;
+    }
+
+    private void saveHabitManager() {
+        JsonWriter jsonWriter = new JsonWriter(HABIT_MANAGER_STORE);
+        try {
+            jsonWriter.open();
+            jsonWriter.write(habitManager);
+            jsonWriter.close();
+            System.out.println("Your habits have been saved successfully!");
+            isSaved = true;
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + HABIT_MANAGER_STORE);
+        }
     }
 }

@@ -3,18 +3,18 @@ package model;
 import javafx.util.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.quartz.SchedulerException;
-import org.quartz.impl.matchers.GroupMatcher;
+import ui.ReminderScheduler;
 
 import java.time.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 import static org.junit.jupiter.api.Assertions.*;
 
 // test class for Habit
-public class HabitTest {
+public class HabitTest extends HabitHelperTest {
     private Clock c1;
     private Clock c2;
     private Clock c3;
@@ -69,6 +69,42 @@ public class HabitTest {
         assertEquals(LocalDateTime.of(2024, Month.MAY, 2, 23, 59), h2.getCurrentPeriodEnd());
         assertEquals(LocalDateTime.of(2024, Month.MAY, 3, 23, 59), h2.getNextPeriodEnd());
         checkResetStats(h2);
+    }
+
+    @Test
+    void testLoadConstructor() {
+        String n = "a name";
+        String d = "a description";
+        Period p = Period.DAILY;
+        int f = 10;
+        UUID id = UUID.randomUUID();
+        boolean ne = true;
+        int ns = 5;
+        LocalDateTime cpe = LocalDateTime.of(2024, Month.MARCH, 15, 23, 59);
+        LocalDateTime npe = LocalDateTime.of(2024, Month.MARCH, 16, 23, 59);
+        boolean ipc = false;
+        Clock c = getFixedClock("2024-03-15T10:30:00.00Z");
+        HabitStatistics hs = new HabitStatistics(0, 3, 10, 2, 1);
+        Set<LocalDateTime> reminders = new HashSet<>();
+        reminders.add(LocalDateTime.of(2024, Month.MARCH, 15, 10, 0));
+        reminders.add(LocalDateTime.of(2024, Month.MARCH, 15, 23, 59));
+        Habit h = new Habit(n, d, p, f, id, ne, ns, cpe, npe, ipc, c, hs, null);
+        assertEquals(n, h.getName());
+        assertEquals(d, h.getDescription());
+        assertEquals(p, h.getPeriod());
+        assertEquals(f, h.getFrequency());
+        assertEquals(id, h.getId());
+        assertEquals(ne, h.isNotifyEnabled());
+        assertEquals(ns, h.getNumSuccess());
+        assertEquals(cpe, h.getCurrentPeriodEnd());
+        assertEquals(npe, h.getNextPeriodEnd());
+        assertEquals(ipc, h.isPreviousComplete());
+        assertEquals(c, h.getClock());
+        assertEquals(hs, h.getHabitStats());
+        assertNull(h.getHabitReminder());
+        HabitReminder hr = new DailyReminder(f, reminders, c, false, h, new ReminderScheduler());
+        h.setHabitReminder(hr);
+        assertEquals(hr, h.getHabitReminder());
     }
 
     @Test
@@ -303,6 +339,20 @@ public class HabitTest {
     void testSetNumSuccess() {
         h2.setNumSuccess(10);
         assertEquals(10, h2.getNumSuccess());
+    }
+
+    @Test
+    void testSetHabitReminder() {
+        h1.getHabitReminder().cancelReminders();
+        h1.setHabitReminder(new DailyReminder(h1.getFrequency(), c1, h1));
+        assertTrue(h1.getHabitReminder() instanceof DailyReminder);
+        h2.setHabitReminder(new WeeklyReminder(c2, h2));
+        assertTrue(h2.getHabitReminder() instanceof WeeklyReminder);
+        h3.getHabitReminder().cancelReminders();
+        h3.setHabitReminder(new MonthlyReminder(c3, h3));
+        assertTrue(h3.getHabitReminder() instanceof MonthlyReminder);
+        h4.setHabitReminder(new MonthlyReminder(c3, h4));
+        assertTrue(h4.getHabitReminder() instanceof MonthlyReminder);
     }
 
     @Test
@@ -628,10 +678,6 @@ public class HabitTest {
         assertEquals(LocalDateTime.of(2025, Month.JANUARY, 31, 23, 59), h4.getNextPeriodEnd());
     }
 
-    private Clock getFixedClock(String parse) {
-        return Clock.fixed(Instant.parse(parse), ZoneId.of("Z"));
-    }
-
     private boolean finishHabitNumTimes(Habit habit, int num) {
         boolean isIncremented = true;
         for (int i = 0; i < num; i++) {
@@ -642,32 +688,5 @@ public class HabitTest {
             }
         }
         return isIncremented;
-    }
-
-    private void checkResetStats(Habit habit) {
-        assertEquals(0, habit.getHabitStats().getStreak());
-        assertEquals(0, habit.getHabitStats().getBestStreak());
-        assertEquals(0, habit.getHabitStats().getTotalNumSuccess());
-        assertEquals(0, habit.getHabitStats().getNumPeriodSuccess());
-        assertEquals(0, habit.getHabitStats().getNumPeriod());
-    }
-
-    private void checkStats(Habit habit, int streak, int bestStreak, int totalNumSuccess, int numPeriodSuccess, int numPeriod) {
-        assertEquals(streak, habit.getHabitStats().getStreak());
-        assertEquals(bestStreak, habit.getHabitStats().getBestStreak());
-        assertEquals(totalNumSuccess, habit.getHabitStats().getTotalNumSuccess());
-        assertEquals(numPeriodSuccess, habit.getHabitStats().getNumPeriodSuccess());
-        assertEquals(numPeriod, habit.getHabitStats().getNumPeriod());
-    }
-
-    private void testJobSize(HabitReminder hr, int size) {
-        try {
-            assertEquals(size, hr.reminderScheduler.getScheduler()
-                    .getJobKeys(GroupMatcher
-                            .groupEquals(hr.habit.getId().toString()))
-                    .size());
-        } catch (SchedulerException e) {
-            fail();
-        }
     }
 }

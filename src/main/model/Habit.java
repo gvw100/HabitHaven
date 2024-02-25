@@ -1,5 +1,7 @@
 package model;
 
+import org.json.JSONObject;
+
 import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -13,15 +15,15 @@ public class Habit {
     private String description;
     private Period period;
     private int frequency;
-    private final UUID id = UUID.randomUUID();
+    private final UUID id;
     private boolean notifyEnabled;
     private int numSuccess;
-    private final HabitStatistics habitStats;
-    private HabitReminder habitReminder;
     private LocalDateTime currentPeriodEnd;
     private LocalDateTime nextPeriodEnd;
     private Clock clock;
     private boolean isPreviousComplete;
+    private final HabitStatistics habitStats;
+    private HabitReminder habitReminder;
 
     // REQUIRES: 0 < frequency < 16
     // EFFECTS: initializes habit
@@ -32,11 +34,35 @@ public class Habit {
         this.period = period;
         this.description = description;
         this.notifyEnabled = notifyEnabled;
+        this.id = UUID.randomUUID();
         this.clock = clock;
         this.isPreviousComplete = false;
         this.habitStats = new HabitStatistics();
         this.habitReminder = this.notifyEnabled ? getNewReminder() : null;
         updateDateTime();
+    }
+
+    // REQUIRES: 0 < frequency < 16
+    // EFFECTS: initializes habit for returning user
+    public Habit(String n, String d, Period p, int f, UUID id, boolean ne, int ns, LocalDateTime cpe,
+                 LocalDateTime npe, boolean ipc, Clock c, HabitStatistics hs, HabitReminder hr) {
+        this.name = n;
+        this.description = d;
+        this.period = p;
+        this.frequency = f;
+        this.notifyEnabled = ne;
+        this.id = id;
+        this.numSuccess = ns;
+        this.currentPeriodEnd = cpe;
+        this.nextPeriodEnd = npe;
+        this.clock = c;
+        this.isPreviousComplete = ipc;
+        this.habitStats = hs;
+        this.habitReminder = hr;
+    }
+
+    public void setHabitReminder(HabitReminder habitReminder) {
+        this.habitReminder = habitReminder;
     }
 
     public void setName(String name) {
@@ -95,13 +121,14 @@ public class Habit {
         if (this.frequency == frequency) {
             return false;
         }
-        this.frequency = frequency;
-        resetProgress();
         if (period == Period.DAILY && isNotifyEnabled() && habitReminder.isDefault()) {
-            habitReminder.cancelReminders();
             DailyReminder reminder = (DailyReminder) habitReminder;
             reminder.setFrequency(frequency);
+        } else if (isNotifyEnabled() && isPeriodComplete()) {
+            habitReminder.updateReminders();
         }
+        this.frequency = frequency;
+        resetProgress();
         return true;
     }
 
@@ -254,6 +281,13 @@ public class Habit {
     //          switch to next period and reset isPreviousComplete to false,
     //          if now is after nextPeriodEnd, switch to next period, reset streak, and reset isPreviousComplete
     public void updateHabit() {
+        if (isNotifyEnabled()) {
+            if (!isPeriodComplete()) {
+                habitReminder.updateReminders();
+            } else {
+                habitReminder.cancelReminders();
+            }
+        }
         LocalDateTime now = LocalDateTime.now(clock);
         if (!now.isBefore(currentPeriodEnd.plusMinutes(1)) && now.isBefore(nextPeriodEnd.plusMinutes(1))) {
             nextHabitPeriod();
@@ -315,5 +349,24 @@ public class Habit {
         LocalDateTime firstDayOfNextMonth = now.with(TemporalAdjusters.firstDayOfNextMonth());
         LocalDateTime lastDayOfNextMonth = firstDayOfNextMonth.with(TemporalAdjusters.lastDayOfMonth());
         nextPeriodEnd = lastDayOfNextMonth.withHour(23).withMinute(59).withSecond(0).withNano(0);
+    }
+
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("name", name);
+        json.put("description", description);
+        json.put("period", period.toString());
+        json.put("frequency", frequency);
+        json.put("id", id.toString());
+        json.put("notifyEnabled", notifyEnabled);
+        json.put("numSuccess", numSuccess);
+        json.put("currentPeriodEnd", currentPeriodEnd.toString());
+        json.put("nextPeriodEnd", nextPeriodEnd.toString());
+        json.put("isPreviousComplete", isPreviousComplete);
+        json.put("habitStats", habitStats.toJson());
+        if (habitReminder != null) {
+            json.put("habitReminder", habitReminder.toJson());
+        }
+        return json;
     }
 }

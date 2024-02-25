@@ -3,8 +3,6 @@ package model;
 import javafx.util.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.quartz.SchedulerException;
-import org.quartz.impl.matchers.GroupMatcher;
 
 import java.time.*;
 import java.util.HashSet;
@@ -12,7 +10,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class HabitReminderTest {
+public class HabitReminderTest extends HabitHelperTest {
     private HabitReminder dr;
     private HabitReminder wr;
     private HabitReminder mr;
@@ -200,20 +198,5 @@ public class HabitReminderTest {
         testJobSize(wr, 2);
         wr.cancelReminders();
         testJobSize(wr, 0);
-    }
-
-    private void testJobSize(HabitReminder hr, int size) {
-        try {
-            assertEquals(size, hr.reminderScheduler.getScheduler()
-                    .getJobKeys(GroupMatcher
-                            .groupEquals(hr.habit.getId().toString()))
-                    .size());
-        } catch (SchedulerException e) {
-            fail();
-        }
-    }
-
-    private Clock getFixedClock(String parse) {
-        return Clock.fixed(Instant.parse(parse), ZoneId.of("Z"));
     }
 }

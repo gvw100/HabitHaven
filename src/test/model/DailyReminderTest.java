@@ -2,8 +2,7 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.quartz.SchedulerException;
-import org.quartz.impl.matchers.GroupMatcher;
+import ui.ReminderScheduler;
 
 import java.time.*;
 import java.util.HashSet;
@@ -11,7 +10,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DailyReminderTest {
+public class DailyReminderTest extends HabitHelperTest {
     private Habit h1;
     private Habit h2;
 
@@ -50,6 +49,22 @@ public class DailyReminderTest {
         assertEquals(h2, dr2.habit);
         testJobSize(dr1, 4);
         testJobSize(dr2, 7);
+    }
+
+    @Test
+    void testLoadConstructor() {
+        Set<LocalDateTime> reminders = new HashSet<>();
+        reminders.add(LocalDateTime.of(2024, 8, 23, 9, 0));
+        reminders.add(LocalDateTime.of(2024, 8, 23, 11, 24));
+        reminders.add(LocalDateTime.of(2024, 8, 23, 13, 48));
+        reminders.add(LocalDateTime.of(2024, 8, 23, 16, 12));
+        reminders.add(LocalDateTime.of(2024, 8, 23, 18, 36));
+        DailyReminder dr = new DailyReminder(5, reminders, c1, true, h1, new ReminderScheduler());
+        assertEquals(5, dr.getFrequency());
+        assertEquals(reminders, dr.getReminders());
+        assertTrue(dr.isDefault());
+        assertEquals(c1, dr.clock);
+        assertEquals(h1, dr.habit);
     }
 
     @Test
@@ -150,27 +165,5 @@ public class DailyReminderTest {
         LocalDateTime ldt = DailyReminder.makeDailyReminder(LocalTime.of(10, 0), c1);
         assertEquals(LocalDateTime.now(c1).toLocalDate(), ldt.toLocalDate());
         assertEquals(LocalTime.of(10, 0), ldt.toLocalTime());
-    }
-
-    void testCorrectDistribution(DailyReminder dr, Set<LocalDateTime> reminders) {
-        for (LocalDateTime reminder : reminders) {
-            assertTrue(dr.reminders.contains(reminder));
-        }
-        assertEquals(reminders.size(), dr.reminders.size());
-    }
-
-    private void testJobSize(DailyReminder dr, int size) {
-        try {
-            assertEquals(size, dr.reminderScheduler.getScheduler()
-                    .getJobKeys(GroupMatcher
-                            .groupEquals(dr.habit.getId().toString()))
-                    .size());
-        } catch (SchedulerException e) {
-            fail();
-        }
-    }
-
-    private Clock getFixedClock(String parse) {
-        return Clock.fixed(Instant.parse(parse), ZoneId.of("Z"));
     }
 }

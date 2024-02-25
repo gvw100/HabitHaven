@@ -1,6 +1,9 @@
 package model;
 
 import javafx.util.Pair;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import ui.ReminderScheduler;
 
 import java.time.*;
 import java.util.HashSet;
@@ -12,10 +15,21 @@ public class MonthlyReminder extends HabitReminder {
     private Set<Pair<Integer, LocalTime>> customReminders;
 
     // EFFECTS: constructs a MonthlyReminder with clock and habit
-    MonthlyReminder(Clock clock, Habit habit) {
+    public MonthlyReminder(Clock clock, Habit habit) {
         super(clock, habit);
         customReminders = null;
         distributeReminders();
+    }
+
+    // EFFECTS: constructs a MonthlyReminder for returning user
+    public MonthlyReminder(Set<Pair<Integer, LocalTime>> customReminders, Set<LocalDateTime> reminders, Clock clock,
+                           boolean isDefault, Habit habit, ReminderScheduler reminderScheduler) {
+        this.customReminders = customReminders;
+        this.reminders = reminders;
+        this.clock = clock;
+        this.isDefault = isDefault;
+        this.habit = habit;
+        this.reminderScheduler = reminderScheduler;
     }
 
     // EFFECTS: returns set of custom reminder pairs, for testing purposes
@@ -23,7 +37,7 @@ public class MonthlyReminder extends HabitReminder {
         return this.customReminders;
     }
 
-    // REQUIRES: no reminders scheduled yet for this period, isDefault is true
+    // REQUIRES: isDefault is true
     // MODIFIES: this
     // EFFECTS: distributes reminders once per day over the month
     @Override
@@ -41,7 +55,7 @@ public class MonthlyReminder extends HabitReminder {
         reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
-    // REQUIRES: no reminders scheduled yet for this period, isDefault is false
+    // REQUIRES: isDefault is false
     /// MODIFIES: this
     //  EFFECTS: updates custom monthly reminders based on this.customReminders,
     //           ensures that all reminders are in the current month,
@@ -80,5 +94,33 @@ public class MonthlyReminder extends HabitReminder {
         customReminders = newReminders;
         isDefault = false;
         updateCustomReminders();
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("isDefault", isDefault);
+        json.put("reminders", remindersToJson());
+
+        json.put("customReminders", customRemindersToJson());
+        return json;
+    }
+
+    private JSONArray customRemindersToJson() {
+        JSONArray array = new JSONArray();
+        if (customReminders == null) {
+            return null;
+        }
+        for (Pair<Integer, LocalTime> reminder : customReminders) {
+            array.put(customReminderToJson(reminder));
+        }
+        return array;
+    }
+
+    private JSONObject customReminderToJson(Pair<Integer, LocalTime> customReminder) {
+        JSONObject json = new JSONObject();
+        json.put("day", customReminder.getKey());
+        json.put("time", customReminder.getValue().toString());
+        return json;
     }
 }

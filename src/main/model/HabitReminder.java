@@ -1,5 +1,7 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import ui.ReminderScheduler;
 
 import java.time.*;
@@ -13,8 +15,8 @@ public abstract class HabitReminder {
     protected Set<LocalDateTime> reminders;
     protected Clock clock;
     protected boolean isDefault;
-    protected final Habit habit;
-    protected final ReminderScheduler reminderScheduler;
+    protected Habit habit;
+    protected ReminderScheduler reminderScheduler;
 
     // EFFECTS: constructs a default habit reminder with given clock and habit
     public HabitReminder(Clock clock, Habit habit) {
@@ -22,6 +24,14 @@ public abstract class HabitReminder {
         this.clock = clock;
         this.habit = habit;
         this.reminderScheduler = new ReminderScheduler();
+    }
+
+    // EFFECTS: default constructor for habit reminder
+    public HabitReminder() {
+    }
+
+    public Set<LocalDateTime> getReminders() {
+        return this.reminders;
     }
 
     // MODIFIES: this
@@ -35,15 +45,15 @@ public abstract class HabitReminder {
         return isDefault;
     }
 
-    // REQUIRES: no reminders scheduled yet for this period, isDefault is true
+    // REQUIRES: isDefault is true
     // MODIFIES: this
     // EFFECTS: distributes default reminders into this.reminders
     public abstract void distributeReminders();
 
-    // REQUIRES: no reminders scheduled yet for this period
     // MODIFIES: this
-    // EFFECTS: updates reminders based on current time
+    // EFFECTS: cancels existing reminders, then updates reminders based on current time
     public void updateReminders() {
+        cancelReminders();
         if (isDefault) {
             distributeReminders();
         } else {
@@ -51,7 +61,7 @@ public abstract class HabitReminder {
         }
     }
 
-    // REQUIRES: no reminders scheduled yet for this period, isDefault is false
+    // REQUIRES: isDefault is false
     // MODIFIES: this
     // EFFECTS: updates custom reminders to match the current time
     public abstract void updateCustomReminders();
@@ -93,5 +103,22 @@ public abstract class HabitReminder {
             String groupId = habit.getId().toString();
             reminderScheduler.cancelReminder(jobId, groupId);
         }
+    }
+
+    // EFFECTS: returns a JSON representation of this
+    public abstract JSONObject toJson();
+
+    public JSONArray remindersToJson() {
+        JSONArray jsonArray = new JSONArray();
+        for (LocalDateTime dt : reminders) {
+            jsonArray.put(reminderToJson(dt));
+        }
+        return jsonArray;
+    }
+
+    public JSONObject reminderToJson(LocalDateTime dt) {
+        JSONObject json = new JSONObject();
+        json.put("dateTime", dt.toString());
+        return json;
     }
 }

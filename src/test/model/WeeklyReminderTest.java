@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.quartz.SchedulerException;
 import org.quartz.impl.matchers.GroupMatcher;
+import ui.ReminderScheduler;
 
 import java.time.*;
 import java.util.HashSet;
@@ -53,6 +54,20 @@ public class WeeklyReminderTest {
         testJobSize(wr1, 6);
         testJobSize(wr2, 7);
         testJobSize(wr3, 3);
+    }
+
+    @Test
+    void testLoadConstructor() {
+        Set<LocalDateTime> reminders1 = new HashSet<>();
+        reminders1.add(LocalDateTime.of(2024, 2, 18, 9, 0));
+        reminders1.add(LocalDateTime.of(2024, 2, 19, 9, 0));
+        reminders1.add(LocalDateTime.of(2024, 2, 20, 9, 0));
+
+        WeeklyReminder wr1 = new WeeklyReminder(reminders1, c1, true, h1, new ReminderScheduler());
+        assertEquals(reminders1, wr1.reminders);
+        assertEquals(c1, wr1.clock);
+        assertTrue(wr1.isDefault());
+        assertEquals(h1, wr1.habit);
     }
 
     @Test

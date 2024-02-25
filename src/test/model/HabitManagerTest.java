@@ -4,13 +4,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneId;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // test class for HabitManager
-public class HabitManagerTest {
+public class HabitManagerTest extends HabitHelperTest {
     private HabitManager habitManager;
 
     private Habit h1;
@@ -71,9 +69,5 @@ public class HabitManagerTest {
         assertEquals(2, habitManager.getSize());
         assertEquals(h1, habitManager.getHabits().get(0));
         assertEquals(h3, habitManager.getHabits().get(1));
-    }
-
-    private Clock getFixedClock(String parse) {
-        return Clock.fixed(Instant.parse(parse), ZoneId.of("Z"));
     }
 }

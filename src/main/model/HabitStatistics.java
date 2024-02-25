@@ -1,5 +1,7 @@
 package model;
 
+import org.json.JSONObject;
+
 // Statistics for a habit, with the number of consecutive period completions,
 // the all-time best streak, the number of times the habit was
 // marked as complete, the total number of successful periods,
@@ -12,12 +14,21 @@ public class HabitStatistics {
     private int numPeriod;
 
     // EFFECTS: initializes all fields to 0
-    HabitStatistics() {
+    public HabitStatistics() {
         streak = 0;
         bestStreak = 0;
         totalNumSuccess = 0;
         numPeriodSuccess = 0;
         numPeriod = 0;
+    }
+
+    // EFFECTS: initializes habit statistics for returning user
+    public HabitStatistics(int streak, int bestStreak, int totalNumSuccess, int numPeriodSuccess, int numPeriod) {
+        this.streak = streak;
+        this.bestStreak = bestStreak;
+        this.totalNumSuccess = totalNumSuccess;
+        this.numPeriodSuccess = numPeriodSuccess;
+        this.numPeriod = numPeriod;
     }
 
     public int getStreak() {
@@ -90,5 +101,15 @@ public class HabitStatistics {
     // EFFECTS: increments numPeriod
     public void incrementNumPeriod() {
         numPeriod++;
+    }
+
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("streak", streak);
+        json.put("bestStreak", bestStreak);
+        json.put("totalNumSuccess", totalNumSuccess);
+        json.put("numPeriodSuccess", numPeriodSuccess);
+        json.put("numPeriod", numPeriod);
+        return json;
     }
 }
