@@ -2,3 +2,4 @@
 workspace.xml
 log4j.log
 ./out
+./data/habitManager.json
