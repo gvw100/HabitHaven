@@ -33,7 +33,7 @@ public class MonthlyReminder extends HabitReminder {
     }
 
     // EFFECTS: returns set of custom reminder pairs, for testing purposes
-    Set<Pair<Integer, LocalTime>> getCustomReminders() {
+    public Set<Pair<Integer, LocalTime>> getCustomReminders() {
         return this.customReminders;
     }
 
@@ -52,7 +52,7 @@ public class MonthlyReminder extends HabitReminder {
             reminders.add(reminderDateTime);
             reminderDateTime = reminderDateTime.plusDays(1);
         }
-        reminderScheduler.scheduleReminders(getActiveReminders(), habit);
+        reminderScheduler.scheduleReminders(reminders, habit);
     }
 
     // REQUIRES: no reminders scheduled yet for this period, isDefault is false
@@ -75,7 +75,7 @@ public class MonthlyReminder extends HabitReminder {
         }
         reminders.clear();
         reminders = newReminders;
-        reminderScheduler.scheduleReminders(getActiveReminders(), habit);
+        reminderScheduler.scheduleReminders(reminders, habit);
     }
 
     // EFFECTS: throws UnsupportedOperationException, use setCustomMonthlyReminders instead
@@ -96,6 +96,7 @@ public class MonthlyReminder extends HabitReminder {
         updateCustomReminders();
     }
 
+    // EFFECTS: returns MonthlyReminder as a JSONObject
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
@@ -106,6 +107,7 @@ public class MonthlyReminder extends HabitReminder {
         return json;
     }
 
+    // EFFECTS: returns custom reminders as a JSONArray
     private JSONArray customRemindersToJson() {
         JSONArray array = new JSONArray();
         if (customReminders == null) {
@@ -117,6 +119,7 @@ public class MonthlyReminder extends HabitReminder {
         return array;
     }
 
+    // EFFECTS: returns custom reminder as a JSONObject
     private JSONObject customReminderToJson(Pair<Integer, LocalTime> customReminder) {
         JSONObject json = new JSONObject();
         json.put("day", customReminder.getKey());

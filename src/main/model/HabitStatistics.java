@@ -103,6 +103,7 @@ public class HabitStatistics {
         numPeriod++;
     }
 
+    // EFFECTS: returns habitStatistics as a JSONObject
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("streak", streak);

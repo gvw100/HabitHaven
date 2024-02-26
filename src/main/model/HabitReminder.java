@@ -34,6 +34,10 @@ public abstract class HabitReminder {
         return this.reminders;
     }
 
+    public Habit getHabit() {
+        return this.habit;
+    }
+
     // MODIFIES: this
     // EFFECTS: sets the clock to the given clock, solely for testing purposes
     public void setClock(Clock clock) {
@@ -84,7 +88,7 @@ public abstract class HabitReminder {
         cancelReminders();
         isDefault = false;
         reminders = newReminders;
-        reminderScheduler.scheduleReminders(getActiveReminders(), habit);
+        reminderScheduler.scheduleReminders(reminders, habit);
     }
 
     // MODIFIES: this
@@ -98,16 +102,17 @@ public abstract class HabitReminder {
     // MODIFIES: this
     // EFFECTS: cancels all reminders in the current period
     public void cancelReminders() {
-        for (LocalDateTime reminder : getActiveReminders()) {
+        for (LocalDateTime reminder : reminders) {
             String jobId = reminder.toString();
             String groupId = habit.getId().toString();
             reminderScheduler.cancelReminder(jobId, groupId);
         }
     }
 
-    // EFFECTS: returns a JSON representation of this
+    // EFFECTS: returns HabitReminder as a JSONObject
     public abstract JSONObject toJson();
 
+    // EFFECTS: returns reminders as a JSONArray
     public JSONArray remindersToJson() {
         JSONArray jsonArray = new JSONArray();
         for (LocalDateTime dt : reminders) {
@@ -116,6 +121,7 @@ public abstract class HabitReminder {
         return jsonArray;
     }
 
+    // EFFECTS: returns reminder as a JSONObject
     public JSONObject reminderToJson(LocalDateTime dt) {
         JSONObject json = new JSONObject();
         json.put("dateTime", dt.toString());

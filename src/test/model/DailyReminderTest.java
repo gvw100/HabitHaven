@@ -47,7 +47,7 @@ public class DailyReminderTest extends HabitHelperTest {
         assertEquals(c2, dr2.clock);
         assertEquals(h1, dr1.habit);
         assertEquals(h2, dr2.habit);
-        testJobSize(dr1, 4);
+        testJobSize(dr1, 5);
         testJobSize(dr2, 7);
     }
 
@@ -72,11 +72,11 @@ public class DailyReminderTest extends HabitHelperTest {
         dr1.setFrequency(3);
         assertEquals(3, dr1.getFrequency());
         assertTrue(dr1.isDefault());
-        testJobSize(dr1, 2);
+        testJobSize(dr1, 3);
         dr1.setFrequency(7);
         assertEquals(7, dr1.getFrequency());
         assertTrue(dr1.isDefault());
-        testJobSize(dr1, 6);
+        testJobSize(dr1, 7);
     }
 
     @Test
@@ -96,7 +96,7 @@ public class DailyReminderTest extends HabitHelperTest {
                 LocalDateTime.of(2024, 8, 23, 16, 12),
                 LocalDateTime.of(2024, 8, 23, 18, 36)
         ));
-        testJobSize(dr1, 4);
+        testJobSize(dr1, 5);
         dr2.cancelReminders();
         dr2.distributeReminders();
         testCorrectDistribution(dr2, Set.of(
@@ -116,7 +116,7 @@ public class DailyReminderTest extends HabitHelperTest {
                 LocalDateTime.of(2024, 3, 31, 13, 0),
                 LocalDateTime.of(2024, 3, 31, 17, 0)
         ));
-        testJobSize(dr3, 2);
+        testJobSize(dr3, 3);
     }
 
     @Test
@@ -130,7 +130,7 @@ public class DailyReminderTest extends HabitHelperTest {
         dr1.cancelReminders();
         dr1.updateCustomReminders();
         testCorrectDistribution(dr1, copy1);
-        testJobSize(dr1, 2);
+        testJobSize(dr1, 3);
 
         Set<LocalDateTime> cr2 = new HashSet<>();
         cr2.add(LocalDateTime.now(c2));
@@ -142,7 +142,7 @@ public class DailyReminderTest extends HabitHelperTest {
         dr2.cancelReminders();
         dr2.updateCustomReminders();
         testCorrectDistribution(dr2, copy2);
-        testJobSize(dr2, 3);
+        testJobSize(dr2, 4);
 
         Set<LocalDateTime> cr3 = new HashSet<>();
         cr3.add(LocalDateTime.now(c3).plusNanos(1));

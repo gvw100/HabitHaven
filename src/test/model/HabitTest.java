@@ -129,7 +129,7 @@ public class HabitTest extends HabitHelperTest {
         assertTrue(h2.setNotifyEnabled(true));
         assertTrue(h2.isNotifyEnabled());
         assertTrue(h2.getHabitReminder() instanceof DailyReminder);
-        testJobSize(h2.getHabitReminder(), 11);
+        testJobSize(h2.getHabitReminder(), 15);
     }
 
     @Test
@@ -139,7 +139,7 @@ public class HabitTest extends HabitHelperTest {
         assertTrue(h3.getHabitReminder() instanceof MonthlyReminder);
         long daysLeft = DAYS.between(LocalDateTime.now(c3), h3.getCurrentPeriodEnd());
         assertEquals((int) daysLeft, hr.getActiveReminders().size());
-        testJobSize(hr, (int) daysLeft);
+        testJobSize(hr, 31);
         assertTrue(h3.setNotifyEnabled(false));
         assertFalse(h3.isNotifyEnabled());
         assertNull(h3.getHabitReminder());
@@ -256,18 +256,18 @@ public class HabitTest extends HabitHelperTest {
         assertTrue(h2.getHabitReminder() instanceof DailyReminder);
         assertEquals(7, ((DailyReminder) h2.getHabitReminder()).getFrequency());
         assertNotEquals(frequency, ((DailyReminder) h2.getHabitReminder()).getFrequency());
-        testJobSize(h2.getHabitReminder(), 6);
+        testJobSize(h2.getHabitReminder(), 7);
     }
 
     @Test
     void setFrequencyNotificationsEnabledAndPeriodWasComplete() {
-        testJobSize(h1.getHabitReminder(), 1);
+        testJobSize(h1.getHabitReminder(), 7);
         finishHabitNumTimes(h1, 3);
         testJobSize(h1.getHabitReminder(), 0);
         assertTrue(h1.isPreviousComplete());
         assertTrue(h1.isPeriodComplete());
         assertTrue(h1.setFrequency(7));
-        testJobSize(h1.getHabitReminder(), 1);
+        testJobSize(h1.getHabitReminder(), 7);
         assertEquals(7, h1.getFrequency());
         assertFalse(h1.isPreviousComplete());
         assertFalse(h1.isPeriodComplete());
@@ -318,7 +318,7 @@ public class HabitTest extends HabitHelperTest {
         assertTrue(h1.getHabitReminder().isDefault());
         assertTrue(h1.getHabitReminder() instanceof MonthlyReminder);
         assertFalse(h1.getHabitReminder() instanceof WeeklyReminder);
-        testJobSize(h1.getHabitReminder(), (int) DAYS.between(LocalDateTime.now(h1.getClock()), h1.getCurrentPeriodEnd()) + 1);
+        testJobSize(h1.getHabitReminder(), 29);
     }
 
     @Test
@@ -333,7 +333,7 @@ public class HabitTest extends HabitHelperTest {
         assertTrue(h3.getHabitReminder().isDefault());
         assertTrue(h3.getHabitReminder() instanceof WeeklyReminder);
         assertFalse(h3.getHabitReminder() instanceof MonthlyReminder);
-        testJobSize(h3.getHabitReminder(), 1);
+        testJobSize(h3.getHabitReminder(), 7);
     }
 
     @Test
@@ -430,7 +430,7 @@ public class HabitTest extends HabitHelperTest {
     void testFinishHabitNumSuccessSameAsFrequency() {
         h2.setClock(getFixedClock("2024-05-02T15:23:00.00Z"));
         h2.setNotifyEnabled(true);
-        testJobSize(h2.getHabitReminder(), 7);
+        testJobSize(h2.getHabitReminder(), 15);
         assertTrue(finishHabitNumTimes(h2, 15));
         assertEquals(15, h2.getNumSuccess());
         checkStats(h2, 1, 1, 15, 1, 0);
@@ -441,7 +441,7 @@ public class HabitTest extends HabitHelperTest {
     void testFinishHabitNumSuccessGreaterThanFrequency() {
         h2.setClock(getFixedClock("2024-05-02T15:24:00.00Z"));
         h2.setNotifyEnabled(true);
-        testJobSize(h2.getHabitReminder(), 6);
+        testJobSize(h2.getHabitReminder(), 15);
         assertFalse(finishHabitNumTimes(h1, 10));
         assertEquals(3, h1.getNumSuccess());
         checkStats(h1, 1, 1, 3, 1, 0);
@@ -456,12 +456,12 @@ public class HabitTest extends HabitHelperTest {
         h1.checkPeriodComplete();
         assertFalse(h1.isPreviousComplete());
         checkStats(h1, 0, 0, 0, 0, 0);
-        testJobSize(h1.getHabitReminder(), 1);
+        testJobSize(h1.getHabitReminder(), 7);
         h1.setNumSuccess(2);
         h1.checkPeriodComplete();
         assertFalse(h1.isPreviousComplete());
         checkStats(h1, 0, 0, 0, 0, 0);
-        testJobSize(h1.getHabitReminder(), 1);
+        testJobSize(h1.getHabitReminder(), 7);
     }
 
     @Test
@@ -469,7 +469,7 @@ public class HabitTest extends HabitHelperTest {
         h1.checkPeriodComplete();
         assertFalse(h1.isPreviousComplete());
         checkStats(h1, 0, 0, 0, 0, 0);
-        testJobSize(h1.getHabitReminder(), 1);
+        testJobSize(h1.getHabitReminder(), 7);
         h1.setNumSuccess(3);
         h1.checkPeriodComplete();
         assertTrue(h1.isPreviousComplete());
@@ -600,7 +600,6 @@ public class HabitTest extends HabitHelperTest {
     @Test
     void updateHabitAndNotifyEnabledPeriodNotComplete() {
         finishHabitNumTimes(h1, 2);
-        h1.getHabitReminder().cancelReminders();
         h1.setClock(getFixedClock("2024-02-18T00:00:00.00Z"));
         h1.updateHabit();
         assertEquals(0, h1.getNumSuccess());
@@ -614,7 +613,7 @@ public class HabitTest extends HabitHelperTest {
     @Test
     void updateHabitAndNotifyEnabledPeriodComplete() {
         h1.setNumSuccess(3);
-        testJobSize(h1.getHabitReminder(), 1);
+        testJobSize(h1.getHabitReminder(), 7);
         h1.updateHabit();
         testJobSize(h1.getHabitReminder(), 0);
     }

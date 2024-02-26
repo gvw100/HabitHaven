@@ -353,6 +353,7 @@ public class Habit {
         nextPeriodEnd = lastDayOfNextMonth.withHour(23).withMinute(59).withSecond(0).withNano(0);
     }
 
+    // EFFECTS: returns habit as a JSONObject
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("name", name);

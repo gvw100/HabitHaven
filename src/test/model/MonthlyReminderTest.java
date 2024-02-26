@@ -8,11 +8,9 @@ import org.quartz.impl.matchers.GroupMatcher;
 import ui.ReminderScheduler;
 
 import java.time.*;
-import java.time.temporal.TemporalAdjusters;
 import java.util.HashSet;
 import java.util.Set;
 
-import static java.time.temporal.ChronoUnit.DAYS;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MonthlyReminderTest {
@@ -54,11 +52,9 @@ public class MonthlyReminderTest {
         assertEquals(h1, mr1.habit);
         assertEquals(h2, mr2.habit);
         assertEquals(h3, mr3.habit);
-        testJobSize(mr1, 30);
+        testJobSize(mr1, 31);
         testJobSize(mr2, 29);
-        testJobSize(mr3,
-                (int) DAYS.between(LocalDateTime.now(c3),
-                        LocalDateTime.now(c3).with(TemporalAdjusters.lastDayOfMonth())));
+        testJobSize(mr3, 31);
         assertNull(mr1.getCustomReminders());
         assertNull(mr2.getCustomReminders());
         assertNull(mr3.getCustomReminders());
@@ -90,7 +86,7 @@ public class MonthlyReminderTest {
             reminders1.add(LocalDateTime.of(2024, 1, i + 1, 9, 0));
         }
         testCorrectDistribution(mr1, reminders1);
-        testJobSize(mr1, 30);
+        testJobSize(mr1, 31);
 
         mr2.cancelReminders();
         mr2.distributeReminders();
@@ -108,9 +104,7 @@ public class MonthlyReminderTest {
             reminders3.add(LocalDateTime.of(2024, 3, i + 1, 9, 0));
         }
         testCorrectDistribution(mr3, reminders3);
-        testJobSize(mr3,
-                (int) DAYS.between(LocalDateTime.now(c3),
-                        LocalDateTime.now(c3).with(TemporalAdjusters.lastDayOfMonth())));
+        testJobSize(mr3, 31);
     }
 
     @Test
@@ -127,7 +121,7 @@ public class MonthlyReminderTest {
                 LocalDateTime.of(2024, 1, 5, 9, 0),
                 LocalDateTime.of(2024, 1, 15, 13, 0)
         ));
-        testJobSize(mr1, 2);
+        testJobSize(mr1, 3);
 
         Set<Pair<Integer, LocalTime>> cr2 = new HashSet<>();
         cr2.add(new Pair<>(1, LocalTime.of(9, 0)));
@@ -161,7 +155,7 @@ public class MonthlyReminderTest {
                 LocalDateTime.of(2024, 3, 20, 10, 0),
                 LocalDateTime.of(2024, 3, 25, 11, 0)
         ));
-        testJobSize(mr3, 4);
+        testJobSize(mr3, 6);
     }
 
     @Test
@@ -208,7 +202,7 @@ public class MonthlyReminderTest {
         assertTrue(mr1.getCustomReminders().contains(new Pair<>(1, LocalTime.of(6, 30))));
         assertTrue(mr1.getCustomReminders().contains(new Pair<>(2, LocalTime.of(9, 0))));
         assertTrue(mr1.getCustomReminders().contains(new Pair<>(3, LocalTime.of(23, 0))));
-        testJobSize(mr1, 2);
+        testJobSize(mr1, 3);
     }
 
     void testCorrectDistribution(MonthlyReminder mr, Set<LocalDateTime> reminders) {

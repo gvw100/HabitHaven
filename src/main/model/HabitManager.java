@@ -38,6 +38,7 @@ public class HabitManager {
         habits.remove(habit);
     }
 
+    // EFFECTS: returns habit manager as a JSON object
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("username", HabitApp.getUsername());
@@ -45,6 +46,7 @@ public class HabitManager {
         return json;
     }
 
+    // EFFECTS: returns habits in habit manager as a JSON array
     private JSONArray habitsToJson() {
         JSONArray jsonArray = new JSONArray();
         for (Habit h : habits) {

@@ -54,6 +54,7 @@ public class ReminderScheduler {
                 .usingJobData(data)
                 .build();
         SimpleTrigger trigger = newTrigger()
+                .withIdentity(jobId, groupId)
                 .startAt(date)
                 .withSchedule(simpleSchedule()
                         .withRepeatCount(0)

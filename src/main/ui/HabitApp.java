@@ -33,7 +33,7 @@ public class HabitApp {
     // EFFECTS: starts the application
     HabitApp() {
         clock = Clock.systemDefaultZone();
-        isSaved = false;
+        isSaved = true;
         startApp();
     }
 
@@ -108,6 +108,7 @@ public class HabitApp {
         System.out.println("Enter your name: ");
         username = input.next();
         System.out.println("Welcome, " + username + "!");
+        isSaved = false;
         menu();
     }
 
@@ -334,6 +335,8 @@ public class HabitApp {
             case "n":
                 customizeNotifications(habit);
                 break;
+            case "r":
+                resetProgress(habit);
             case "h":
                 viewHabits();
                 break;
@@ -358,6 +361,7 @@ public class HabitApp {
         System.out.println("\tf -> Finish habit");
         System.out.println("\ts -> Show in-depth statistics");
         System.out.println("\tn -> Customize notifications");
+        System.out.println("\tr -> Reset habit progress");
         System.out.println("\th -> Back to habit list");
         System.out.println("\tm -> Back to menu");
     }
@@ -797,6 +801,22 @@ public class HabitApp {
             }
         } while (true);
         return numNotifications;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: resets habit progress and statistics
+    private void resetProgress(Habit habit) {
+        String command;
+        do {
+            System.out.println("Are you sure you want to reset habit progress? y/n (This action cannot be undone)");
+            command = input.next();
+        } while (!(command.equals("y") || command.equals("n")));
+        if (command.equals("y")) {
+            habit.resetProgress();
+            isSaved = false;
+            System.out.println("Habit progress reset successfully");
+        }
+        viewHabit(habit);
     }
 
     // EFFECTS: selects appropriate string based on the period
