@@ -15,7 +15,6 @@ import java.util.stream.Stream;
 import javafx.util.Pair;
 import model.*;
 import org.json.*;
-import ui.HabitApp;
 import ui.ReminderScheduler;
 
 // Represents a reader that reads habits from JSON data stored in file
@@ -50,7 +49,7 @@ public class JsonReader {
     private HabitManager parseHabitManager(JSONObject jsonObject) {
         HabitManager hm = new HabitManager();
         addHabits(hm, jsonObject);
-        HabitApp.setUserName(jsonObject.getString("username"));
+        HabitManager.setUsername(jsonObject.getString("username"));
         return hm;
     }
 

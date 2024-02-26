@@ -27,7 +27,6 @@ public class HabitApp {
     private Scanner input;
     private HabitManager habitManager;
     private final Clock clock;
-    private static String username;
     private boolean isSaved;
 
     // EFFECTS: starts the application
@@ -35,14 +34,6 @@ public class HabitApp {
         clock = Clock.systemDefaultZone();
         isSaved = true;
         startApp();
-    }
-
-    public static String getUsername() {
-        return username;
-    }
-
-    public static void setUserName(String username) {
-        HabitApp.username = username;
     }
 
     // MODIFIES: this
@@ -106,8 +97,8 @@ public class HabitApp {
     private void newUser() {
         habitManager = new HabitManager();
         System.out.println("Enter your name: ");
-        username = input.next();
-        System.out.println("Welcome, " + username + "!");
+        HabitManager.setUsername(input.next());
+        System.out.println("Welcome, " + HabitManager.getUsername() + "!");
         isSaved = false;
         menu();
     }

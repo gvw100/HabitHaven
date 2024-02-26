@@ -1,6 +1,7 @@
 package ui;
 
 import model.Habit;
+import model.HabitManager;
 import model.Period;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -27,7 +28,7 @@ public class SendReminder implements Job {
     // MODIFIES: this
     // EFFECTS: sets fields to the given habit's fields
     public void setHabit(Habit habit) {
-        this.username = HabitApp.getUsername();
+        this.username = HabitManager.getUsername();
         this.habitName = habit.getName();
         this.habitFrequency = habit.getFrequency();
         this.habitPeriod = habit.getPeriod();

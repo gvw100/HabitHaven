@@ -2,7 +2,6 @@ package model;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import ui.HabitApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.List;
 // Represents list of the user's habits
 public class HabitManager {
     private final List<Habit> habits;
+    private static String username;
 
     // EFFECTS: instantiates list of habits
     public HabitManager() {
@@ -23,6 +23,14 @@ public class HabitManager {
     // EFFECTS: returns size of habits, solely for testing purposes
     public int getSize() {
         return this.habits.size();
+    }
+
+    public static String getUsername() {
+        return username;
+    }
+
+    public static void setUsername(String username) {
+        HabitManager.username = username;
     }
 
     // MODIFIES: this
@@ -41,7 +49,7 @@ public class HabitManager {
     // EFFECTS: returns habit manager as a JSON object
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
-        json.put("username", HabitApp.getUsername());
+        json.put("username", HabitManager.getUsername());
         json.put("habits", habitsToJson());
         return json;
     }
