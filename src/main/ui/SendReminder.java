@@ -49,19 +49,30 @@ public class SendReminder implements Job {
         String messageTitle = "\n" + messageTime + "\nHabit Reminder: " + habitName;
         String messageIntro = "Hey " + username + "! Remember to focus on your habit: "
                 + habitName + "! You're on track to greatness!";
-        String periodString = obtainPeriodString("day", "week", "month");
-        String messageGoals = "You're aiming to do this habit " + habitFrequency + " times per "
-                + periodString + ". ";
+        String messageGoals = getMessageGoals();
         String messageProgress = getMessageProgress();
         String messageStreak = getMessageStreak();
-        System.out.println(messageTitle + "\n" + messageIntro + "\n\n" + messageGoals + messageProgress
-                + "\n\n" + messageStreak);
+        String message = messageTitle + "\n" + messageIntro + "\n\n" + messageGoals + messageProgress
+                + "\n\n" + messageStreak;
+        System.out.println(message);
+    }
+
+    private String getMessageGoals() {
+        String periodString = obtainPeriodString("day", "week", "month");
+        if (habitFrequency == 1) {
+            return "You're aiming to do this habit " + habitFrequency + " time per "
+                    + periodString + ". ";
+        } else {
+            return "You're aiming to do this habit " + habitFrequency + " times per "
+                    + periodString + ". ";
+        }
     }
 
     // EFFECTS: returns a message about the user's progress
-    String getMessageProgress() {
+    private String getMessageProgress() {
+        String times = habitNumSuccesses == 1 ? " time" : " times";
         if (habitNumSuccesses > 0) {
-            return "You've already completed this habit " + habitNumSuccesses + " times! "
+            return "You've already completed this habit " + habitNumSuccesses + times + "! "
                     + "Only " + (habitFrequency - habitNumSuccesses) + " more to go! Keep pushing forward!";
         } else {
             return "You haven't completed this habit yet "
@@ -71,12 +82,16 @@ public class SendReminder implements Job {
     }
 
     // EFFECTS: returns a message about the user's streak
-    String getMessageStreak() {
+    private String getMessageStreak() {
+        String day = habitStreak == 1 ? " day" : " days";
+        String week = habitStreak == 1 ? " week" : " weeks";
+        String month = habitStreak == 1 ? " month" : " months";
+        String periodString = obtainPeriodString(day, week, month);
         if (habitStreak > 0 && habitStreak < bestStreak) {
-            return "With a streak of " + habitStreak + " days, you're making amazing progress! "
-                    + "Keep pushing and you'll reach your best streak of " + bestStreak + " days in no time!";
+            return "With a streak of " + habitStreak + periodString + ", you're making amazing progress! "
+                    + "Keep pushing and you'll reach your best streak of " + bestStreak + periodString + " in no time!";
         } else if (habitStreak > 0 && habitStreak == bestStreak) {
-            return "With a streak of " + habitStreak + " days, you're at your best streak! "
+            return "With a streak of " + habitStreak + periodString + ", you're at your best streak! "
                     + "Keep pushing and you'll reach new heights!";
         } else {
             return "You're just getting started! Get that streak started and you'll be unstoppable!";
@@ -84,7 +99,7 @@ public class SendReminder implements Job {
     }
 
     // EFFECTS: returns a string based on the habit's period
-    String obtainPeriodString(String day, String week, String month) {
+    private String obtainPeriodString(String day, String week, String month) {
         switch (habitPeriod) {
             case DAILY:
                 return day;
