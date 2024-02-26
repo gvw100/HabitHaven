@@ -69,7 +69,7 @@ public class ReminderScheduler {
     }
 
     // MODIFIES: this
-    // EFFECTS: cancels reminder with given jobId and groupId
+    // EFFECTS: cancel reminder with given jobId and groupId
     public void cancelReminder(String jobId, String groupId) {
         try {
             scheduler.deleteJob(new JobKey(jobId, groupId));

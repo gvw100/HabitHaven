@@ -41,9 +41,12 @@ public class HabitManager {
 
     // REQUIRES: habit is in this.habits
     // MODIFIES: this
-    // EFFECTS: habit deleted from list of habits
+    // EFFECTS: habit deleted from list of habits and reminders are cancelled
     public void deleteHabit(Habit habit) {
         habits.remove(habit);
+        if (habit.isNotifyEnabled()) {
+            habit.getHabitReminder().cancelReminders();
+        }
     }
 
     // EFFECTS: returns habit manager as a JSON object

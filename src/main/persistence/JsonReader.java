@@ -86,6 +86,7 @@ public class JsonReader {
         hm.addHabit(habit);
     }
 
+    // EFFECTS: parses habit statistics from JSON object and returns it
     private HabitStatistics parseHabitStatistics(JSONObject jsonObject) {
         int streak = jsonObject.getInt("streak");
         int bestStreak = jsonObject.getInt("bestStreak");
@@ -95,6 +96,7 @@ public class JsonReader {
         return new HabitStatistics(streak, bestStreak, totalNumSuccess, numPeriodSuccess, numPeriod);
     }
 
+    // EFFECTS: parses habit reminder from JSON object and returns it
     private HabitReminder parseHabitReminder(JSONObject jsonObject, Period period, Habit habit) {
         switch (period) {
             case DAILY:
@@ -106,6 +108,7 @@ public class JsonReader {
         }
     }
 
+    // EFFECTS: parses daily reminder from JSON object and returns it
     private HabitReminder parseDailyReminder(JSONObject jsonObject, Habit habit) {
         int frequency = jsonObject.getInt("frequency");
         Set<LocalDateTime> reminders = parseReminderDateTimes(jsonObject.getJSONArray("reminders"));
@@ -115,6 +118,7 @@ public class JsonReader {
         return new DailyReminder(frequency, reminders, clock, isDefault, habit, reminderScheduler);
     }
 
+    // EFFECTS: parses weekly reminder from JSON object and returns it
     private HabitReminder parseWeeklyReminder(JSONObject jsonObject, Habit habit) {
         Set<LocalDateTime> reminders = parseReminderDateTimes(jsonObject.getJSONArray("reminders"));
         Clock clock = Clock.systemDefaultZone();
@@ -123,6 +127,7 @@ public class JsonReader {
         return new WeeklyReminder(reminders, clock, isDefault, habit, reminderScheduler);
     }
 
+    // EFFECTS: parses monthly reminder from JSON object and returns it
     private HabitReminder parseMonthlyReminder(JSONObject jsonObject, Habit habit) {
         boolean isDefault = jsonObject.getBoolean("isDefault");
         Set<Pair<Integer, LocalTime>> customReminders =
@@ -133,6 +138,7 @@ public class JsonReader {
         return new MonthlyReminder(customReminders, reminders, clock, isDefault, habit, reminderScheduler);
     }
 
+    // EFFECTS: parses reminder date times from JSON array and returns it
     private Set<LocalDateTime> parseReminderDateTimes(JSONArray jsonArray) {
         Set<LocalDateTime> reminders = new HashSet<>();
         for (Object json : jsonArray) {
@@ -142,6 +148,7 @@ public class JsonReader {
         return reminders;
     }
 
+    // EFFECTS: parses custom monthly pairs from JSON array and returns it
     private Set<Pair<Integer, LocalTime>> parseCustomMonthlyPairs(JSONArray jsonArray) {
         Set<Pair<Integer, LocalTime>> customReminders = new HashSet<>();
         for (Object json : jsonArray) {

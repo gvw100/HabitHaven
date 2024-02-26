@@ -69,7 +69,7 @@ public class HabitApp {
     // MODIFIES: this
     // EFFECTS: updates all habits in habit manager based on current time
     private void updateAllHabits() {
-        System.out.println("Updating habits...");
+        System.out.println("\nUpdating habits...");
         for (Habit habit : habitManager.getHabits()) {
             habit.updateHabit();
         }
@@ -113,6 +113,7 @@ public class HabitApp {
             System.out.println("Unable to read from file: " + HABIT_MANAGER_STORE);
             System.exit(-1);
         }
+        System.out.println("\nWelcome back, " + HabitManager.getUsername() + "!");
         updateAllHabits();
         menu();
     }
@@ -123,7 +124,7 @@ public class HabitApp {
         String command;
         do {
             displayMenu();
-            command = input.next().toLowerCase();
+            command = input.next();
 
             if (command.equals("q")) {
                 if (!isSaved) {
@@ -170,6 +171,7 @@ public class HabitApp {
         System.out.println("Select from:");
         System.out.println("\tc -> Create habit ");
         System.out.println("\tv -> View habit list");
+        System.out.println("\tu -> Change username");
         System.out.println("\ts -> Save to file");
         System.out.println("\tq -> Quit");
     }
@@ -183,6 +185,9 @@ public class HabitApp {
                 break;
             case "v":
                 viewHabits();
+                break;
+            case "u":
+                changeUsername();
                 break;
             case "s":
                 saveHabitManager();
@@ -533,7 +538,7 @@ public class HabitApp {
                     disableNotifications(habit);
                     break;
                 case "c":
-                    customizeNotificationTimes(habit);
+                    customizeNotificationDateTimes(habit);
                     break;
                 case "b":
                     viewHabit(habit);
@@ -582,7 +587,7 @@ public class HabitApp {
     // MODIFIES: this
     // EFFECTS: customizes notification times for given habit, if already customized, user can revert to default,
     //          keep current notifications, or override current notifications
-    private void customizeNotificationTimes(Habit habit) {
+    private void customizeNotificationDateTimes(Habit habit) {
         if (!habit.isNotifyEnabled()) {
             System.out.println("\nNotifications are disabled. Enable notifications to customize times");
             customizeNotifications(habit);
@@ -596,13 +601,15 @@ public class HabitApp {
         Set<LocalDateTime> reminders = new HashSet<>();
         Set<Pair<Integer, LocalTime>> monthlyPairs = new HashSet<>();
         for (int i = 0; i < numNotifications; i++) {
-            processTimeInput(habit, reminders, monthlyPairs, i);
+            processDateTimeInput(habit, reminders, monthlyPairs, i);
         }
         storeNotifications(habit, reminders, monthlyPairs);
         isSaved = false;
         customizeNotifications(habit);
     }
 
+    // REQUIRES: habit.isNotifyEnabled() is true
+    // MODIFIES: this
     // EFFECTS: processes input and returns false if user wants to override current notifications, true otherwise
     private boolean processOverrideInput(Habit habit) {
         List<String> validInputs = new ArrayList<>(Arrays.asList("d", "k", "o"));
@@ -638,22 +645,25 @@ public class HabitApp {
         }
     }
 
+    // MODIFIES: reminders, pairs
     // EFFECTS: processes time input for given habit, prompts user for time input based on period
-    private void processTimeInput(Habit habit, Set<LocalDateTime> times, Set<Pair<Integer, LocalTime>> pairs, int i) {
+    private void processDateTimeInput(Habit habit, Set<LocalDateTime> reminders,
+                                      Set<Pair<Integer, LocalTime>> pairs, int i) {
         switch (habit.getPeriod()) {
             case DAILY:
-                processDailyTimeInput(times, i);
+                processDailyInput(reminders, i);
                 break;
             case WEEKLY:
-                processWeeklyTimeInput(times, i);
+                processWeeklyInput(reminders, i);
                 break;
             case MONTHLY:
-                processMonthlyTimeInput(pairs, i);
+                processMonthlyInput(pairs, i);
         }
     }
 
-    // EFFECTS: prompts user for time input for daily reminders
-    private void processDailyTimeInput(Set<LocalDateTime> reminders, int i) {
+    // MODIFIES: reminders
+    // EFFECTS: prompts user for time input for daily reminders, adding to reminders and ensuring no duplicates
+    private void processDailyInput(Set<LocalDateTime> reminders, int i) {
         do {
             int hours = processHourInput(i);
             int minutes = processMinuteInput(i);
@@ -668,8 +678,9 @@ public class HabitApp {
         } while (true);
     }
 
-    // EFFECTS: prompts user for time input for weekly reminders
-    private void processWeeklyTimeInput(Set<LocalDateTime> reminders, int i) {
+    // MODIFIES: reminders
+    // EFFECTS: prompts user for day and time input for weekly reminders, adding to reminders and ensuring no duplicates
+    private void processWeeklyInput(Set<LocalDateTime> reminders, int i) {
         do {
             DayOfWeek dayOfWeek = processDayOfWeekInput(i);
             int hours = processHourInput(i);
@@ -685,8 +696,9 @@ public class HabitApp {
         } while (true);
     }
 
-    // EFFECTS: prompts user for time input for monthly reminders
-    private void processMonthlyTimeInput(Set<Pair<Integer, LocalTime>> pairs, int i) {
+    // MODIFIES: pairs
+    // EFFECTS: prompts user for day and time input for monthly reminders, adding to pairs and ensuring no duplicates
+    private void processMonthlyInput(Set<Pair<Integer, LocalTime>> pairs, int i) {
         do {
             int dayOfMonth = processDayOfMonthInput(i);
             int hours = processHourInput(i);
@@ -799,7 +811,7 @@ public class HabitApp {
     private void resetProgress(Habit habit) {
         String command;
         do {
-            System.out.println("Are you sure you want to reset habit progress? y/n (This action cannot be undone)");
+            System.out.println("Are you sure you want to reset habit progress? y/n");
             command = input.next();
         } while (!(command.equals("y") || command.equals("n")));
         if (command.equals("y")) {
@@ -810,7 +822,31 @@ public class HabitApp {
         viewHabit(habit);
     }
 
-    // EFFECTS: selects appropriate string based on the period
+    // MODIFIES: this
+    // EFFECTS: saves habit manager to file
+    private void saveHabitManager() {
+        JsonWriter jsonWriter = new JsonWriter(HABIT_MANAGER_STORE);
+        try {
+            jsonWriter.open();
+            jsonWriter.write(habitManager);
+            jsonWriter.close();
+            System.out.println("Your habits have been saved successfully!");
+            isSaved = true;
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + HABIT_MANAGER_STORE);
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: changes username to input provided by user
+    private void changeUsername() {
+        System.out.println("Enter new username: ");
+        HabitManager.setUsername(input.next());
+        isSaved = false;
+        System.out.println("Username changed to " + HabitManager.getUsername());
+    }
+
+    // EFFECTS: returns appropriate string based on the period
     private String getPeriodString(Period period, String day, String week, String month) {
         String periodString = null;
         switch (period) {
@@ -824,18 +860,5 @@ public class HabitApp {
                 periodString = month;
         }
         return periodString;
-    }
-
-    private void saveHabitManager() {
-        JsonWriter jsonWriter = new JsonWriter(HABIT_MANAGER_STORE);
-        try {
-            jsonWriter.open();
-            jsonWriter.write(habitManager);
-            jsonWriter.close();
-            System.out.println("Your habits have been saved successfully!");
-            isSaved = true;
-        } catch (FileNotFoundException e) {
-            System.out.println("Unable to write to file: " + HABIT_MANAGER_STORE);
-        }
     }
 }

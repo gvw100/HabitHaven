@@ -113,7 +113,7 @@ public abstract class HabitReminder {
     public abstract JSONObject toJson();
 
     // EFFECTS: returns reminders as a JSONArray
-    public JSONArray remindersToJson() {
+    protected JSONArray remindersToJson() {
         JSONArray jsonArray = new JSONArray();
         for (LocalDateTime dt : reminders) {
             jsonArray.put(reminderToJson(dt));
@@ -122,7 +122,7 @@ public abstract class HabitReminder {
     }
 
     // EFFECTS: returns reminder as a JSONObject
-    public JSONObject reminderToJson(LocalDateTime dt) {
+    protected JSONObject reminderToJson(LocalDateTime dt) {
         JSONObject json = new JSONObject();
         json.put("dateTime", dt.toString());
         return json;

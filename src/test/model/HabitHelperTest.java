@@ -18,6 +18,9 @@ public class HabitHelperTest {
     }
 
     protected void testJobSize(HabitReminder hr, int size) {
+        if (hr == null) {
+            fail();
+        }
         try {
             assertEquals(size, hr.reminderScheduler.getScheduler()
                     .getJobKeys(GroupMatcher
