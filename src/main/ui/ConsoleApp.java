@@ -19,20 +19,20 @@ import static org.quartz.CronScheduleBuilder.dailyAtHourAndMinute;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
-// Habit tracker application
+// Habit tracker console application
 // Citation: Some of the code here is inspired from the TellerApp.java class in the CPSC 210 course
 //           https://github.students.cs.ubc.ca/CPSC210/TellerApp
-public class HabitApp {
+public class ConsoleApp {
     private static final String HABIT_MANAGER_STORE = "./data/habitManager.json";
-    public static final int MAX_FREQUENCY = 15;
-    public static final int MONTH_MAX_DAYS = 31;
+    private static final int MAX_FREQUENCY = 15;
+    private static final int MONTH_MAX_DAYS = 31;
     private Scanner input;
     private HabitManager habitManager;
     private final Clock clock;
     private boolean isSaved;
 
     // EFFECTS: starts the application, clock initialized to system default zone and isSaved initialized to true
-    HabitApp() {
+    public ConsoleApp() {
         clock = Clock.systemDefaultZone();
         isSaved = true;
         startApp();
