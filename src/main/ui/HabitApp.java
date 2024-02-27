@@ -125,7 +125,6 @@ public class HabitApp {
         do {
             displayMenu();
             command = input.next();
-
             if (command.equals("q")) {
                 if (!isSaved) {
                     confirmSave();
@@ -191,9 +190,6 @@ public class HabitApp {
                 break;
             case "s":
                 saveHabitManager();
-                break;
-            default:
-                System.out.println("\nInvalid command");
         }
     }
 
@@ -204,7 +200,7 @@ public class HabitApp {
         String description = getHabitDescription();
         Period period = getHabitPeriod();
         int frequency = getHabitFrequency();
-        boolean notificationEnabled = getNotificationEnabled();
+        boolean notificationEnabled = getNotificationsEnabled();
         Habit habit = new Habit(name, description, period, frequency, notificationEnabled, clock);
         habitManager.addHabit(habit);
         isSaved = false;
@@ -225,8 +221,9 @@ public class HabitApp {
     // EFFECTS: returns habit period selected by user
     private Period getHabitPeriod() {
         Period period = null;
-        boolean inputIsValid = false;
+        boolean inputIsInvalid;
         do {
+            inputIsInvalid = false;
             System.out.println("Select from the following habit periods: ");
             System.out.println("\td -> Daily");
             System.out.println("\tw -> Weekly");
@@ -234,17 +231,17 @@ public class HabitApp {
             switch (input.next()) {
                 case "d":
                     period = Period.DAILY;
-                    inputIsValid = true;
                     break;
                 case "w":
                     period = Period.WEEKLY;
-                    inputIsValid = true;
                     break;
                 case "m":
                     period = Period.MONTHLY;
-                    inputIsValid = true;
+                    break;
+                default:
+                    inputIsInvalid = true;
             }
-        } while (!inputIsValid);
+        } while (inputIsInvalid);
         return period;
     }
 
@@ -256,7 +253,7 @@ public class HabitApp {
             if (input.hasNextInt()) {
                 frequency = input.nextInt();
                 if (frequency > 0 && frequency < 16) {
-                    break;
+                    return frequency;
                 } else {
                     System.out.println("Frequency must be between 1 and 15");
                 }
@@ -264,11 +261,10 @@ public class HabitApp {
                 input.next();
             }
         } while (true);
-        return frequency;
     }
 
     // EFFECTS: returns whether the user wants to enable notifications
-    private boolean getNotificationEnabled() {
+    private boolean getNotificationsEnabled() {
         String command;
         do {
             System.out.println("Enable notifications? y/n");
@@ -319,8 +315,11 @@ public class HabitApp {
                 editHabit(habit);
                 break;
             case "d":
-                deleteHabit(habit);
-                return true;
+                if (deleteHabit(habit)) {
+                    return true;
+                } else {
+                    break;
+                }
             case "f":
                 finishHabit(habit);
                 break;
@@ -457,8 +456,8 @@ public class HabitApp {
     }
 
     // MODIFIES: this
-    // EFFECTS: deletes habit after confirming user action
-    private void deleteHabit(Habit habit) {
+    // EFFECTS: deletes habit after confirming user action, returns whether habit was deleted
+    private boolean deleteHabit(Habit habit) {
         String command;
         do {
             System.out.println("\nAre you sure you want to delete this habit? y/n");
@@ -468,6 +467,9 @@ public class HabitApp {
             habitManager.deleteHabit(habit);
             System.out.println("\nHabit deleted successfully");
             isSaved = false;
+            return true;
+        } else {
+            return false;
         }
     }
 

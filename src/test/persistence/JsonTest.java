@@ -132,7 +132,7 @@ public class JsonTest {
         nps = 2;
         np = 3;
         checkHabitStatistics(habit, s, bs, tns, nps, np);
-        
+
         Set<LocalDateTime> reminders = new HashSet<>();
         int intervalMin = 48;
         for (int i = 0; i < 15; i++) {

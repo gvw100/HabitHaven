@@ -58,7 +58,7 @@ public class SendReminder implements Job {
     }
 
     private String getMessageGoals() {
-        String periodString = obtainPeriodString("day", "week", "month");
+        String periodString = getPeriodString("day", "week", "month");
         if (habitFrequency == 1) {
             return "You're aiming to do this habit " + habitFrequency + " time per "
                     + periodString + ". ";
@@ -76,7 +76,7 @@ public class SendReminder implements Job {
                     + "Only " + (habitFrequency - habitNumSuccesses) + " more to go! Keep pushing forward!";
         } else {
             return "You haven't completed this habit yet "
-                    + obtainPeriodString("today", "this week", "this month")
+                    + getPeriodString("today", "this week", "this month")
                     + ". Go get the ball rolling!";
         }
     }
@@ -86,7 +86,7 @@ public class SendReminder implements Job {
         String day = habitStreak == 1 ? " day" : " days";
         String week = habitStreak == 1 ? " week" : " weeks";
         String month = habitStreak == 1 ? " month" : " months";
-        String periodString = obtainPeriodString(day, week, month);
+        String periodString = getPeriodString(day, week, month);
         if (habitStreak > 0 && habitStreak < bestStreak) {
             return "With a streak of " + habitStreak + periodString + ", you're making amazing progress! "
                     + "Keep pushing and you'll reach your best streak of " + bestStreak + periodString + " in no time!";
@@ -99,7 +99,7 @@ public class SendReminder implements Job {
     }
 
     // EFFECTS: returns a string based on the habit's period
-    private String obtainPeriodString(String day, String week, String month) {
+    private String getPeriodString(String day, String week, String month) {
         switch (habitPeriod) {
             case DAILY:
                 return day;
