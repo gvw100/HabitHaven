@@ -26,7 +26,7 @@ public abstract class HabitReminder {
         this.reminderScheduler = new ReminderScheduler();
     }
 
-    // EFFECTS: default constructor for habit reminder
+    // EFFECTS: default constructor for habit reminder, called when loading from JSON for returning user
     public HabitReminder() {
     }
 
@@ -36,12 +36,6 @@ public abstract class HabitReminder {
 
     public Habit getHabit() {
         return this.habit;
-    }
-
-    // MODIFIES: this
-    // EFFECTS: sets the clock to the given clock, solely for testing purposes
-    public void setClock(Clock clock) {
-        this.clock = clock;
     }
 
     // EFFECTS: returns true if the reminder is default, false if it is custom
@@ -65,7 +59,7 @@ public abstract class HabitReminder {
         }
     }
 
-    // REQUIRES: isDefault is false
+    // REQUIRES: no reminders scheduled yet for this period, isDefault is false
     // MODIFIES: this
     // EFFECTS: updates custom reminders to match the current time
     public abstract void updateCustomReminders();
@@ -82,7 +76,7 @@ public abstract class HabitReminder {
     }
 
     // MODIFIES: this
-    // EFFECTS: sets reminders to newReminders, cancels old reminders, schedules new reminders,
+    // EFFECTS: sets this.reminders to newReminders, cancels old reminders, isDefault is false, schedules new reminders
     //          cannot be called for instances of MonthlyReminder to avoid method overriding issues
     public void setCustomReminders(Set<LocalDateTime> newReminders) {
         cancelReminders();
@@ -92,7 +86,7 @@ public abstract class HabitReminder {
     }
 
     // MODIFIES: this
-    // EFFECTS: reverts back to default reminders, cancels existing default reminders
+    // EFFECTS: reverts back to default reminders, cancels existing reminders
     public void setDefaultReminders() {
         cancelReminders();
         isDefault = true;
@@ -100,7 +94,7 @@ public abstract class HabitReminder {
     }
 
     // MODIFIES: this
-    // EFFECTS: cancels all reminders in the current period
+    // EFFECTS: cancels all reminders in the current period for this.habit
     public void cancelReminders() {
         for (LocalDateTime reminder : reminders) {
             String jobId = reminder.toString();

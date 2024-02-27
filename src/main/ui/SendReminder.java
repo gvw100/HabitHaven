@@ -57,6 +57,7 @@ public class SendReminder implements Job {
         System.out.println(message);
     }
 
+    // EFFECTS: returns a message about the user's goals
     private String getMessageGoals() {
         String periodString = getPeriodString("day", "week", "month");
         if (habitFrequency == 1) {

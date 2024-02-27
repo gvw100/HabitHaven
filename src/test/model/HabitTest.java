@@ -13,7 +13,7 @@ import java.util.UUID;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static org.junit.jupiter.api.Assertions.*;
 
-// test class for Habit
+// A test class for Habit
 public class HabitTest extends HabitHelperTest {
     private Clock c1;
     private Clock c2;

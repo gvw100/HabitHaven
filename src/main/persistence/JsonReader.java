@@ -28,7 +28,7 @@ public class JsonReader {
     }
 
     // EFFECTS: reads habit manager from file and returns it;
-    // throws IOException if an error occurs reading data from file
+    //          throws IOException if an error occurs reading data from file
     public HabitManager read() throws IOException {
         String jsonData = readFile(source);
         JSONObject jsonObject = new JSONObject(jsonData);

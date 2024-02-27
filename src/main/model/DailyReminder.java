@@ -13,13 +13,13 @@ import java.util.Set;
 // Represents a list of daily notifications for a habit
 public class DailyReminder extends HabitReminder {
 
-    // EFFECTS: constructs a daily reminder with given frequency, clock, and habit
+    // EFFECTS: constructs a default daily reminder with given clock and habit
     public DailyReminder(Clock clock, Habit habit) {
         super(clock, habit);
         updateDefaultReminders();
     }
 
-    // EFFECTS: constructs a daily reminder for returning user
+    // EFFECTS: constructs a daily reminder for returning users
     public DailyReminder(Set<LocalDateTime> reminders, Clock clock,
                          boolean isDefault, Habit habit, ReminderScheduler reminderScheduler) {
         this.reminders = reminders;
@@ -31,7 +31,7 @@ public class DailyReminder extends HabitReminder {
 
     // REQUIRES: no reminders scheduled yet for this period, isDefault is true
     // MODIFIES: this
-    // EFFECTS: distributes default daily reminders starting from DAY_START_TIME
+    // EFFECTS: distributes habit.getFrequency() default daily reminders starting at DAY_START_TIME
     @Override
     public void updateDefaultReminders() {
         reminders = new HashSet<>();
@@ -67,6 +67,7 @@ public class DailyReminder extends HabitReminder {
         return LocalDateTime.of(LocalDate.now(clock), time);
     }
 
+    // EFFECTS: returns DailyReminder as a JSONObject
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();

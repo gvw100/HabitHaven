@@ -11,7 +11,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-// Represents a helper class for testing
+// A helper class for testing
 public class HabitHelperTest {
     protected Clock getFixedClock(String parse) {
         return Clock.fixed(Instant.parse(parse), ZoneId.of("Z"));

@@ -13,6 +13,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// A test class for MonthlyReminder
 public class MonthlyReminderTest {
     private MonthlyReminder mr1;
     private MonthlyReminder mr2;

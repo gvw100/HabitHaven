@@ -10,6 +10,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// A test class for HabitReminder
 public class HabitReminderTest extends HabitHelperTest {
     private HabitReminder dr;
     private HabitReminder wr;
@@ -61,7 +62,6 @@ public class HabitReminderTest extends HabitHelperTest {
         reminders.add(LocalDateTime.now(wc).plusDays(2));
         wr.setCustomReminders(reminders);
         wr.cancelReminders();
-        wr.setClock(getFixedClock("2024-04-07T09:00:00Z"));
         wr.updateReminders();
         assertEquals(3, wr.reminders.size());
         testJobSize(wr, 3);
@@ -192,7 +192,6 @@ public class HabitReminderTest extends HabitHelperTest {
         reminders.add(LocalDateTime.now(wc).plusDays(2));
         wr.setCustomReminders(reminders);
         assertEquals(3, wr.reminders.size());
-        assertEquals(2, wr.getActiveReminders().size());
         testJobSize(wr, 3);
         wr.cancelReminders();
         testJobSize(wr, 0);

@@ -11,7 +11,7 @@ public class HabitManager {
     private final List<Habit> habits;
     private static String username;
 
-    // EFFECTS: instantiates list of habits
+    // EFFECTS: constructs a habit manager with an empty list of habits
     public HabitManager() {
         habits = new ArrayList<>();
     }
@@ -41,7 +41,7 @@ public class HabitManager {
 
     // REQUIRES: habit is in this.habits
     // MODIFIES: this
-    // EFFECTS: habit deleted from list of habits and reminders are cancelled
+    // EFFECTS: habit deleted from list of habits and reminders are cancelled if habit.isNotifyEnabled()
     public void deleteHabit(Habit habit) {
         habits.remove(habit);
         if (habit.isNotifyEnabled()) {
@@ -49,7 +49,7 @@ public class HabitManager {
         }
     }
 
-    // EFFECTS: returns habit manager as a JSON object
+    // EFFECTS: returns habit manager as a JSONObject
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("username", HabitManager.getUsername());
@@ -57,7 +57,7 @@ public class HabitManager {
         return json;
     }
 
-    // EFFECTS: returns habits in habit manager as a JSON array
+    // EFFECTS: returns habits habits as a JSONArray
     private JSONArray habitsToJson() {
         JSONArray jsonArray = new JSONArray();
         for (Habit h : habits) {

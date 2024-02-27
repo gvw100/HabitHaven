@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.UUID;
 
-// Represents a habit with a name, description, frequency, period, number of success, habit statistics,
+// Represents a habit with a name, description, period, frequency, number of successes, habit statistics,
 // and habit notifications
 public class Habit {
     private String name;
@@ -43,7 +43,7 @@ public class Habit {
     }
 
     // REQUIRES: 0 < frequency < 16
-    // EFFECTS: initializes habit for returning user
+    // EFFECTS: initializes habit for returning users
     public Habit(String n, String d, Period p, int f, UUID id, boolean ne, int ns, LocalDateTime cpe,
                  LocalDateTime npe, boolean ipc, Clock c, HabitStatistics hs, HabitReminder hr) {
         this.name = n;
@@ -74,8 +74,7 @@ public class Habit {
     }
 
     // MODIFIES: this
-    // EFFECTS: set this.clock, useful for testing purposes, solely for testing purposes
-    //          other clocks also updated to prevent exceptions in tests
+    // EFFECTS: set this.clock, and habitReminder.clock, solely for testing purposes
     public void setClock(Clock clock) {
         this.clock = clock;
         if (isNotifyEnabled()) {
@@ -93,8 +92,8 @@ public class Habit {
     // EFFECTS: sets this.notifyEnabled to notifyEnabled,
     //          if notifyEnabled != this.notifyEnabled, then habitReminder is reinitialized
     //          if notifyEnabled is true, then habitReminder is reinitialized to a new reminder
-    //          if notifyEnabled is false, then habitReminder is set to null and all reminders are cancelled
-    //          returns whether notifyEnabled was changed
+    //          if notifyEnabled is false, then all reminders are cancelled and habitReminder is set to null
+    //          returns whether this.notifyEnabled was changed
     public boolean setNotifyEnabled(boolean notifyEnabled) {
         if (notifyEnabled == this.notifyEnabled) {
             return false;
@@ -147,7 +146,7 @@ public class Habit {
         return true;
     }
 
-    // REQUIRES: notifyEnabled is true and no reminders have been scheduled
+    // REQUIRES: no reminders scheduled yet for this period, notifyEnabled is true
     // EFFECTS: returns new habit reminder with default notifications based on period
     public HabitReminder getNewReminder() {
         switch (period) {
@@ -214,15 +213,15 @@ public class Habit {
         return frequency == numSuccess;
     }
 
-    // REQUIRES: LocalDateTime.now(clock) is after currentPeriodEnd
+    // REQUIRES: LocalDateTime.now(clock) is between currentPeriodEnd and nextPeriodEnd
     // EFFECTS: returns whether previous period was completed successfully
     public boolean isPreviousComplete() {
         return this.isPreviousComplete;
     }
 
     // MODIFIES: this
-    // EFFECTS: if numSuccess < frequency, increments numSuccess and
-    //          updates habit statistics, returns whether habit was incremented
+    // EFFECTS: if numSuccess < frequency, increments numSuccess,
+    //          updates habit statistics and reminders, returns whether habit was incremented
     public boolean finishHabit() {
         if (numSuccess < frequency) {
             numSuccess++;
@@ -235,7 +234,7 @@ public class Habit {
 
     // MODIFIES: this
     // EFFECTS: if isPeriodComplete(), then increments both habitStats.numPeriodSuccess
-    //          a habitStats.streak, sets isPreviousComplete to true, and cancels reminders if notifyEnabled
+    //          a habitStats.streak, sets isPreviousComplete to true, and cancels reminders if isNotifyEnabled()
     public void checkPeriodComplete() {
         if (isPeriodComplete()) {
             isPreviousComplete = true;
@@ -250,7 +249,7 @@ public class Habit {
     // REQUIRES: LocalDateTime.now(clock) is after currentPeriodEnd
     // MODIFIES: this
     // EFFECTS: updates currentPeriodEnd and nextPeriodEnd, resets numSuccess to 0, increments numPeriod,
-    //          if notifyEnabled, then cancels old reminders and updates to new reminders
+    //          if notifyEnabled, updates to new reminders
     public void nextHabitPeriod() {
         updateDateTime();
         numSuccess = 0;
@@ -269,8 +268,9 @@ public class Habit {
     }
 
     // MODIFIES: this
-    // EFFECTS: updates currentPeriodEnd, nextPeriodEnd, and habit statistics based on current date time
+    // EFFECTS: updates notifications, currentPeriodEnd, nextPeriodEnd, and habit statistics based on current date time
     //          a day is defined to start at 00:00
+    //          if isNotifyEnabled(), and if !isPeriodComplete(), then update reminders, else cancel reminders
     //          if now is not after currentPeriodEnd, do nothing,
     //          if now is between currentPeriodEnd and nextPeriodEnd, but if !isPreviousComplete(),
     //          switch to next period, then reset streak,

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-// test class for HabitStatistics
+// A test class for HabitStatistics
 public class HabitStatisticsTest extends HabitHelperTest {
     private HabitStatistics habitStats;
 

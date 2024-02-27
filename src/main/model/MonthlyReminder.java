@@ -14,14 +14,14 @@ public class MonthlyReminder extends HabitReminder {
 
     private Set<Pair<Integer, LocalTime>> customReminders;
 
-    // EFFECTS: constructs a MonthlyReminder with clock and habit
+    // EFFECTS: constructs a default monthly reminder with given clock and habit
     public MonthlyReminder(Clock clock, Habit habit) {
         super(clock, habit);
         customReminders = null;
         updateDefaultReminders();
     }
 
-    // EFFECTS: constructs a MonthlyReminder for returning user
+    // EFFECTS: constructs a monthly reminder for returning users
     public MonthlyReminder(Set<Pair<Integer, LocalTime>> customReminders, Set<LocalDateTime> reminders, Clock clock,
                            boolean isDefault, Habit habit, ReminderScheduler reminderScheduler) {
         this.customReminders = customReminders;
@@ -39,7 +39,7 @@ public class MonthlyReminder extends HabitReminder {
 
     // REQUIRES: no reminders scheduled yet for this period, isDefault is true
     // MODIFIES: this
-    // EFFECTS: distributes reminders once per day over the month
+    // EFFECTS: distributes reminders once per day over the month at DAY_START_TIME
     @Override
     public void updateDefaultReminders() {
         reminders = new HashSet<>();
@@ -56,10 +56,10 @@ public class MonthlyReminder extends HabitReminder {
     }
 
     // REQUIRES: no reminders scheduled yet for this period, isDefault is false
-    /// MODIFIES: this
-    //  EFFECTS: updates custom monthly reminders based on this.customReminders,
-    //           ensures that all reminders are in the current month,
-    //           duplicates are ignored (February 31 becomes February 28/29, etc.)
+    // MODIFIES: this
+    // EFFECTS: updates custom monthly reminders based on this.customReminders,
+    //          ensures that all reminders are in the current month,
+    //          duplicates are ignored (February 31 becomes February 28/29, etc.)
     @Override
     public void updateCustomReminders() {
         Set<LocalDateTime> newReminders = new HashSet<>();
@@ -102,12 +102,11 @@ public class MonthlyReminder extends HabitReminder {
         JSONObject json = new JSONObject();
         json.put("isDefault", isDefault);
         json.put("reminders", remindersToJson());
-
         json.put("customReminders", customRemindersToJson());
         return json;
     }
 
-    // EFFECTS: returns custom reminders as a JSONArray
+    // EFFECTS: returns customReminders as a JSONArray
     private JSONArray customRemindersToJson() {
         JSONArray array = new JSONArray();
         if (customReminders == null) {
@@ -119,7 +118,7 @@ public class MonthlyReminder extends HabitReminder {
         return array;
     }
 
-    // EFFECTS: returns custom reminder as a JSONObject
+    // EFFECTS: returns customReminder as a JSONObject
     private JSONObject customReminderToJson(Pair<Integer, LocalTime> customReminder) {
         JSONObject json = new JSONObject();
         json.put("day", customReminder.getKey());

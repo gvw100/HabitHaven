@@ -11,12 +11,13 @@ import java.util.Set;
 // Represents a list of weekly notifications for a habit
 public class WeeklyReminder extends HabitReminder {
 
-    // EFFECTS: constructs a weekly reminder with the given clock and habit
+    // EFFECTS: constructs a default weekly reminder with given clock and habit
     public WeeklyReminder(Clock clock, Habit habit) {
         super(clock, habit);
         updateDefaultReminders();
     }
 
+    // EFFECTS: constructs a weekly reminder for returning users
     public WeeklyReminder(Set<LocalDateTime> reminders, Clock clock, boolean isDefault,
                    Habit habit, ReminderScheduler reminderScheduler) {
         this.reminders = reminders;
@@ -28,7 +29,7 @@ public class WeeklyReminder extends HabitReminder {
 
     // REQUIRES: no reminders scheduled yet for this period, isDefault is true
     // MODIFIES: this
-    // EFFECTS: distributes reminders once per day over the week
+    // EFFECTS: distributes reminders once per day over the week at DAY_START_TIME
     @Override
     public void updateDefaultReminders() {
         reminders = new HashSet<>();
@@ -72,6 +73,7 @@ public class WeeklyReminder extends HabitReminder {
         return LocalDateTime.of(dayOfWeek, time);
     }
 
+    // EFFECTS: returns WeeklyReminder as a JSONObject
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();

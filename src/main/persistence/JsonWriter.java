@@ -20,7 +20,7 @@ public class JsonWriter {
 
     // MODIFIES: this
     // EFFECTS: opens writer; throws FileNotFoundException if destination file cannot
-    // be opened for writing
+    //          be opened for writing
     public void open() throws FileNotFoundException {
         writer = new PrintWriter(destination);
     }

@@ -29,7 +29,7 @@ public class HabitApp {
     private final Clock clock;
     private boolean isSaved;
 
-    // EFFECTS: starts the application
+    // EFFECTS: starts the application, clock initialized to system default zone and isSaved initialized to true
     HabitApp() {
         clock = Clock.systemDefaultZone();
         isSaved = true;
@@ -37,10 +37,9 @@ public class HabitApp {
     }
 
     // MODIFIES: this
-    // EFFECTS: setup scanner, display menu, and process input
+    // EFFECTS: sets up scanner and loads habit data from file or creates a new user
     private void startApp() {
         setupScanner();
-        scheduleHabitUpdates();
         loadOrCreateUser();
     }
 
@@ -93,18 +92,19 @@ public class HabitApp {
     }
 
     // MODIFIES: this
-    // EFFECTS: sets username to input provided by user and displays menu
+    // EFFECTS: sets username to input provided by user, schedules habit updates, and displays menu
     private void newUser() {
         habitManager = new HabitManager();
         System.out.println("Enter your name: ");
         HabitManager.setUsername(input.next());
         System.out.println("Welcome, " + HabitManager.getUsername() + "!");
         isSaved = false;
+        scheduleHabitUpdates();
         menu();
     }
 
     // MODIFIES: this
-    // EFFECTS: loads user data from file and displays menu
+    // EFFECTS: loads user data from file, updates all habits, schedules habit updates, and displays menu
     private void loadUser() {
         JsonReader jsonReader = new JsonReader(HABIT_MANAGER_STORE);
         try {
@@ -115,6 +115,7 @@ public class HabitApp {
         }
         System.out.println("\nWelcome back, " + HabitManager.getUsername() + "!");
         updateAllHabits();
+        scheduleHabitUpdates();
         menu();
     }
 
@@ -138,6 +139,8 @@ public class HabitApp {
         closeApp();
     }
 
+    // MODIFIES: this
+    // EFFECTS: prompts user to save changes, and closes the application
     private void confirmSave() {
         String command;
         do {
@@ -152,6 +155,7 @@ public class HabitApp {
         }
     }
 
+    // EFFECTS: closes the application
     private void closeApp() {
         System.out.println("\nGoodbye!");
         System.exit(0);
@@ -245,7 +249,7 @@ public class HabitApp {
         return period;
     }
 
-    // EFFECTS: returns habit frequency entered by user restricted between 1 and 15
+    // EFFECTS: returns habit frequency entered by user restricted between 1 and 15, inclusive
     private int getHabitFrequency() {
         int frequency;
         do {
@@ -297,7 +301,7 @@ public class HabitApp {
     }
 
     // MODIFIES: this
-    // EFFECTS: view habit and process habit input commands
+    // EFFECTS: view habit and process habit input
     private void viewHabit(Habit habit) {
         boolean isBackInput;
         do {
@@ -307,7 +311,7 @@ public class HabitApp {
     }
 
     // MODIFIES: this
-    // EFFECTS: brings user to the appropriate habit tool according to input, returns whether user wants to go back
+    // EFFECTS: brings user to the appropriate habit tool according to input, returns whether user will go back
     //          to habit list
     private boolean processHabitInput(Habit habit) {
         switch (input.next()) {
@@ -474,7 +478,7 @@ public class HabitApp {
     }
 
     // MODIFIES: this
-    // EFFECTS: marks habit has complete, incrementing numSuccess, awarding user for successful completion of period
+    // EFFECTS: marks habit as complete, incrementing numSuccess, awarding user for successful completion of period
     private void finishHabit(Habit habit) {
         String periodString = getPeriodString(habit.getPeriod(), "today.", "this week.", "this month.");
         boolean isCompleted = habit.finishHabit();
@@ -776,7 +780,8 @@ public class HabitApp {
         return minutes;
     }
 
-    // EFFECTS: prompts user for number of notifications, restricted between 1 and 15, inclusive
+    // EFFECTS: prompts user for number of notifications, restricted between 1 and max, inclusive
+    //          max is 31 for monthly, 15 for daily and weekly
     private int getNumNotifications(String message, Period period) {
         int max = period == Period.MONTHLY ? 31 : 15;
         int numNotifications;

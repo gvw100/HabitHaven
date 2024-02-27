@@ -12,6 +12,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// A test class for WeeklyReminder
 public class WeeklyReminderTest {
     private Habit h1;
     private Habit h2;

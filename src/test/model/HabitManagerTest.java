@@ -8,7 +8,7 @@ import java.time.Clock;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-// test class for HabitManager
+// A test class for HabitManager
 public class HabitManagerTest extends HabitHelperTest {
     private HabitManager habitManager;
 

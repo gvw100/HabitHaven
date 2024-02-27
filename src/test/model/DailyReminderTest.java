@@ -10,6 +10,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// A test class for DailyReminder
 public class DailyReminderTest extends HabitHelperTest {
     private Habit h1;
     private Habit h2;

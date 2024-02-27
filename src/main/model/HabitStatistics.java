@@ -13,7 +13,7 @@ public class HabitStatistics {
     private int numPeriodSuccess;
     private int numPeriod;
 
-    // EFFECTS: initializes all fields to 0
+    // EFFECTS: constructs habit statistics with all fields set to 0
     public HabitStatistics() {
         streak = 0;
         bestStreak = 0;
@@ -22,7 +22,7 @@ public class HabitStatistics {
         numPeriod = 0;
     }
 
-    // EFFECTS: initializes habit statistics for returning user
+    // EFFECTS: constructs habit statistics for returning users
     public HabitStatistics(int streak, int bestStreak, int totalNumSuccess, int numPeriodSuccess, int numPeriod) {
         this.streak = streak;
         this.bestStreak = bestStreak;

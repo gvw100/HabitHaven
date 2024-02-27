@@ -12,7 +12,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.Set;
 
-// A scheduler for notifications of a particular habit
+// A scheduler for habit notifications
 public class ReminderScheduler {
 
     private Scheduler scheduler;
@@ -41,7 +41,8 @@ public class ReminderScheduler {
     }
 
     // MODIFIES: this
-    // EFFECTS: schedules a notification to be sent at the given time
+    // EFFECTS: schedules a notification to be sent at the given time, misfired jobs are not executed to
+    //          avoid overload of notifications in tests
     private void scheduleReminder(LocalDateTime reminder, Habit habit) {
         String jobId = reminder.toString();
         String groupId = habit.getId().toString();
@@ -69,7 +70,7 @@ public class ReminderScheduler {
     }
 
     // MODIFIES: this
-    // EFFECTS: cancel reminder with given jobId and groupId
+    // EFFECTS: cancels reminder with given jobId and groupId
     public void cancelReminder(String jobId, String groupId) {
         try {
             scheduler.deleteJob(new JobKey(jobId, groupId));
