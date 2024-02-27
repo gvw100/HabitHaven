@@ -20,6 +20,7 @@ public abstract class HabitReminder {
 
     // EFFECTS: constructs a default habit reminder with given clock and habit
     public HabitReminder(Clock clock, Habit habit) {
+        this.reminders = new HashSet<>();
         this.isDefault = true;
         this.clock = clock;
         this.habit = habit;
@@ -88,9 +89,8 @@ public abstract class HabitReminder {
     // MODIFIES: this
     // EFFECTS: reverts back to default reminders, cancels existing reminders
     public void setDefaultReminders() {
-        cancelReminders();
         isDefault = true;
-        updateDefaultReminders();
+        updateReminders();
     }
 
     // MODIFIES: this

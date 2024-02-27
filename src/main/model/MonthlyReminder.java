@@ -18,7 +18,7 @@ public class MonthlyReminder extends HabitReminder {
     public MonthlyReminder(Clock clock, Habit habit) {
         super(clock, habit);
         customReminders = null;
-        updateDefaultReminders();
+        updateReminders();
     }
 
     // EFFECTS: constructs a monthly reminder for returning users
@@ -42,7 +42,7 @@ public class MonthlyReminder extends HabitReminder {
     // EFFECTS: distributes reminders once per day over the month at DAY_START_TIME
     @Override
     public void updateDefaultReminders() {
-        reminders = new HashSet<>();
+        reminders.clear();
         LocalDate now = LocalDate.now(clock);
         YearMonth yearMonth = YearMonth.now(clock);
         int daysThisMonth = yearMonth.lengthOfMonth();
@@ -73,7 +73,6 @@ public class MonthlyReminder extends HabitReminder {
             }
             newReminders.add(next);
         }
-        reminders.clear();
         reminders = newReminders;
         reminderScheduler.scheduleReminders(reminders, habit);
     }
@@ -90,10 +89,9 @@ public class MonthlyReminder extends HabitReminder {
     //          sets isDefault to false,
     //          distributes custom reminders based on current time
     public void setCustomMonthlyReminders(Set<Pair<Integer, LocalTime>> newReminders) {
-        cancelReminders();
         customReminders = newReminders;
         isDefault = false;
-        updateCustomReminders();
+        updateReminders();
     }
 
     // EFFECTS: returns MonthlyReminder as a JSONObject

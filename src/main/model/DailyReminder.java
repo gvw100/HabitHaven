@@ -16,7 +16,7 @@ public class DailyReminder extends HabitReminder {
     // EFFECTS: constructs a default daily reminder with given clock and habit
     public DailyReminder(Clock clock, Habit habit) {
         super(clock, habit);
-        updateDefaultReminders();
+        updateReminders();
     }
 
     // EFFECTS: constructs a daily reminder for returning users
@@ -34,7 +34,7 @@ public class DailyReminder extends HabitReminder {
     // EFFECTS: distributes habit.getFrequency() default daily reminders starting at DAY_START_TIME
     @Override
     public void updateDefaultReminders() {
-        reminders = new HashSet<>();
+        reminders.clear();
         double reminderInterval = (double) DAY_LENGTH / (double) habit.getFrequency();
         int hours = (int) Math.floor(reminderInterval);
         int minutes = (int) Math.round((reminderInterval - hours) * 60);
@@ -57,7 +57,6 @@ public class DailyReminder extends HabitReminder {
             LocalDateTime newDateTime = makeDailyReminder(dateTime.toLocalTime(), clock);
             newReminders.add(newDateTime);
         }
-        reminders.clear();
         reminders = newReminders;
         reminderScheduler.scheduleReminders(reminders, habit);
     }

@@ -24,6 +24,8 @@ import static org.quartz.TriggerBuilder.newTrigger;
 //           https://github.students.cs.ubc.ca/CPSC210/TellerApp
 public class HabitApp {
     private static final String HABIT_MANAGER_STORE = "./data/habitManager.json";
+    public static final int MAX_FREQUENCY = 15;
+    public static final int MONTH_MAX_DAYS = 31;
     private Scanner input;
     private HabitManager habitManager;
     private final Clock clock;
@@ -87,7 +89,7 @@ public class HabitApp {
         if (command.equals("n")) {
             newUser();
         } else {
-            loadUser();
+            loadHabitManager();
         }
     }
 
@@ -105,7 +107,7 @@ public class HabitApp {
 
     // MODIFIES: this
     // EFFECTS: loads user data from file, updates all habits, schedules habit updates, and displays menu
-    private void loadUser() {
+    private void loadHabitManager() {
         JsonReader jsonReader = new JsonReader(HABIT_MANAGER_STORE);
         try {
             habitManager = jsonReader.read();
@@ -249,17 +251,17 @@ public class HabitApp {
         return period;
     }
 
-    // EFFECTS: returns habit frequency entered by user restricted between 1 and 15, inclusive
+    // EFFECTS: returns habit frequency entered by user restricted between 1 and MAX_FREQUENCY, inclusive
     private int getHabitFrequency() {
         int frequency;
         do {
             System.out.println("Enter habit frequency: ");
             if (input.hasNextInt()) {
                 frequency = input.nextInt();
-                if (frequency > 0 && frequency < 16) {
+                if (frequency > 0 && frequency <= MAX_FREQUENCY) {
                     return frequency;
                 } else {
-                    System.out.println("Frequency must be between 1 and 15");
+                    System.out.println("Frequency must be between 1 and " + MAX_FREQUENCY);
                 }
             } else {
                 input.next();
@@ -426,7 +428,7 @@ public class HabitApp {
     }
 
     // MODIFIES: this
-    // EFFECTS: changes frequency to frequency selected by user between 1 and 15
+    // EFFECTS: changes frequency to frequency selected by user between 1 and MAX_FREQUENCY
     private void changeFrequency(Habit habit) {
         String command;
         do {
@@ -466,7 +468,7 @@ public class HabitApp {
         do {
             System.out.println("\nAre you sure you want to delete this habit? y/n");
             command = input.next();
-        } while (!((command.equals("y")) || (command.equals("n"))));
+        } while (!(command.equals("y") || command.equals("n")));
         if (command.equals("y")) {
             habitManager.deleteHabit(habit);
             System.out.println("\nHabit deleted successfully");
@@ -736,7 +738,7 @@ public class HabitApp {
             System.out.println("Enter day of month (1-31) for notification " + (i + 1) + ": ");
             if (input.hasNextInt()) {
                 dayOfMonth = input.nextInt();
-                if (dayOfMonth >= 1 && dayOfMonth <= 31) {
+                if (dayOfMonth >= 1 && dayOfMonth <= MONTH_MAX_DAYS) {
                     break;
                 }
             } else {
@@ -781,9 +783,9 @@ public class HabitApp {
     }
 
     // EFFECTS: prompts user for number of notifications, restricted between 1 and max, inclusive
-    //          max is 31 for monthly, 15 for daily and weekly
+    //          max is 31 for monthly, MAX_FREQUENCY for daily and weekly
     private int getNumNotifications(String message, Period period) {
-        int max = period == Period.MONTHLY ? 31 : 15;
+        int max = period == Period.MONTHLY ? MONTH_MAX_DAYS : MAX_FREQUENCY;
         int numNotifications;
         do {
             System.out.println(message);

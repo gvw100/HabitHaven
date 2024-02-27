@@ -21,10 +21,12 @@ import ui.ReminderScheduler;
 // Citation: Code inspired by JsonSerializationDemo https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
 public class JsonReader {
     private String source;
+    private Clock clock;
 
     // EFFECTS: constructs reader to read from source file
     public JsonReader(String source) {
         this.source = source;
+        this.clock = Clock.systemDefaultZone();
     }
 
     // EFFECTS: reads habit manager from file and returns it;
@@ -76,7 +78,6 @@ public class JsonReader {
         LocalDateTime currentPeriodEnd = LocalDateTime.parse(jsonObject.getString("currentPeriodEnd"));
         LocalDateTime nextPeriodEnd = LocalDateTime.parse(jsonObject.getString("nextPeriodEnd"));
         boolean isPreviousComplete = jsonObject.getBoolean("isPreviousComplete");
-        Clock clock = Clock.systemDefaultZone();
         HabitStatistics stats = parseHabitStatistics(jsonObject.getJSONObject("habitStats"));
         Habit habit = new Habit(name, description, period, frequency, id, notifyEnabled, numSuccess,
                 currentPeriodEnd, nextPeriodEnd, isPreviousComplete, clock, stats, null);
@@ -111,7 +112,6 @@ public class JsonReader {
     // EFFECTS: parses daily reminder from JSON object and returns it
     private HabitReminder parseDailyReminder(JSONObject jsonObject, Habit habit) {
         Set<LocalDateTime> reminders = parseReminderDateTimes(jsonObject.getJSONArray("reminders"));
-        Clock clock = Clock.systemDefaultZone();
         boolean isDefault = jsonObject.getBoolean("isDefault");
         ReminderScheduler reminderScheduler = new ReminderScheduler();
         return new DailyReminder(reminders, clock, isDefault, habit, reminderScheduler);
@@ -120,7 +120,6 @@ public class JsonReader {
     // EFFECTS: parses weekly reminder from JSON object and returns it
     private HabitReminder parseWeeklyReminder(JSONObject jsonObject, Habit habit) {
         Set<LocalDateTime> reminders = parseReminderDateTimes(jsonObject.getJSONArray("reminders"));
-        Clock clock = Clock.systemDefaultZone();
         boolean isDefault = jsonObject.getBoolean("isDefault");
         ReminderScheduler reminderScheduler = new ReminderScheduler();
         return new WeeklyReminder(reminders, clock, isDefault, habit, reminderScheduler);
@@ -132,7 +131,6 @@ public class JsonReader {
         Set<Pair<Integer, LocalTime>> customReminders =
                 isDefault ? null : parseCustomMonthlyPairs(jsonObject.getJSONArray("customReminders"));
         Set<LocalDateTime> reminders = parseReminderDateTimes(jsonObject.getJSONArray("reminders"));
-        Clock clock = Clock.systemDefaultZone();
         ReminderScheduler reminderScheduler = new ReminderScheduler();
         return new MonthlyReminder(customReminders, reminders, clock, isDefault, habit, reminderScheduler);
     }
