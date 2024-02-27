@@ -23,8 +23,7 @@
                     {"dateTime": "2024-02-25T18:30"},
                     {"dateTime": "2024-02-25T17:00"}
                 ],
-                "isDefault": false,
-                "frequency": 1
+                "isDefault": false
             }
         },
         {
@@ -82,8 +81,7 @@
                     {"dateTime": "2024-02-25T16:12"},
                     {"dateTime": "2024-02-25T13:00"}
                 ],
-                "isDefault": true,
-                "frequency": 15
+                "isDefault": true
             }
         },
         {

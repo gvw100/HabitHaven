@@ -39,8 +39,8 @@ public class DailyReminderTest extends HabitHelperTest {
 
     @Test
     void testConstructor() {
-        assertEquals(5, dr1.getFrequency());
-        assertEquals(7, dr2.getFrequency());
+        assertEquals(5, dr1.getHabit().getFrequency());
+        assertEquals(7, dr2.getHabit().getFrequency());
         assertTrue(dr1.isDefault());
         assertTrue(dr2.isDefault());
         assertEquals(c1, dr1.clock);
@@ -59,8 +59,7 @@ public class DailyReminderTest extends HabitHelperTest {
         reminders.add(LocalDateTime.of(2024, 8, 23, 13, 48));
         reminders.add(LocalDateTime.of(2024, 8, 23, 16, 12));
         reminders.add(LocalDateTime.of(2024, 8, 23, 18, 36));
-        DailyReminder dr = new DailyReminder(5, reminders, c1, true, h1, new ReminderScheduler());
-        assertEquals(5, dr.getFrequency());
+        DailyReminder dr = new DailyReminder(reminders, c1, true, h1, new ReminderScheduler());
         assertEquals(reminders, dr.getReminders());
         assertTrue(dr.isDefault());
         assertEquals(c1, dr.clock);
@@ -68,27 +67,9 @@ public class DailyReminderTest extends HabitHelperTest {
     }
 
     @Test
-    void testSetFrequency() {
-        dr1.setFrequency(3);
-        assertEquals(3, dr1.getFrequency());
-        assertTrue(dr1.isDefault());
-        testJobSize(dr1, 3);
-        dr1.setFrequency(7);
-        assertEquals(7, dr1.getFrequency());
-        assertTrue(dr1.isDefault());
-        testJobSize(dr1, 7);
-    }
-
-    @Test
-    void testGetFrequency() {
-        assertEquals(5, dr1.getFrequency());
-        assertEquals(7, dr2.getFrequency());
-    }
-
-    @Test
     void testDistributeReminders() {
         dr1.cancelReminders();
-        dr1.distributeReminders();
+        dr1.updateDefaultReminders();
         testCorrectDistribution(dr1, Set.of(
                 LocalDateTime.of(2024, 8, 23, 9, 0),
                 LocalDateTime.of(2024, 8, 23, 11, 24),
@@ -98,7 +79,7 @@ public class DailyReminderTest extends HabitHelperTest {
         ));
         testJobSize(dr1, 5);
         dr2.cancelReminders();
-        dr2.distributeReminders();
+        dr2.updateDefaultReminders();
         testCorrectDistribution(dr2, Set.of(
                 LocalDateTime.of(2024, 11, 12, 9, 0),
                 LocalDateTime.of(2024, 11, 12, 10, 43),
@@ -110,7 +91,7 @@ public class DailyReminderTest extends HabitHelperTest {
         ));
         testJobSize(dr2, 7);
         dr3.cancelReminders();
-        dr3.distributeReminders();
+        dr3.updateDefaultReminders();
         testCorrectDistribution(dr3, Set.of(
                 LocalDateTime.of(2024, 3, 31, 9, 0),
                 LocalDateTime.of(2024, 3, 31, 13, 0),

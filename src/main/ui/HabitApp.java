@@ -292,28 +292,27 @@ public class HabitApp {
             if (input.hasNextInt()) {
                 index = input.nextInt();
                 if (index >= 1 && index <= habits.size()) {
-                    break;
+                    viewHabit(habits.get(index - 1));
                 }
             } else if (input.next().equals("m")) {
-                menu();
+                return;
             }
         } while (true);
-        viewHabit(habits.get(index - 1));
     }
 
     // MODIFIES: this
     // EFFECTS: view habit and process habit input commands
     private void viewHabit(Habit habit) {
-        boolean inputIsInvalid;
+        boolean isBackInput;
         do {
             displayHabit(habit);
-            inputIsInvalid = processHabitInput(habit);
-        } while (inputIsInvalid);
+            isBackInput = processHabitInput(habit);
+        } while (!isBackInput);
     }
 
     // MODIFIES: this
-    // EFFECTS: brings user to the appropriate habit tool according to input, returns whether input is invalid
-    @SuppressWarnings("methodlength")
+    // EFFECTS: brings user to the appropriate habit tool according to input, returns whether user wants to go back
+    //          to habit list
     private boolean processHabitInput(Habit habit) {
         switch (input.next()) {
             case "e":
@@ -321,7 +320,7 @@ public class HabitApp {
                 break;
             case "d":
                 deleteHabit(habit);
-                break;
+                return true;
             case "f":
                 finishHabit(habit);
                 break;
@@ -331,15 +330,7 @@ public class HabitApp {
             case "n":
                 customizeNotifications(habit);
                 break;
-            case "r":
-                resetProgress(habit);
             case "h":
-                viewHabits();
-                break;
-            case "m":
-                menu();
-                break;
-            default:
                 return true;
         }
         return false;
@@ -357,17 +348,13 @@ public class HabitApp {
         System.out.println("\tf -> Finish habit");
         System.out.println("\ts -> Show in-depth statistics");
         System.out.println("\tn -> Customize notifications");
-        System.out.println("\tr -> Reset habit progress");
         System.out.println("\th -> Back to habit list");
-        System.out.println("\tm -> Back to menu");
     }
 
     // MODIFIES: this
     // EFFECTS: displays edit options and processes edit input
     private void editHabit(Habit habit) {
-        boolean inputIsInvalid;
         do {
-            inputIsInvalid = false;
             displayEditOptions();
             switch (input.next()) {
                 case "n":
@@ -378,14 +365,17 @@ public class HabitApp {
                     break;
                 case "p":
                     changePeriod(habit);
+                    break;
                 case "f":
                     changeFrequency(habit);
+                    break;
+                case "r":
+                    resetProgress(habit);
+                    break;
                 case "b":
-                    viewHabit(habit);
-                default:
-                    inputIsInvalid = true;
+                    return;
             }
-        } while (inputIsInvalid);
+        } while (true);
     }
 
     // EFFECTS: displays options for habit editing
@@ -395,6 +385,7 @@ public class HabitApp {
         System.out.println("\td -> Change description");
         System.out.println("\tp -> Change period");
         System.out.println("\tf -> Change frequency");
+        System.out.println("\tr -> Reset habit progress");
         System.out.println("\tb -> Back to habit");
     }
 
@@ -403,7 +394,6 @@ public class HabitApp {
     private void changeName(Habit habit) {
         habit.setName(getHabitName());
         isSaved = false;
-        editHabit(habit);
     }
 
     // MODIFIES: this
@@ -411,7 +401,6 @@ public class HabitApp {
     private void changeDescription(Habit habit) {
         habit.setDescription(getHabitDescription());
         isSaved = false;
-        editHabit(habit);
     }
 
     // MODIFIES: this
@@ -424,14 +413,13 @@ public class HabitApp {
             command = input.next();
         } while (!(command.equals("y") || command.equals("n")));
         if (command.equals("n")) {
-            editHabit(habit);
+            return;
         }
         if (!habit.setPeriod(getHabitPeriod())) {
             System.out.println("\nPeriod already set to " + habit.getPeriod());
         } else {
             isSaved = false;
         }
-        editHabit(habit);
     }
 
     // MODIFIES: this
@@ -444,14 +432,28 @@ public class HabitApp {
             command = input.next();
         } while (!(command.equals("y") || command.equals("n")));
         if (command.equals("n")) {
-            editHabit(habit);
+            return;
         }
         if (!habit.setFrequency(getHabitFrequency())) {
             System.out.println("\nFrequency already set to " + habit.getFrequency());
         } else {
             isSaved = false;
         }
-        editHabit(habit);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: resets habit progress and statistics
+    private void resetProgress(Habit habit) {
+        String command;
+        do {
+            System.out.println("Are you sure you want to reset habit progress? y/n");
+            command = input.next();
+        } while (!(command.equals("y") || command.equals("n")));
+        if (command.equals("y")) {
+            habit.resetProgress();
+            isSaved = false;
+            System.out.println("Habit progress reset successfully");
+        }
     }
 
     // MODIFIES: this
@@ -466,10 +468,6 @@ public class HabitApp {
             habitManager.deleteHabit(habit);
             System.out.println("\nHabit deleted successfully");
             isSaved = false;
-            viewHabits();
-        } else {
-            System.out.println();
-            viewHabit(habit);
         }
     }
 
@@ -491,7 +489,6 @@ public class HabitApp {
             System.out.println(message);
             isSaved = false;
         }
-        viewHabit(habit);
     }
 
     // EFFECTS: displays in-depth habit statistics
@@ -515,7 +512,6 @@ public class HabitApp {
             System.out.println("\n\t b -> Back to habit");
             inputIsInvalid = processStatInput();
         } while (inputIsInvalid);
-        viewHabit(habit);
     }
 
     // EFFECTS: processes input and returns whether the input is invalid
@@ -526,9 +522,7 @@ public class HabitApp {
     // MODIFIES: this
     // EFFECTS: displays notification options and processes input
     private void customizeNotifications(Habit habit) {
-        boolean inputIsInvalid;
         do {
-            inputIsInvalid = false;
             displayNotificationOptions();
             switch (input.next()) {
                 case "e":
@@ -541,12 +535,9 @@ public class HabitApp {
                     customizeNotificationDateTimes(habit);
                     break;
                 case "b":
-                    viewHabit(habit);
-                    break;
-                default:
-                    inputIsInvalid = true;
+                    return;
             }
-        } while (inputIsInvalid);
+        } while (true);
     }
 
     // EFFECTS: displays notification options
@@ -568,7 +559,6 @@ public class HabitApp {
         } else {
             System.out.println("\nNotifications already enabled");
         }
-        customizeNotifications(habit);
     }
 
     // MODIFIES: this
@@ -581,7 +571,6 @@ public class HabitApp {
         } else {
             System.out.println("\nNotifications already disabled");
         }
-        customizeNotifications(habit);
     }
 
     // MODIFIES: this
@@ -590,10 +579,10 @@ public class HabitApp {
     private void customizeNotificationDateTimes(Habit habit) {
         if (!habit.isNotifyEnabled()) {
             System.out.println("\nNotifications are disabled. Enable notifications to customize times");
-            customizeNotifications(habit);
+            return;
         }
-        if (!habit.getHabitReminder().isDefault() && processOverrideInput(habit)) {
-            customizeNotifications(habit);
+        if (!habit.getHabitReminder().isDefault() && !processOverrideInput(habit)) {
+            return;
         }
         String numMessage = "How many notifications would you like to receive" + getPeriodString(habit.getPeriod(),
                 " per day", " per week", " per month") + "?";
@@ -605,12 +594,11 @@ public class HabitApp {
         }
         storeNotifications(habit, reminders, monthlyPairs);
         isSaved = false;
-        customizeNotifications(habit);
     }
 
     // REQUIRES: habit.isNotifyEnabled() is true
     // MODIFIES: this
-    // EFFECTS: processes input and returns false if user wants to override current notifications, true otherwise
+    // EFFECTS: processes input and returns true if user wants to override current notifications, false otherwise
     private boolean processOverrideInput(Habit habit) {
         List<String> validInputs = new ArrayList<>(Arrays.asList("d", "k", "o"));
         String command;
@@ -625,11 +613,11 @@ public class HabitApp {
             case "d":
                 habit.getHabitReminder().setDefaultReminders();
                 isSaved = false;
-                return true;
-            case "k":
-                return true;
-            default:
                 return false;
+            case "k":
+                return false;
+            default:
+                return true;
         }
     }
 
@@ -804,22 +792,6 @@ public class HabitApp {
             }
         } while (true);
         return numNotifications;
-    }
-
-    // MODIFIES: this
-    // EFFECTS: resets habit progress and statistics
-    private void resetProgress(Habit habit) {
-        String command;
-        do {
-            System.out.println("Are you sure you want to reset habit progress? y/n");
-            command = input.next();
-        } while (!(command.equals("y") || command.equals("n")));
-        if (command.equals("y")) {
-            habit.resetProgress();
-            isSaved = false;
-            System.out.println("Habit progress reset successfully");
-        }
-        viewHabit(habit);
     }
 
     // MODIFIES: this

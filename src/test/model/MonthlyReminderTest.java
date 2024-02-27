@@ -80,7 +80,7 @@ public class MonthlyReminderTest {
     @Test
     void testDistributeReminders() {
         mr1.cancelReminders();
-        mr1.distributeReminders();
+        mr1.updateDefaultReminders();
         Set<LocalDateTime> reminders1 = new HashSet<>();
         for (int i = 0; i < 31; i++) {
             reminders1.add(LocalDateTime.of(2024, 1, i + 1, 9, 0));
@@ -89,7 +89,7 @@ public class MonthlyReminderTest {
         testJobSize(mr1, 31);
 
         mr2.cancelReminders();
-        mr2.distributeReminders();
+        mr2.updateDefaultReminders();
         Set<LocalDateTime> reminders2 = new HashSet<>();
         for (int i = 0; i < 29; i++) {
             reminders2.add(LocalDateTime.of(2024, 2, i + 1, 9, 0));
@@ -98,7 +98,7 @@ public class MonthlyReminderTest {
         testJobSize(mr2, 29);
 
         mr3.cancelReminders();
-        mr3.distributeReminders();
+        mr3.updateDefaultReminders();
         Set<LocalDateTime> reminders3 = new HashSet<>();
         for (int i = 0; i < 31; i++) {
             reminders3.add(LocalDateTime.of(2024, 3, i + 1, 9, 0));

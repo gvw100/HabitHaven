@@ -52,14 +52,14 @@ public abstract class HabitReminder {
     // REQUIRES: no reminders scheduled yet for this period, isDefault is true
     // MODIFIES: this
     // EFFECTS: distributes default reminders into this.reminders
-    public abstract void distributeReminders();
+    public abstract void updateDefaultReminders();
 
     // MODIFIES: this
     // EFFECTS: cancels existing reminders, then updates reminders based on current time
     public void updateReminders() {
         cancelReminders();
         if (isDefault) {
-            distributeReminders();
+            updateDefaultReminders();
         } else {
             updateCustomReminders();
         }
@@ -96,7 +96,7 @@ public abstract class HabitReminder {
     public void setDefaultReminders() {
         cancelReminders();
         isDefault = true;
-        distributeReminders();
+        updateDefaultReminders();
     }
 
     // MODIFIES: this

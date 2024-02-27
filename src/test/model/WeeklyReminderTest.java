@@ -73,7 +73,7 @@ public class WeeklyReminderTest {
     @Test
     void testDistributeReminders() {
         wr1.cancelReminders();
-        wr1.distributeReminders();
+        wr1.updateDefaultReminders();
         testCorrectDistribution(wr1, Set.of(
                 LocalDateTime.of(2024, 2, 18, 9, 0),
                 LocalDateTime.of(2024, 2, 19, 9, 0),
@@ -85,7 +85,7 @@ public class WeeklyReminderTest {
         ));
         testJobSize(wr1, 7);
         wr2.cancelReminders();
-        wr2.distributeReminders();
+        wr2.updateDefaultReminders();
         testCorrectDistribution(wr2, Set.of(
                 LocalDateTime.of(2024, 11, 10, 9, 0),
                 LocalDateTime.of(2024, 11, 11, 9, 0),
@@ -97,7 +97,7 @@ public class WeeklyReminderTest {
         ));
         testJobSize(wr2, 7);
         wr3.cancelReminders();
-        wr3.distributeReminders();
+        wr3.updateDefaultReminders();
         testCorrectDistribution(wr3, Set.of(
                 LocalDateTime.of(2024, 3, 24, 9, 0),
                 LocalDateTime.of(2024, 3, 25, 9, 0),

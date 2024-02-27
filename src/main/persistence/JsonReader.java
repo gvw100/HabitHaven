@@ -110,12 +110,11 @@ public class JsonReader {
 
     // EFFECTS: parses daily reminder from JSON object and returns it
     private HabitReminder parseDailyReminder(JSONObject jsonObject, Habit habit) {
-        int frequency = jsonObject.getInt("frequency");
         Set<LocalDateTime> reminders = parseReminderDateTimes(jsonObject.getJSONArray("reminders"));
         Clock clock = Clock.systemDefaultZone();
         boolean isDefault = jsonObject.getBoolean("isDefault");
         ReminderScheduler reminderScheduler = new ReminderScheduler();
-        return new DailyReminder(frequency, reminders, clock, isDefault, habit, reminderScheduler);
+        return new DailyReminder(reminders, clock, isDefault, habit, reminderScheduler);
     }
 
     // EFFECTS: parses weekly reminder from JSON object and returns it

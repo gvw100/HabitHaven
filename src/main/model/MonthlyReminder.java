@@ -18,7 +18,7 @@ public class MonthlyReminder extends HabitReminder {
     public MonthlyReminder(Clock clock, Habit habit) {
         super(clock, habit);
         customReminders = null;
-        distributeReminders();
+        updateDefaultReminders();
     }
 
     // EFFECTS: constructs a MonthlyReminder for returning user
@@ -41,7 +41,7 @@ public class MonthlyReminder extends HabitReminder {
     // MODIFIES: this
     // EFFECTS: distributes reminders once per day over the month
     @Override
-    public void distributeReminders() {
+    public void updateDefaultReminders() {
         reminders = new HashSet<>();
         LocalDate now = LocalDate.now(clock);
         YearMonth yearMonth = YearMonth.now(clock);

@@ -102,7 +102,7 @@ public class HabitTest extends HabitHelperTest {
         assertEquals(c, h.getClock());
         assertEquals(hs, h.getHabitStats());
         assertNull(h.getHabitReminder());
-        HabitReminder hr = new DailyReminder(f, reminders, c, false, h, new ReminderScheduler());
+        HabitReminder hr = new DailyReminder(reminders, c, false, h, new ReminderScheduler());
         h.setHabitReminder(hr);
         assertEquals(hr, h.getHabitReminder());
     }
@@ -231,7 +231,6 @@ public class HabitTest extends HabitHelperTest {
 
     @Test
     void testSetFrequencyDailyAndCustomNotificationsEnabled() {
-        int frequency = h3.getFrequency();
         h3.setPeriod(Period.DAILY);
         Set<LocalDateTime> customReminders = new HashSet<>();
         customReminders.add(LocalDateTime.of(2024, Month.MARCH, 15, 10, 0));
@@ -241,21 +240,16 @@ public class HabitTest extends HabitHelperTest {
         assertTrue(h3.setFrequency(8));
         assertEquals(8, h3.getFrequency());
         assertTrue(h3.getHabitReminder() instanceof DailyReminder);
-        assertEquals(frequency, ((DailyReminder) h3.getHabitReminder()).getFrequency());
-        assertNotEquals(8, ((DailyReminder) h3.getHabitReminder()).getFrequency());
     }
 
     @Test
     void testSetFrequencyDailyAndDefaultNotificationsEnabled() {
         h2.setClock(getFixedClock("2024-05-02T09:00:00.00Z"));
-        int frequency = h2.getFrequency();
         h2.setNotifyEnabled(true);
         assertTrue(h2.getHabitReminder().isDefault());
         assertTrue(h2.setFrequency(7));
         assertEquals(7, h2.getFrequency());
         assertTrue(h2.getHabitReminder() instanceof DailyReminder);
-        assertEquals(7, ((DailyReminder) h2.getHabitReminder()).getFrequency());
-        assertNotEquals(frequency, ((DailyReminder) h2.getHabitReminder()).getFrequency());
         testJobSize(h2.getHabitReminder(), 7);
     }
 
@@ -360,7 +354,7 @@ public class HabitTest extends HabitHelperTest {
     @Test
     void testSetHabitReminder() {
         h1.getHabitReminder().cancelReminders();
-        h1.setHabitReminder(new DailyReminder(h1.getFrequency(), c1, h1));
+        h1.setHabitReminder(new DailyReminder(c1, h1));
         assertTrue(h1.getHabitReminder() instanceof DailyReminder);
         h2.setHabitReminder(new WeeklyReminder(c2, h2));
         assertTrue(h2.getHabitReminder() instanceof WeeklyReminder);

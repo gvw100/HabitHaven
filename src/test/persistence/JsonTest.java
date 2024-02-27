@@ -37,8 +37,7 @@ public class JsonTest {
         assertEquals(np, hs.getNumPeriod());
     }
 
-    protected void checkDailyReminder(Habit habit, int freq, Set<LocalDateTime> reminders, boolean isDefault) {
-        assertEquals(freq, ((DailyReminder) habit.getHabitReminder()).getFrequency());
+    protected void checkDailyReminder(Habit habit, Set<LocalDateTime> reminders, boolean isDefault) {
         checkReminder(habit, reminders, isDefault);
     }
 
@@ -78,12 +77,11 @@ public class JsonTest {
         s = bs = tns = nps = np = 0;
         checkHabitStatistics(habit, s, bs, tns, nps, np);
 
-        int fr = 1;
         Set<LocalDateTime> reminders = new HashSet<>();
         reminders.add(LocalDateTime.parse("2024-02-25T18:30"));
         reminders.add(LocalDateTime.parse("2024-02-25T17:00"));
         boolean isDefault = false;
-        checkDailyReminder(habit, fr, reminders, isDefault);
+        checkDailyReminder(habit, reminders, isDefault);
 
         requestCheckHabit2(hm);
     }
@@ -134,15 +132,14 @@ public class JsonTest {
         nps = 2;
         np = 3;
         checkHabitStatistics(habit, s, bs, tns, nps, np);
-
-        int fr = 15;
+        
         Set<LocalDateTime> reminders = new HashSet<>();
         int intervalMin = 48;
         for (int i = 0; i < 15; i++) {
             reminders.add(LocalDateTime.parse("2024-02-25T09:00").plusMinutes(intervalMin * i));
         }
         boolean isDefault = true;
-        checkDailyReminder(habit, fr, reminders, isDefault);
+        checkDailyReminder(habit, reminders, isDefault);
 
         requestCheckHabit4(hm);
     }

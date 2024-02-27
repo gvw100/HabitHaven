@@ -14,7 +14,7 @@ public class WeeklyReminder extends HabitReminder {
     // EFFECTS: constructs a weekly reminder with the given clock and habit
     public WeeklyReminder(Clock clock, Habit habit) {
         super(clock, habit);
-        distributeReminders();
+        updateDefaultReminders();
     }
 
     public WeeklyReminder(Set<LocalDateTime> reminders, Clock clock, boolean isDefault,
@@ -30,7 +30,7 @@ public class WeeklyReminder extends HabitReminder {
     // MODIFIES: this
     // EFFECTS: distributes reminders once per day over the week
     @Override
-    public void distributeReminders() {
+    public void updateDefaultReminders() {
         reminders = new HashSet<>();
         LocalDate now = LocalDate.now(clock);
         LocalDate sunday = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));

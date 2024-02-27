@@ -12,19 +12,16 @@ import java.util.Set;
 
 // Represents a list of daily notifications for a habit
 public class DailyReminder extends HabitReminder {
-    private int frequency;
 
     // EFFECTS: constructs a daily reminder with given frequency, clock, and habit
-    public DailyReminder(int frequency, Clock clock, Habit habit) {
+    public DailyReminder(Clock clock, Habit habit) {
         super(clock, habit);
-        this.frequency = frequency;
-        distributeReminders();
+        updateDefaultReminders();
     }
 
     // EFFECTS: constructs a daily reminder for returning user
-    public DailyReminder(int frequency, Set<LocalDateTime> reminders, Clock clock,
+    public DailyReminder(Set<LocalDateTime> reminders, Clock clock,
                          boolean isDefault, Habit habit, ReminderScheduler reminderScheduler) {
-        this.frequency = frequency;
         this.reminders = reminders;
         this.clock = clock;
         this.isDefault = isDefault;
@@ -32,32 +29,18 @@ public class DailyReminder extends HabitReminder {
         this.reminderScheduler = reminderScheduler;
     }
 
-    // REQUIRES: isDefault is true
-    // MODIFIES: this
-    // EFFECTS: sets frequency to given frequency, existing notifications cancelled, notifications redistributed
-    public void setFrequency(int frequency) {
-        cancelReminders();
-        this.frequency = frequency;
-        distributeReminders();
-    }
-
-    // EFFECTS: returns frequency of reminders per day, for testing purposes
-    public int getFrequency() {
-        return this.frequency;
-    }
-
     // REQUIRES: no reminders scheduled yet for this period, isDefault is true
     // MODIFIES: this
     // EFFECTS: distributes default daily reminders starting from DAY_START_TIME
     @Override
-    public void distributeReminders() {
+    public void updateDefaultReminders() {
         reminders = new HashSet<>();
-        double reminderInterval = (double) DAY_LENGTH / (double) frequency;
+        double reminderInterval = (double) DAY_LENGTH / (double) habit.getFrequency();
         int hours = (int) Math.floor(reminderInterval);
         int minutes = (int) Math.round((reminderInterval - hours) * 60);
         LocalDate now = LocalDate.now(clock);
         LocalDateTime reminderDateTime = LocalDateTime.of(now, DAY_START_TIME);
-        for (int i = 0; i < frequency; i++) {
+        for (int i = 0; i < habit.getFrequency(); i++) {
             reminders.add(reminderDateTime);
             reminderDateTime = reminderDateTime.plusHours(hours).plusMinutes(minutes);
         }
@@ -87,7 +70,6 @@ public class DailyReminder extends HabitReminder {
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
-        json.put("frequency", frequency);
         json.put("reminders", remindersToJson());
         json.put("isDefault", isDefault);
         return json;
