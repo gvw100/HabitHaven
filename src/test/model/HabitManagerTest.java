@@ -80,5 +80,8 @@ public class HabitManagerTest extends HabitHelperTest {
         assertEquals(h1, habitManager.getHabits().get(0));
         assertEquals(h3, habitManager.getHabits().get(1));
         testJobSize(h2.getHabitReminder(), 0);
+        habitManager.deleteHabit(h1);
+        assertEquals(1, habitManager.getSize());
+        assertEquals(h3, habitManager.getHabits().get(0));
     }
 }
