@@ -165,6 +165,18 @@ public class HabitTest extends HabitHelperTest {
     }
 
     @Test
+    void testSetNotifyEnabledFalseToTrueAndPeriodComplete() {
+        assertFalse(h4.isNotifyEnabled());
+        assertNull(h4.getHabitReminder());
+        finishHabitNumTimes(h4, h4.getFrequency());
+        assertTrue(h4.isPeriodComplete());
+        assertTrue(h4.setNotifyEnabled(true));
+        assertTrue(h4.isNotifyEnabled());
+        assertTrue(h4.getHabitReminder() instanceof MonthlyReminder);
+        testJobSize(h4.getHabitReminder(), 0);
+    }
+
+    @Test
     void testSetFrequencyDifferentFromBefore() {
         finishHabitNumTimes(h1,3);
         assertEquals(3, h1.getNumSuccess());
@@ -495,7 +507,10 @@ public class HabitTest extends HabitHelperTest {
 
     @Test
     void testResetProgress() {
+        h2.setNotifyEnabled(true);
+        testJobSize(h2.getHabitReminder(), 15);
         finishHabitNumTimes(h2, 15);
+        testJobSize(h2.getHabitReminder(), 0);
         assertEquals(15, h2.getNumSuccess());
         checkStats(h2, 1, 1, 15, 1, 0);
         h2.resetProgress();
@@ -708,17 +723,5 @@ public class HabitTest extends HabitHelperTest {
         h4.updateMonthly();
         assertEquals(LocalDateTime.of(2024, Month.DECEMBER, 31, 23, 59), h4.getCurrentPeriodEnd());
         assertEquals(LocalDateTime.of(2025, Month.JANUARY, 31, 23, 59), h4.getNextPeriodEnd());
-    }
-
-    private boolean finishHabitNumTimes(Habit habit, int num) {
-        boolean isIncremented = true;
-        for (int i = 0; i < num; i++) {
-            if (i == num - 1) {
-                isIncremented = habit.finishHabit();
-            } else {
-                habit.finishHabit();
-            }
-        }
-        return isIncremented;
     }
 }

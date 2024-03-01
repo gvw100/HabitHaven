@@ -111,14 +111,23 @@ public class ConsoleApp {
         JsonReader jsonReader = new JsonReader(HABIT_MANAGER_STORE);
         try {
             habitManager = jsonReader.read();
+            System.out.println("\nWelcome back, " + HabitManager.getUsername() + "!");
+            updateAllHabits();
+            scheduleHabitUpdates();
+            menu();
         } catch (IOException e) {
-            System.out.println("Unable to read from file: " + HABIT_MANAGER_STORE);
-            System.exit(-1);
+            System.out.println("Save file not found: " + HABIT_MANAGER_STORE);
+            System.out.println("Start as new user? y/n");
+            do {
+                String command = input.next();
+                if (command.equals("n")) {
+                    closeApp();
+                } else {
+                    break;
+                }
+            } while (true);
+            newUser();
         }
-        System.out.println("\nWelcome back, " + HabitManager.getUsername() + "!");
-        updateAllHabits();
-        scheduleHabitUpdates();
-        menu();
     }
 
     // MODIFIES: this
@@ -456,6 +465,9 @@ public class ConsoleApp {
         } while (!(command.equals("y") || command.equals("n")));
         if (command.equals("y")) {
             habit.resetProgress();
+            if (habit.isNotifyEnabled()) {
+                habit.getHabitReminder().updateReminders();
+            }
             isSaved = false;
             System.out.println("Habit progress reset successfully");
         }

@@ -126,6 +126,20 @@ public class HabitReminderTest extends HabitHelperTest {
     }
 
     @Test
+    void testSetCustomRemindersPeriodComplete() {
+        testJobSize(wr, 7);
+        finishHabitNumTimes(wh, wh.getFrequency());
+        testJobSize(wr, 0);
+        Set<LocalDateTime> reminders = new HashSet<>();
+        reminders.add(LocalDateTime.now(wc));
+        reminders.add(LocalDateTime.now(wc).plusDays(1));
+        reminders.add(LocalDateTime.now(wc).plusDays(2));
+        reminders.add(LocalDateTime.now(wc).plusDays(3));
+        wr.setCustomReminders(reminders);
+        testJobSize(wr, 0);
+    }
+
+    @Test
     void testSetCustomRemindersMonthlyException() {
         Set<LocalDateTime> reminders = new HashSet<>();
         reminders.add(LocalDateTime.now(mc));
@@ -185,6 +199,20 @@ public class HabitReminderTest extends HabitHelperTest {
     }
 
     @Test
+    void testSetDefaultRemindersPeriodComplete() {
+        Set<LocalDateTime> reminders = new HashSet<>();
+        reminders.add(LocalDateTime.now(wc));
+        reminders.add(LocalDateTime.now(wc).plusDays(1));
+        reminders.add(LocalDateTime.now(wc).plusDays(2));
+        wr.setCustomReminders(reminders);
+        testJobSize(wr, 3);
+        finishHabitNumTimes(wh, wh.getFrequency());
+        testJobSize(wr, 0);
+        wr.setDefaultReminders();
+        testJobSize(wr, 0);
+    }
+
+    @Test
     void testCancelReminders() {
         Set<LocalDateTime> reminders = new HashSet<>();
         reminders.add(LocalDateTime.now(wc));
@@ -193,6 +221,8 @@ public class HabitReminderTest extends HabitHelperTest {
         wr.setCustomReminders(reminders);
         assertEquals(3, wr.reminders.size());
         testJobSize(wr, 3);
+        wr.cancelReminders();
+        testJobSize(wr, 0);
         wr.cancelReminders();
         testJobSize(wr, 0);
     }

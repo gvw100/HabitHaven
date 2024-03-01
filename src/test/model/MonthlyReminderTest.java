@@ -3,8 +3,6 @@ package model;
 import javafx.util.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.quartz.SchedulerException;
-import org.quartz.impl.matchers.GroupMatcher;
 import ui.ReminderScheduler;
 
 import java.time.*;
@@ -14,7 +12,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 // A test class for MonthlyReminder
-public class MonthlyReminderTest {
+public class MonthlyReminderTest extends HabitHelperTest {
     private MonthlyReminder mr1;
     private MonthlyReminder mr2;
     private MonthlyReminder mr3;
@@ -206,25 +204,17 @@ public class MonthlyReminderTest {
         testJobSize(mr1, 3);
     }
 
-    void testCorrectDistribution(MonthlyReminder mr, Set<LocalDateTime> reminders) {
-        for (LocalDateTime reminder : reminders) {
-            assertTrue(mr.reminders.contains(reminder));
-        }
-        assertEquals(reminders.size(), mr.reminders.size());
-    }
-
-    private void testJobSize(MonthlyReminder mr, int size) {
-        try {
-            assertEquals(size, mr.reminderScheduler.getScheduler()
-                    .getJobKeys(GroupMatcher
-                            .groupEquals(mr.habit.getId().toString()))
-                    .size());
-        } catch (SchedulerException e) {
-            fail();
-        }
-    }
-
-    private Clock getFixedClock(String parse) {
-        return Clock.fixed(Instant.parse(parse), ZoneId.of("Z"));
+    @Test
+    void testSetCustomMonthlyRemindersPeriodComplete() {
+        Set<Pair<Integer, LocalTime>> reminders = new HashSet<>();
+        reminders.add(new Pair<>(1, LocalTime.of(6, 30)));
+        reminders.add(new Pair<>(2, LocalTime.of(9, 0)));
+        reminders.add(new Pair<>(3, LocalTime.of(23, 0)));
+        assertTrue(mr1.isDefault());
+        testJobSize(mr1, 31);
+        finishHabitNumTimes(h1, h1.getFrequency());
+        testJobSize(mr1, 0);
+        mr1.setCustomMonthlyReminders(reminders);
+        testJobSize(mr1, 0);
     }
 }

@@ -31,7 +31,7 @@ public class HabitHelperTest {
         }
     }
 
-    protected void testCorrectDistribution(DailyReminder dr, Set<LocalDateTime> reminders) {
+    protected void testCorrectDistribution(HabitReminder dr, Set<LocalDateTime> reminders) {
         for (LocalDateTime reminder : reminders) {
             assertTrue(dr.reminders.contains(reminder));
         }
@@ -60,5 +60,17 @@ public class HabitHelperTest {
         assertEquals(0, habit.getHabitStats().getTotalNumSuccess());
         assertEquals(0, habit.getHabitStats().getNumPeriodSuccess());
         assertEquals(0, habit.getHabitStats().getNumPeriod());
+    }
+
+    protected boolean finishHabitNumTimes(Habit habit, int num) {
+        boolean isIncremented = true;
+        for (int i = 0; i < num; i++) {
+            if (i == num - 1) {
+                isIncremented = habit.finishHabit();
+            } else {
+                habit.finishHabit();
+            }
+        }
+        return isIncremented;
     }
 }
