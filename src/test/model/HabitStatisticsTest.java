@@ -111,6 +111,24 @@ public class HabitStatisticsTest extends HabitHelperTest {
     }
 
     @Test
+    void testDecrementStreak() {
+        for (int i = 0; i < 5; i++) {
+            habitStats.incrementStreak();
+        }
+        checkStats(habitStats, 5, 5, 0, 0, 0);
+        habitStats.decrementStreak();
+        checkStats(habitStats, 4, 4, 0, 0, 0);
+        habitStats.decrementStreak();
+        checkStats(habitStats, 3, 3, 0, 0, 0);
+        habitStats.decrementStreak();
+        checkStats(habitStats, 2, 2, 0, 0, 0);
+        habitStats.decrementStreak();
+        checkStats(habitStats, 1, 1, 0, 0, 0);
+        habitStats.decrementStreak();
+        checkStats(habitStats, 0, 0, 0, 0, 0);
+    }
+
+    @Test
     void testIncrement() {
         for (int i = 0; i < 7; i++) {
             habitStats.incrementTotalNumSuccess();
@@ -124,5 +142,23 @@ public class HabitStatisticsTest extends HabitHelperTest {
             habitStats.incrementNumPeriod();
         }
         checkStats(habitStats, 0, 0, 7, 6, 11);
+    }
+
+    @Test
+    void testDecrement() {
+        for (int i = 0; i < 4; i++) {
+            habitStats.incrementTotalNumSuccess();
+        }
+        for (int i = 0; i < 20; i++) {
+            habitStats.incrementNumPeriodSuccess();
+        }
+        for (int i = 0; i < 9; i++) {
+            habitStats.incrementNumPeriod();
+        }
+        checkStats(habitStats, 0, 0, 4, 20, 9);
+        habitStats.decrementTotalNumSuccess();
+        checkStats(habitStats, 0, 0, 3, 20, 9);
+        habitStats.decrementNumPeriodSuccess();
+        checkStats(habitStats, 0, 0, 3, 19, 9);
     }
 }

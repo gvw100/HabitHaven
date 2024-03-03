@@ -6,8 +6,14 @@ import model.Period;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import static javax.swing.SwingUtilities.invokeLater;
 
 // Represents a job to send a notification to the user
 public class SendReminder implements Job {
@@ -20,9 +26,15 @@ public class SendReminder implements Job {
     private int habitStreak;
     private int bestStreak;
     private LocalDateTime dateTime;
+    private static boolean isConsoleApp;
 
     // EFFECTS: constructs a new SendReminder
     public SendReminder() {
+    }
+
+    // EFFECTS: sets SendReminder.isConsoleApp to the given boolean
+    public static void setIsConsoleApp(boolean isConsoleApp) {
+        SendReminder.isConsoleApp = isConsoleApp;
     }
 
     // MODIFIES: this
@@ -52,9 +64,47 @@ public class SendReminder implements Job {
         String messageGoals = getMessageGoals();
         String messageProgress = getMessageProgress();
         String messageStreak = getMessageStreak();
-        String message = messageTitle + "\n" + messageIntro + "\n\n" + messageGoals + messageProgress
-                + "\n\n" + messageStreak;
-        System.out.println(message);
+        if (isConsoleApp) {
+            String message = messageTitle + "\n" + messageIntro + "\n\n" + messageGoals + messageProgress
+                    + "\n\n" + messageStreak;
+            System.out.println(message);
+        } else {
+            String message = "Hey " + username + "! Only " + (habitFrequency - habitNumSuccesses)
+                    + " more to go for " + habitName
+                    + getPeriodString(" today.", " this week.", " this month.")
+                    + (habitStreak == 0 ? " Go get that streak started!" : " Keep that streak going!");
+            sendUIReminder(message);
+        }
+    }
+
+    // EFFECTS: sends a desktop notification to the user
+    private void sendUIReminder(String message) {
+        try {
+            SystemTray tray = SystemTray.getSystemTray();
+            Image image = ImageIO.read(new File("./data/icon.png"));
+            TrayIcon trayIcon = new TrayIcon(image, "Habit Reminder");
+            trayIcon.setImageAutoSize(true);
+            tray.add(trayIcon);
+            trayIcon.displayMessage("Habit Reminder: " + habitName, message, TrayIcon.MessageType.NONE);
+            addListener(trayIcon);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Could not read icon file.");
+        } catch (AWTException e) {
+            e.printStackTrace();
+            System.out.println("Could not display reminder.");
+        }
+    }
+
+    // EFFECTS: adds a listener to the tray icon, so that the user can click on it to open the app
+    private void addListener(TrayIcon trayIcon) {
+        trayIcon.addActionListener(e -> {
+            {
+                if (!HabitApp.appIsOpen()) {
+                    invokeLater(HabitApp::new);
+                }
+            }
+        });
     }
 
     // EFFECTS: returns a message about the user's goals

@@ -77,11 +77,11 @@ public class HabitStatistics {
     }
 
     // MODIFIES: this
-    // EFFECTS: increments streak, if streak > bestStreak, then assign bestStreak = streak
+    // EFFECTS: increments streak, if streak > bestStreak, then increments bestStreak too
     public void incrementStreak() {
         streak++;
         if (streak > bestStreak) {
-            bestStreak = streak;
+            bestStreak++;
         }
     }
 
@@ -101,6 +101,30 @@ public class HabitStatistics {
     // EFFECTS: increments numPeriod
     public void incrementNumPeriod() {
         numPeriod++;
+    }
+
+    // REQUIRES: streak > 0
+    // MODIFIES: this
+    // EFFECTS: decrements streak, if streak == bestStreak, then decrement bestStreak too
+    public void decrementStreak() {
+        if (streak == bestStreak) {
+            bestStreak--;
+        }
+        streak--;
+    }
+
+    // REQUIRES: totalNumSuccess > 0
+    // MODIFIES: this
+    // EFFECTS: decrements totalNumSuccess
+    public void decrementTotalNumSuccess() {
+        totalNumSuccess--;
+    }
+
+    // REQUIRES: numPeriodSuccess > 0
+    // MODIFIES: this
+    // EFFECTS: decrements numPeriodSuccess
+    public void decrementNumPeriodSuccess() {
+        numPeriodSuccess--;
     }
 
     // EFFECTS: returns habitStatistics as a JSONObject

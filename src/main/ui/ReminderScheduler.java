@@ -47,18 +47,16 @@ public class ReminderScheduler {
     // EFFECTS: schedules a notification to be sent at the given time, misfired jobs are not executed to
     //          avoid overload of notifications in tests
     private void scheduleReminder(LocalDateTime reminder, Habit habit) {
-        String jobId = reminder.toString();
-        String groupId = habit.getId().toString();
         JobDataMap data = new JobDataMap();
         data.put("habit", habit);
         data.put("dateTime", reminder);
         Date date = Date.from(reminder.atZone(ZoneId.systemDefault()).toInstant());
         JobDetail job = newJob(SendReminder.class)
-                .withIdentity(jobId, groupId)
+                .withIdentity(reminder.toString(), habit.getId().toString())
                 .usingJobData(data)
                 .build();
         SimpleTrigger trigger = newTrigger()
-                .withIdentity(jobId, groupId)
+                .withIdentity(reminder.toString(), habit.getId().toString())
                 .startAt(date)
                 .withSchedule(simpleSchedule()
                         .withRepeatCount(0)

@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 // A test class for HabitManager
 public class HabitManagerTest extends HabitHelperTest {
@@ -83,5 +82,31 @@ public class HabitManagerTest extends HabitHelperTest {
         habitManager.deleteHabit(h1);
         assertEquals(1, habitManager.getSize());
         assertEquals(h3, habitManager.getHabits().get(0));
+    }
+
+    @Test
+    void testTurnOffReminders() {
+        habitManager.addHabit(h1);
+        habitManager.addHabit(h2);
+        habitManager.addHabit(h3);
+
+        HabitReminder hr1 = h1.getHabitReminder();
+        HabitReminder hr2 = h2.getHabitReminder();
+        HabitReminder hr3 = h3.getHabitReminder();
+
+        assertNull(hr1);
+        assertTrue(hr2 instanceof DailyReminder);
+        assertTrue(hr3 instanceof MonthlyReminder);
+
+        habitManager.turnOffReminders();
+        assertNull(h1.getHabitReminder());
+        assertNull(h2.getHabitReminder());
+        assertNull(h3.getHabitReminder());
+        assertFalse(h1.isNotifyEnabled());
+        assertFalse(h2.isNotifyEnabled());
+        assertFalse(h3.isNotifyEnabled());
+
+        testJobSize(hr2, 0);
+        testJobSize(hr3, 0);
     }
 }

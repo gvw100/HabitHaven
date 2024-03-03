@@ -49,6 +49,14 @@ public class HabitManager {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: disables reminders for all habits
+    public void turnOffReminders() {
+        for (Habit h : habits) {
+            h.setNotifyEnabled(false);
+        }
+    }
+
     // EFFECTS: returns habit manager as a JSONObject
     public JSONObject toJson() {
         JSONObject json = new JSONObject();

@@ -83,7 +83,7 @@ public abstract class HabitReminder {
         cancelReminders();
         isDefault = false;
         reminders = newReminders;
-        reminderScheduler.scheduleReminders(reminders, habit);
+        reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
     // MODIFIES: this

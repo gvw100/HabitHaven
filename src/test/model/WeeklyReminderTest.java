@@ -52,9 +52,9 @@ public class WeeklyReminderTest {
         assertEquals(h1, wr1.habit);
         assertEquals(h2, wr2.habit);
         assertEquals(h3, wr3.habit);
-        testJobSize(wr1, 7);
+        testJobSize(wr1, 6);
         testJobSize(wr2, 7);
-        testJobSize(wr3, 7);
+        testJobSize(wr3, 3);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class WeeklyReminderTest {
     }
 
     @Test
-    void testDistributeReminders() {
+    void testUpdateDefaultReminders() {
         wr1.cancelReminders();
         wr1.updateDefaultReminders();
         testCorrectDistribution(wr1, Set.of(
@@ -84,7 +84,7 @@ public class WeeklyReminderTest {
                 LocalDateTime.of(2024, 2, 23, 9, 0),
                 LocalDateTime.of(2024, 2, 24, 9, 0)
         ));
-        testJobSize(wr1, 7);
+        testJobSize(wr1, 6);
         wr2.cancelReminders();
         wr2.updateDefaultReminders();
         testCorrectDistribution(wr2, Set.of(
@@ -108,7 +108,7 @@ public class WeeklyReminderTest {
                 LocalDateTime.of(2024, 3, 29, 9, 0),
                 LocalDateTime.of(2024, 3, 30, 9, 0)
         ));
-        testJobSize(wr3, 7);
+        testJobSize(wr3, 3);
     }
 
     @Test
@@ -133,7 +133,7 @@ public class WeeklyReminderTest {
         wr2.cancelReminders();
         wr2.updateCustomReminders();
         testCorrectDistribution(wr2, copy2);
-        testJobSize(wr2, 4);
+        testJobSize(wr2, 3);
 
         Set<LocalDateTime> cr3 = new HashSet<>();
         cr3.add(LocalDateTime.now(c3).minusDays(3));
@@ -145,7 +145,7 @@ public class WeeklyReminderTest {
         wr3.cancelReminders();
         wr3.updateCustomReminders();
         testCorrectDistribution(wr3, copy3);
-        testJobSize(wr3, 4);
+        testJobSize(wr3, 0);
     }
 
     @Test

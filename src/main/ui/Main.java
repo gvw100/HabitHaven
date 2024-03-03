@@ -1,7 +1,9 @@
 package ui;
 
+import static javax.swing.SwingUtilities.invokeLater;
+
 public class Main {
     public static void main(String[] args) {
-        new ConsoleApp();
+        invokeLater(HabitApp::new);
     }
 }

@@ -52,7 +52,7 @@ public class MonthlyReminder extends HabitReminder {
             reminders.add(reminderDateTime);
             reminderDateTime = reminderDateTime.plusDays(1);
         }
-        reminderScheduler.scheduleReminders(reminders, habit);
+        reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
     // REQUIRES: no reminders scheduled yet for this period, isDefault is false
@@ -74,7 +74,7 @@ public class MonthlyReminder extends HabitReminder {
             newReminders.add(next);
         }
         reminders = newReminders;
-        reminderScheduler.scheduleReminders(reminders, habit);
+        reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
     // EFFECTS: throws UnsupportedOperationException, use setCustomMonthlyReminders instead

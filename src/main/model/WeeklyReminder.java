@@ -40,7 +40,7 @@ public class WeeklyReminder extends HabitReminder {
             reminders.add(reminderDateTime);
             reminderDateTime = reminderDateTime.plusDays(1);
         }
-        reminderScheduler.scheduleReminders(reminders, habit);
+        reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
     // REQUIRES: no reminders scheduled yet for this period, isDefault is false
@@ -54,7 +54,7 @@ public class WeeklyReminder extends HabitReminder {
             newReminders.add(newDateTime);
         }
         reminders = newReminders;
-        reminderScheduler.scheduleReminders(reminders, habit);
+        reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
     // EFFECTS: returns a LocalDateTime object representing the reminder for the given day and time

@@ -19,7 +19,7 @@ import static org.quartz.CronScheduleBuilder.dailyAtHourAndMinute;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
-// Habit tracker console application
+// Habit tracker console application (phase 1-2)
 // Citation: Some of the code here is inspired from the TellerApp.java class in the CPSC 210 course
 //           https://github.students.cs.ubc.ca/CPSC210/TellerApp
 public class ConsoleApp {
@@ -33,9 +33,14 @@ public class ConsoleApp {
 
     // EFFECTS: starts the application, clock initialized to system default zone and isSaved initialized to true
     public ConsoleApp() {
+        SendReminder.setIsConsoleApp(true);
         clock = Clock.systemDefaultZone();
         isSaved = true;
         startApp();
+    }
+
+    public static void main(String[] args) {
+        new ConsoleApp();
     }
 
     // MODIFIES: this
@@ -330,13 +335,12 @@ public class ConsoleApp {
                 editHabit(habit);
                 break;
             case "d":
-                if (deleteHabit(habit)) {
-                    return true;
-                } else {
-                    break;
-                }
+                return deleteHabit(habit);
             case "f":
                 finishHabit(habit);
+                break;
+            case "u":
+                undoFinishHabit(habit);
                 break;
             case "s":
                 showStatistics(habit);
@@ -360,6 +364,7 @@ public class ConsoleApp {
         System.out.println("\n\te -> Edit habit");
         System.out.println("\td -> Delete habit");
         System.out.println("\tf -> Finish habit");
+        System.out.println("\tu -> Undo finish habit");
         System.out.println("\ts -> Show in-depth statistics");
         System.out.println("\tn -> Customize notifications");
         System.out.println("\th -> Back to habit list");
@@ -508,6 +513,17 @@ public class ConsoleApp {
                     + " times so far " + periodString + " Keep it up!";
             System.out.println(message);
             isSaved = false;
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: undoes the last completion of habit, decrementing numSuccess
+    private void undoFinishHabit(Habit habit) {
+        if (habit.undoFinishHabit()) {
+            System.out.println("\nLast completion of " + habit.getName() + " undone");
+            isSaved = false;
+        } else {
+            System.out.println("\nNo completions to undo");
         }
     }
 

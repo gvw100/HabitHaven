@@ -44,7 +44,7 @@ public class DailyReminder extends HabitReminder {
             reminders.add(reminderDateTime);
             reminderDateTime = reminderDateTime.plusHours(hours).plusMinutes(minutes);
         }
-        reminderScheduler.scheduleReminders(reminders, habit);
+        reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
     // REQUIRES: no reminders scheduled yet for this period, isDefault is false
@@ -58,7 +58,7 @@ public class DailyReminder extends HabitReminder {
             newReminders.add(newDateTime);
         }
         reminders = newReminders;
-        reminderScheduler.scheduleReminders(reminders, habit);
+        reminderScheduler.scheduleReminders(getActiveReminders(), habit);
     }
 
     // EFFECTS: returns a LocalDateTime object representing the reminder at the given time today

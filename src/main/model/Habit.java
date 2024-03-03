@@ -233,6 +233,27 @@ public class Habit {
     }
 
     // MODIFIES: this
+    // EFFECTS: if numSuccess > 0, decrements numSuccess and habitStats.totalNumSuccess,
+    //          if isPeriodComplete(), then decrements habitStats.numPeriodSuccess and habitStats.streak,
+    //          if notifyEnabled, then updates reminders, returns whether habit was decremented
+    public boolean undoFinishHabit() {
+        if (numSuccess > 0) {
+            if (isPeriodComplete()) {
+                habitStats.decrementNumPeriodSuccess();
+                habitStats.decrementStreak();
+                isPreviousComplete = false;
+            }
+            numSuccess--;
+            habitStats.decrementTotalNumSuccess();
+            if (isNotifyEnabled()) {
+                habitReminder.updateReminders();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    // MODIFIES: this
     // EFFECTS: if isPeriodComplete(), then increments both habitStats.numPeriodSuccess
     //          a habitStats.streak, sets isPreviousComplete to true, and cancels reminders if isNotifyEnabled()
     public void checkPeriodComplete() {

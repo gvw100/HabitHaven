@@ -31,11 +31,11 @@ public class HabitHelperTest {
         }
     }
 
-    protected void testCorrectDistribution(HabitReminder dr, Set<LocalDateTime> reminders) {
+    protected void testCorrectDistribution(HabitReminder hr, Set<LocalDateTime> reminders) {
         for (LocalDateTime reminder : reminders) {
-            assertTrue(dr.reminders.contains(reminder));
+            assertTrue(hr.reminders.contains(reminder));
         }
-        assertEquals(reminders.size(), dr.reminders.size());
+        assertEquals(reminders.size(), hr.reminders.size());
     }
 
     protected void checkStats(HabitStatistics stat, int streak, int bestStreak, int totalNumSuccess, int numPeriodSuccess, int numPeriod) {
