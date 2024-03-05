@@ -14,8 +14,12 @@ import java.util.stream.Stream;
 
 import javafx.util.Pair;
 import model.*;
+import model.reminder.DailyReminder;
+import model.reminder.HabitReminder;
+import model.reminder.MonthlyReminder;
+import model.reminder.WeeklyReminder;
 import org.json.*;
-import ui.ReminderScheduler;
+import ui.reminder.ReminderScheduler;
 
 // Represents a reader that reads habits from JSON data stored in file
 // Citation: Code inspired by JsonSerializationDemo https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo

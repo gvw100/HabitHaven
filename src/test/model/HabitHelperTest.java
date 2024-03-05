@@ -1,5 +1,6 @@
 package model;
 
+import model.reminder.HabitReminder;
 import org.quartz.SchedulerException;
 import org.quartz.impl.matchers.GroupMatcher;
 
@@ -22,9 +23,9 @@ public class HabitHelperTest {
             fail();
         }
         try {
-            assertEquals(size, hr.reminderScheduler.getScheduler()
+            assertEquals(size, hr.getReminderScheduler().getScheduler()
                     .getJobKeys(GroupMatcher
-                            .groupEquals(hr.habit.getId().toString()))
+                            .groupEquals(hr.getHabit().getId().toString()))
                     .size());
         } catch (SchedulerException e) {
             fail();
@@ -33,9 +34,9 @@ public class HabitHelperTest {
 
     protected void testCorrectDistribution(HabitReminder hr, Set<LocalDateTime> reminders) {
         for (LocalDateTime reminder : reminders) {
-            assertTrue(hr.reminders.contains(reminder));
+            assertTrue(hr.getReminders().contains(reminder));
         }
-        assertEquals(reminders.size(), hr.reminders.size());
+        assertEquals(reminders.size(), hr.getReminders().size());
     }
 
     protected void checkStats(HabitStatistics stat, int streak, int bestStreak, int totalNumSuccess, int numPeriodSuccess, int numPeriod) {

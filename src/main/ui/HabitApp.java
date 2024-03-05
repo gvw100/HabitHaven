@@ -1,9 +1,15 @@
 package ui;
 
 import model.HabitManager;
+import persistence.JsonReader;
+import ui.panel.HabitManagerUI;
+import ui.panel.NewUserUI;
+import ui.panel.StartUI;
+import ui.reminder.SendReminder;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 import static ui.Constants.*;
 
@@ -13,6 +19,7 @@ public class HabitApp extends JFrame {
     private StartUI startScreen;
     private NewUserUI newUserScreen;
     private HabitManagerUI habitManagerScreen;
+    private HabitManager habitManager;
     private static boolean appIsOpen;
 
     // EFFECTS: starts the application
@@ -67,10 +74,24 @@ public class HabitApp extends JFrame {
         ADD_ICON.setImage(add);
         Image addHover = ADD_ICON_HOVER.getImage().getScaledInstance(55, 55, Image.SCALE_SMOOTH);
         ADD_ICON_HOVER.setImage(addHover);
-        Image bellOn = BELL_ON.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+        scaleMoreIcons();
+    }
+
+    private void scaleMoreIcons() {
+        Image bellOn = BELL_ON.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
         BELL_ON.setImage(bellOn);
         Image bellOff = BELL_OFF.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
         BELL_OFF.setImage(bellOff);
+        Image list = LIST_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        LIST_ICON.setImage(list);
+        Image stats = STATS_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        STATS_ICON.setImage(stats);
+        Image save = SAVE_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        SAVE_ICON.setImage(save);
+        Image settings = SETTINGS_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        SETTINGS_ICON.setImage(settings);
+        Image credits = CREDITS_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        CREDITS_ICON.setImage(credits);
     }
 
     private void onNewUser() {
@@ -90,13 +111,31 @@ public class HabitApp extends JFrame {
 
     private void onNewUserSubmit() {
         HabitManager.setUsername(newUserScreen.getText());
-        habitManagerScreen = new HabitManagerUI(false, this);
+        habitManagerScreen = new HabitManagerUI(false, this, new HabitManager());
         toHabits();
     }
 
     private void loadUser() {
-        habitManagerScreen = new HabitManagerUI(true, this);
-        toHabits();
+        if (loadHabitManager()) {
+            habitManagerScreen = new HabitManagerUI(true, this, habitManager);
+            toHabits();
+        } else {
+            startScreen.enableButtons();
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: loads user data from file, updates all habits, schedules habit updates, and displays menu
+    private boolean loadHabitManager() {
+        JsonReader jsonReader = new JsonReader(HABIT_MANAGER_STORE);
+        try {
+            habitManager = jsonReader.read();
+            return true;
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null,
+                    "Save file not found. Please create a new user.", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
     }
 
     private void toHabits() {

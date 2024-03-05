@@ -1,4 +1,4 @@
-package ui;
+package ui.panel;
 
 import model.Habit;
 import model.Period;
@@ -8,6 +8,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 import static ui.Constants.*;
 
@@ -72,6 +74,13 @@ public class HabitUI extends JPanel {
 
     private void setupHabitName() {
         setupNameField();
+        setupNameDocumentListener();
+        setupNameFocusListener();
+        habitPanel.add(habitName);
+        habitPanel.add(Box.createRigidArea(new Dimension(0, PADDING)));
+    }
+
+    private void setupNameDocumentListener() {
         habitName.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent e) {
@@ -88,8 +97,25 @@ public class HabitUI extends JPanel {
                 setNewName();
             }
         });
-        habitPanel.add(habitName);
-        habitPanel.add(Box.createRigidArea(new Dimension(0, PADDING)));
+    }
+
+    private void setupNameFocusListener() {
+        habitName.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (habitName.getText().equals("New Habit")) {
+                    habitName.selectAll();
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (habitName.getText().isBlank()) {
+                    habitName.setText("New Habit");
+                    habitName.selectAll();
+                }
+            }
+        });
     }
 
     private void setupNameField() {
@@ -109,7 +135,7 @@ public class HabitUI extends JPanel {
             if (habitName.getText().length() > MAX_HABIT_NAME_LENGTH) {
                 habitName.setText(habitName.getText().substring(0, MAX_HABIT_NAME_LENGTH));
             }
-            if (habitName.getText().length() == 0) {
+            if (habitName.getText().isBlank()) {
                 habitName.setText("New Habit");
                 habitName.selectAll();
             }
@@ -126,6 +152,13 @@ public class HabitUI extends JPanel {
         contentsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         contentsPanel.setBackground(APP_COLOUR);
         initializeHabitDescription();
+        setupDescriptionDocumentListener();
+        setupDescriptionFocusListener();
+        contentsPanel.add(habitDescription);
+        contentsPanel.add(Box.createRigidArea(new Dimension(0, PADDING)));
+    }
+
+    private void setupDescriptionDocumentListener() {
         habitDescriptionArea.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent e) {
@@ -142,8 +175,25 @@ public class HabitUI extends JPanel {
                 setNewDescription();
             }
         });
-        contentsPanel.add(habitDescription);
-        contentsPanel.add(Box.createRigidArea(new Dimension(0, PADDING)));
+    }
+
+    private void setupDescriptionFocusListener() {
+        habitDescriptionArea.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (habitDescriptionArea.getText().equals("Description (optional)")) {
+                    habitDescriptionArea.selectAll();
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (habitDescriptionArea.getText().isBlank()) {
+                    habitDescriptionArea.setText("Description (optional)");
+                    habitDescriptionArea.selectAll();
+                }
+            }
+        });
     }
 
     private void initializeHabitDescription() {
@@ -161,7 +211,7 @@ public class HabitUI extends JPanel {
         habitDescriptionArea.setLineWrap(true);
         habitDescriptionArea.setWrapStyleWord(true);
         habitDescriptionArea.setAlignmentY(Component.TOP_ALIGNMENT);
-        habitDescription.setPreferredSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, TEXT_FIELD_HEIGHT * 4));
+        habitDescription.setPreferredSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, TEXT_FIELD_HEIGHT * 7));
         habitDescription.setAlignmentX(Component.LEFT_ALIGNMENT);
         habitDescription.add(Box.createRigidArea(new Dimension(PADDING, 0)));
         habitDescription.add(habitDescriptionArea);
@@ -178,7 +228,7 @@ public class HabitUI extends JPanel {
             if (habitDescriptionArea.getText().length() > MAX_DESCRIPTION_LENGTH) {
                 habitDescriptionArea.setText(habitDescriptionArea.getText().substring(0, MAX_DESCRIPTION_LENGTH));
             }
-            if (habitDescriptionArea.getText().length() == 0) {
+            if (habitDescriptionArea.getText().isBlank()) {
                 habitDescriptionArea.setText("Description (optional)");
                 habitDescriptionArea.selectAll();
             }
@@ -203,6 +253,7 @@ public class HabitUI extends JPanel {
         contentsPanel.add(frequencyPanel);
         contentsPanel.add(Box.createRigidArea(new Dimension(0, PADDING)));
         contentsPanel.add(periodPanel);
+        contentsPanel.add(Box.createRigidArea(new Dimension(0, PADDING)));
     }
 
     private void setupSuccessPanel() {
@@ -378,7 +429,7 @@ public class HabitUI extends JPanel {
 
     private void setupHabitRemindersPanel() {
         habitRemindersPanel = new HabitRemindersUI(habit);
-        tabbedPane.addTab("Notification Settings", null, habitRemindersPanel, "Set your notifications");
+        tabbedPane.addTab("Notifications", null, habitRemindersPanel, "Set your notifications");
     }
 
     private void setupAchievementsPanel() {

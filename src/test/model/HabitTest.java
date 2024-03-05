@@ -1,9 +1,13 @@
 package model;
 
 import javafx.util.Pair;
+import model.reminder.DailyReminder;
+import model.reminder.HabitReminder;
+import model.reminder.MonthlyReminder;
+import model.reminder.WeeklyReminder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ui.ReminderScheduler;
+import ui.reminder.ReminderScheduler;
 
 import java.time.*;
 import java.util.HashSet;

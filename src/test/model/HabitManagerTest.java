@@ -1,5 +1,8 @@
 package model;
 
+import model.reminder.DailyReminder;
+import model.reminder.HabitReminder;
+import model.reminder.MonthlyReminder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

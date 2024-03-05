@@ -2,10 +2,14 @@ package ui;
 
 import javafx.util.Pair;
 import model.*;
+import model.reminder.DailyReminder;
+import model.reminder.MonthlyReminder;
+import model.reminder.WeeklyReminder;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import persistence.JsonReader;
 import persistence.JsonWriter;
+import ui.reminder.SendReminder;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

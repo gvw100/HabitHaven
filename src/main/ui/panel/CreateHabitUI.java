@@ -1,4 +1,4 @@
-package ui;
+package ui.panel;
 
 import model.Habit;
 import model.HabitManager;
@@ -79,8 +79,9 @@ public class CreateHabitUI extends JPanel {
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (habitName.getText().length() == 0) {
+                if (habitName.getText().isBlank()) {
                     habitName.setText("Enter Habit Name");
+                    habitName.selectAll();
                 }
             }
         });
@@ -110,7 +111,7 @@ public class CreateHabitUI extends JPanel {
             if (habitName.getText().length() > MAX_HABIT_NAME_LENGTH) {
                 habitName.setText(habitName.getText().substring(0, MAX_HABIT_NAME_LENGTH));
             }
-            if (habitName.getText().length() == 0) {
+            if (habitName.getText().isBlank()) {
                 habitName.setText("Enter Habit Name");
                 habitName.selectAll();
             }
@@ -131,7 +132,7 @@ public class CreateHabitUI extends JPanel {
         habitDescription.setForeground(FONT_COLOUR);
         habitDescription.setBorder(BorderFactory.createLineBorder(FONT_COLOUR));
         habitDescription.setCaretColor(FONT_COLOUR);
-        habitDescriptionPanel.setPreferredSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, TEXT_FIELD_HEIGHT * 3));
+        habitDescriptionPanel.setPreferredSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, TEXT_FIELD_HEIGHT * 5));
         habitDescription.setText("Description (optional)");
         habitDescription.setAlignmentX(Component.CENTER_ALIGNMENT);
         setupDescriptionListener();
@@ -156,8 +157,9 @@ public class CreateHabitUI extends JPanel {
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (habitDescription.getText().length() == 0) {
+                if (habitDescription.getText().isBlank()) {
                     habitDescription.setText("Description (optional)");
+                    habitDescription.selectAll();
                 }
             }
         });
@@ -187,7 +189,7 @@ public class CreateHabitUI extends JPanel {
             if (habitDescription.getText().length() > MAX_DESCRIPTION_LENGTH) {
                 habitDescription.setText(habitDescription.getText().substring(0, MAX_DESCRIPTION_LENGTH));
             }
-            if (habitDescription.getText().length() == 0) {
+            if (habitDescription.getText().isBlank()) {
                 habitDescription.setText("Description (optional)");
                 habitDescription.selectAll();
             }

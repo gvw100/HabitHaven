@@ -1,7 +1,8 @@
-package model;
+package model.reminder;
 
+import model.Habit;
 import org.json.JSONObject;
-import ui.ReminderScheduler;
+import ui.reminder.ReminderScheduler;
 
 import java.time.Clock;
 import java.time.LocalDate;

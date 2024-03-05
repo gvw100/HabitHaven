@@ -1,4 +1,4 @@
-package ui;
+package ui.panel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,5 +49,11 @@ public class StartUI extends JPanel {
         add(newUserButton);
         add(Box.createRigidArea(new Dimension(0, PADDING)));
         add(loadUserButton);
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        setupStartingGradient(g, getWidth(), getHeight());
     }
 }

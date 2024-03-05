@@ -1,8 +1,9 @@
-package model;
+package model.reminder;
 
+import model.Habit;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import ui.ReminderScheduler;
+import ui.reminder.ReminderScheduler;
 
 import java.time.*;
 import java.util.HashSet;
@@ -37,6 +38,18 @@ public abstract class HabitReminder {
 
     public Habit getHabit() {
         return this.habit;
+    }
+
+    public Clock getClock() {
+        return this.clock;
+    }
+
+    public ReminderScheduler getReminderScheduler() {
+        return this.reminderScheduler;
+    }
+
+    public void setClock(Clock clock) {
+        this.clock = clock;
     }
 
     // EFFECTS: returns true if the reminder is default, false if it is custom

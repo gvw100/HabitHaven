@@ -1,6 +1,9 @@
-package model;
+package model.reminder;
 
 import javafx.util.Pair;
+import model.Habit;
+import model.HabitHelperTest;
+import model.Period;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,8 +32,8 @@ public class HabitReminderTest extends HabitHelperTest {
         wc = getFixedClock("2024-04-01T09:00:00Z");
         mc = getFixedClock("2024-07-01T09:00:00Z");
 
-        Habit dh = new Habit("daily habit omg", "daily", Period.DAILY, 5, true, dc);
-        wh = new Habit("weekly habit?!?!", "weekly", Period.WEEKLY, 6, true, wc);
+        Habit dh = new Habit("daily habit omg", "daily", model.Period.DAILY, 5, true, dc);
+        wh = new Habit("weekly habit?!?!", "weekly", model.Period.WEEKLY, 6, true, wc);
         Habit mh = new Habit("monthly habit!?!?!?!", "monthly", Period.MONTHLY, 7, true, mc);
 
         dr = dh.getHabitReminder();

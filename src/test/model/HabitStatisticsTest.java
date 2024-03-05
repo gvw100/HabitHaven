@@ -20,6 +20,12 @@ public class HabitStatisticsTest extends HabitHelperTest {
     }
 
     @Test
+    void testConstructor2() {
+        habitStats = new HabitStatistics(1, 2, 3, 4, 5);
+        checkStats(habitStats, 1, 2, 3, 4, 5);
+    }
+
+    @Test
     void testGetters() {
         for (int i = 0; i < 2; i++) {
             habitStats.incrementStreak();

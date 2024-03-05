@@ -1,12 +1,21 @@
 package model;
 
+import model.achievement.Achievement;
+import model.reminder.DailyReminder;
+import model.reminder.HabitReminder;
+import model.reminder.MonthlyReminder;
+import model.reminder.WeeklyReminder;
 import org.json.JSONObject;
 
 import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+
+import static model.achievement.AchievementManager.getAchieved;
 
 // Represents a habit with a name, description, period, frequency, number of successes, habit statistics,
 // and habit notifications
@@ -24,6 +33,7 @@ public class Habit {
     private boolean isPreviousComplete;
     private final HabitStatistics habitStats;
     private HabitReminder habitReminder;
+    private List<Achievement> achievements;
 
     // REQUIRES: 0 < frequency < 16
     // EFFECTS: initializes habit
@@ -39,6 +49,7 @@ public class Habit {
         this.isPreviousComplete = false;
         this.habitStats = new HabitStatistics();
         this.habitReminder = this.notifyEnabled ? getNewReminder() : null;
+        this.achievements = new ArrayList<>();
         updateDateTime();
     }
 
@@ -59,6 +70,7 @@ public class Habit {
         this.isPreviousComplete = ipc;
         this.habitStats = hs;
         this.habitReminder = hr;
+        this.achievements = getAchieved(habitStats, period);
     }
 
     public void setHabitReminder(HabitReminder habitReminder) {
@@ -73,12 +85,16 @@ public class Habit {
         this.description = description;
     }
 
+    public void setAchievements(List<Achievement> achievements) {
+        this.achievements = achievements;
+    }
+
     // MODIFIES: this
     // EFFECTS: set this.clock, and habitReminder.clock, solely for testing purposes
     public void setClock(Clock clock) {
         this.clock = clock;
         if (isNotifyEnabled()) {
-            habitReminder.clock = clock;
+            habitReminder.setClock(clock);
         }
     }
 
@@ -310,8 +326,7 @@ public class Habit {
             nextHabitPeriod();
             habitStats.resetStreak();
             isPreviousComplete = false;
-        }
-        if (isNotifyEnabled()) {
+        } else if (isNotifyEnabled()) {
             habitReminder.updateReminders();
         }
     }

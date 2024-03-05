@@ -11,27 +11,38 @@ public class Constants {
     public static final ImageIcon LOGO = new ImageIcon("./data/LOGO.png");
     public static final ImageIcon LOGO_ICON = new ImageIcon("./data/icon.png");
     public static final ImageIcon TRANSPARENT_ICON = new ImageIcon("./data/transparent_icon.png");
-    // DELETE_ICON from https://www.flaticon.com/free-icons/delete Delete icons created by Ilham Fitrotul Hayat - Flaticon
+    // DELETE_ICON from https://icons8.com/icon/DU8dSXkvLUkx/trash by Icons8
     public static final ImageIcon DELETE_ICON = new ImageIcon("./data/delete.png");
     // DELETE_ICON_HOVER from https://www.flaticon.com/free-icons/delete Delete icons created by IYAHICON - Flaticon
     public static final ImageIcon DELETE_ICON_HOVER = new ImageIcon("./data/delete_hover.png");
-    // ADD_ICON from https://www.flaticon.com/free-icons/create Create icons created by nahumam - Flaticon
+    // ADD_ICON from https://icons8.com/icon/1501/plus by Icons8
     public static final ImageIcon ADD_ICON = new ImageIcon("./data/add.png");
     public static final ImageIcon ADD_ICON_HOVER = new ImageIcon("./data/add.png");
-    // BELL_ON from https://www.flaticon.com/free-icons/notification Notification icons created by Freepik - Flaticon
+    // BELL_ON from https://icons8.com/icon/9xjQNFjDCyFj/alarm by Icons8
     public static final ImageIcon BELL_ON = new ImageIcon("./data/bell_on.png");
     // BELL_OFF from https://www.flaticon.com/free-icons/alarm-off Alarm off icons created by IYAHICON - Flaticon
     public static final ImageIcon BELL_OFF = new ImageIcon("./data/bell_off.png");
+    // LIST_ICON from https://icons8.com/icon/5T76ABfXaynZ/list by Icons8
+    public static final ImageIcon LIST_ICON = new ImageIcon("./data/list.png");
+    // STATS_ICON from https://icons8.com/icon/wdfmkgweCGDk/analytics by Icons8
+    public static final ImageIcon STATS_ICON = new ImageIcon("./data/stats.png");
+    // SAVE_ICON from https://icons8.com/icon/btak6xPsAuHB/save by Icons8
+    public static final ImageIcon SAVE_ICON = new ImageIcon("./data/save.png");
+    // SETTINGS_ICON from https://icons8.com/icon/Zydyx4gBcOrY/settings by Icons8
+    public static final ImageIcon SETTINGS_ICON = new ImageIcon("./data/settings.png");
+    // CREDITS_ICON from https://icons8.com/icon/ts5e28mdzD3N/quote-left by Icons8
+    public static final ImageIcon CREDITS_ICON =  new ImageIcon("./data/credits.png");
     public static final int LOGO_WIDTH = 300;
     public static final int LOGO_HEIGHT = 300;
     public static final int LARGE_BUTTON_WIDTH = 275;
     public static final int LARGE_BUTTON_HEIGHT = 75;
     public static final int PADDING = 35;
     public static final Color APP_COLOUR = Color.decode("#100d28");
-    public static final Color SIDEBAR_COLOUR = Color.decode("#302c34");
+    public static final Color APP_COLOUR_LIGHT = APP_COLOUR.brighter().brighter().brighter();
+    public static final Color SIDEBAR_COLOUR = Color.decode("#1c76c7").darker().darker().darker();
     public static final Color FONT_COLOUR = Color.WHITE;
     public static final String APP_FONT = "Arial";
-    public static final Font HUGE_FONT = new Font(APP_FONT, Font.PLAIN, 60);
+    public static final Font HUGE_FONT = new Font(APP_FONT, Font.PLAIN, 55);
     public static final Font BIG_FONT = new Font(APP_FONT, Font.PLAIN, 40);
     public static final Font MEDIUM_FONT = new Font(APP_FONT, Font.PLAIN, 20);
     public static final Font SMALL_FONT = new Font(APP_FONT, Font.PLAIN, 18);
@@ -43,6 +54,7 @@ public class Constants {
     public static final int MAX_FREQUENCY = 15;
     public static final int MONTH_MAX_DAYS = 31;
     public static final int MAX_REMINDERS_PER_DAY = 15;
+    public static final String HABIT_MANAGER_STORE = "./data/habitManager.json";
 
     public static void makeButton(JButton button, int width, int height, Font font) {
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -54,5 +66,14 @@ public class Constants {
         button.setFont(font);
         button.setForeground(FONT_COLOUR);
         button.setContentAreaFilled(false);
+    }
+
+    public static void setupStartingGradient(Graphics g, int width, int height) {
+        Graphics2D graphics2d = (Graphics2D) g;
+        g.fillRect(0, 0, width, height);
+        GradientPaint gradientPaint = new GradientPaint(
+                (float) 0.65 * width, (float) 0.60 * height, APP_COLOUR, width, height, APP_COLOUR_LIGHT);
+        graphics2d.setPaint(gradientPaint);
+        graphics2d.fillRect(0, 0, width, height);
     }
 }

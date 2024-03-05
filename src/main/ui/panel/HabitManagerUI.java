@@ -1,11 +1,12 @@
-package ui;
+package ui.panel;
 
 import model.Habit;
 import model.HabitManager;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
-import persistence.JsonReader;
 import persistence.JsonWriter;
+import ui.HabitApp;
+import ui.UpdateHabits;
 
 import javax.swing.*;
 
@@ -15,7 +16,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
 
 import static org.quartz.CronScheduleBuilder.dailyAtHourAndMinute;
@@ -30,16 +30,14 @@ public class HabitManagerUI extends JPanel {
     private JPanel habitsPanel;
     private JScrollPane scrollPane;
 
-    private static final String HABIT_MANAGER_STORE = "./data/habitManager.json";
     private static boolean isSaved;
     private HabitManager habitManager;
 
-    public HabitManagerUI(boolean isSaved, JFrame frame) {
+    public HabitManagerUI(boolean isSaved, JFrame frame, HabitManager habitManager) {
+        this.habitManager = habitManager;
         setIsSaved(isSaved);
         if (isSaved) {
-            loadHabitManager();
-        } else {
-            habitManager = new HabitManager();
+            updateAllHabits();
         }
         scheduleHabitUpdates();
         setupPanel();
@@ -83,18 +81,19 @@ public class HabitManagerUI extends JPanel {
     }
 
     private void setupSidebar() {
-        sidebar = new JPanel();
-        sidebar.setLayout(new FlowLayout());
+        setupSidebarGradient();
+        sidebar.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
         sidebar.setBackground(SIDEBAR_COLOUR);
         sidebar.setPreferredSize(new Dimension(SIDE_BAR_WIDTH, WINDOW_HEIGHT));
         JLabel logo = new JLabel(TRANSPARENT_ICON);
         sidebar.add(logo);
-        JPanel createHabit = setupSidebarOption("Create Habit");
-        JPanel habitList = setupSidebarOption("Habit List");
-        JPanel lifetimeStats = setupSidebarOption("Lifetime Stats");
-        JPanel save = setupSidebarOption("Save to File");
-        JPanel settings = setupSidebarOption("Settings");
-        JPanel credits = setupSidebarOption("Credits");
+        JPanel createHabit = setupSidebarOption("Create Habit",
+                new ImageIcon(ADD_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
+        JPanel habitList = setupSidebarOption("Habit List", LIST_ICON);
+        JPanel lifetimeStats = setupSidebarOption("Lifetime Stats", STATS_ICON);
+        JPanel save = setupSidebarOption("Save to File", SAVE_ICON);
+        JPanel settings = setupSidebarOption("Settings", SETTINGS_ICON);
+        JPanel credits = setupSidebarOption("Credits", CREDITS_ICON);
         setupSidebarOptionListeners(createHabit, habitList, lifetimeStats, save, settings, credits);
         sidebar.add(createHabit);
         sidebar.add(habitList);
@@ -102,6 +101,22 @@ public class HabitManagerUI extends JPanel {
         sidebar.add(save);
         sidebar.add(settings);
         sidebar.add(credits);
+    }
+
+    private void setupSidebarGradient() {
+        sidebar = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                int w = getWidth();
+                int h = getHeight();
+                GradientPaint gp = new GradientPaint(0, (float) 0.55 * h, SIDEBAR_COLOUR, 0, h,
+                        SIDEBAR_COLOUR.brighter().brighter().brighter());
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, w, h);
+            }
+        };
     }
 
     private void setupSidebarOptionListeners(JPanel createHabit, JPanel habitList, JPanel lifetimeStats,
@@ -197,7 +212,9 @@ public class HabitManagerUI extends JPanel {
         settings.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
+                SettingsUI settingsUI = new SettingsUI(habitManager);
+                mainPanel.add(settingsUI, "settings");
+                cardLayout.show(mainPanel, "settings");
             }
         });
     }
@@ -211,14 +228,15 @@ public class HabitManagerUI extends JPanel {
         });
     }
 
-    private JPanel setupSidebarOption(String text) {
+    private JPanel setupSidebarOption(String text, ImageIcon icon) {
         JPanel option = new JPanel();
         option.setLayout(new GridLayout(1, 1));
         option.setBackground(SIDEBAR_COLOUR);
         option.setPreferredSize(new Dimension(SIDE_BAR_WIDTH, 50));
-        JLabel textLabel = new JLabel(text);
+        JLabel textLabel = new JLabel(text, icon, JLabel.LEFT);
         textLabel.setFont(MEDIUM_FONT);
         textLabel.setForeground(FONT_COLOUR);
+        textLabel.setIconTextGap(20);
         option.add(textLabel);
         setupSidebarListener(option);
         return option;
@@ -390,10 +408,7 @@ public class HabitManagerUI extends JPanel {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                ImageIcon icon = habit.isNotifyEnabled() ? BELL_ON : BELL_OFF;
-                ImageIcon resized = new ImageIcon(icon.getImage().getScaledInstance(
-                        30, 30, Image.SCALE_SMOOTH));
-                notifications.setIcon(new ImageIcon(resized.getImage()));
+                enlargeNotificationIcon(notifications, habit);
             }
 
             @Override
@@ -401,6 +416,14 @@ public class HabitManagerUI extends JPanel {
                 notifications.setIcon(habit.isNotifyEnabled() ? BELL_ON : BELL_OFF);
             }
         });
+    }
+
+    private void enlargeNotificationIcon(JLabel notifications, Habit habit) {
+        ImageIcon icon = habit.isNotifyEnabled() ? BELL_ON : BELL_OFF;
+        int size = icon.getIconHeight();
+        ImageIcon resized = new ImageIcon(icon.getImage().getScaledInstance(
+                (int) (Math.round(1.2 * size)), (int) (Math.round(1.2 * size)), Image.SCALE_SMOOTH));
+        notifications.setIcon(new ImageIcon(resized.getImage()));
     }
 
     private JPanel setupDeletePanel(Habit habit) {
@@ -453,7 +476,7 @@ public class HabitManagerUI extends JPanel {
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new FlowLayout());
         JLabel title = new JLabel(HabitManager.getUsername() + "'s Habits");
-        title.setFont(BIG_FONT);
+        title.setFont(HUGE_FONT);
         title.setForeground(FONT_COLOUR);
         titlePanel.add(title);
         titlePanel.setBackground(APP_COLOUR);
@@ -570,6 +593,7 @@ public class HabitManagerUI extends JPanel {
         JobDataMap data = new JobDataMap();
         data.put("updateHabits", updateAllHabits);
         JobDetail job = newJob(UpdateHabits.class)
+                .withIdentity("updateHabits", "updateHabitsGroup")
                 .usingJobData(data)
                 .build();
         Trigger trigger = newTrigger()
@@ -592,20 +616,6 @@ public class HabitManagerUI extends JPanel {
         for (Habit habit : habitManager.getHabits()) {
             habit.updateHabit();
         }
-    }
-
-    // MODIFIES: this
-    // EFFECTS: loads user data from file, updates all habits, schedules habit updates, and displays menu
-    private void loadHabitManager() {
-        JsonReader jsonReader = new JsonReader(HABIT_MANAGER_STORE);
-        try {
-            habitManager = jsonReader.read();
-        } catch (IOException e) {
-            System.out.println("Unable to read from file: " + HABIT_MANAGER_STORE);
-            System.exit(-1);
-        }
-        updateAllHabits();
-        scheduleHabitUpdates();
     }
 
     private class HabitRowListener extends MouseAdapter {

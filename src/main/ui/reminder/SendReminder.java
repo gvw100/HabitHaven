@@ -1,10 +1,11 @@
-package ui;
+package ui.reminder;
 
 import model.Habit;
 import model.HabitManager;
 import model.Period;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
+import ui.HabitApp;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

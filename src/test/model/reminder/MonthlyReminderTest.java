@@ -1,9 +1,12 @@
-package model;
+package model.reminder;
 
 import javafx.util.Pair;
+import model.Habit;
+import model.HabitHelperTest;
+import model.Period;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ui.ReminderScheduler;
+import ui.reminder.ReminderScheduler;
 
 import java.time.*;
 import java.util.HashSet;
@@ -31,8 +34,8 @@ public class MonthlyReminderTest extends HabitHelperTest {
         c2 = getFixedClock("2024-02-01T08:59:00Z");
         c3 = getFixedClock("2024-03-15T09:01:00Z");
 
-        h1 = new Habit("habit1", "monthly", Period.MONTHLY, 5, true, c1);
-        h2 = new Habit("habit2", "monthly", Period.MONTHLY, 15, true, c2);
+        h1 = new Habit("habit1", "monthly", model.Period.MONTHLY, 5, true, c1);
+        h2 = new Habit("habit2", "monthly", model.Period.MONTHLY, 15, true, c2);
         h3 = new Habit("habit3", "monthly", Period.MONTHLY, 1, true, c3);
 
         mr1 = (MonthlyReminder) h1.getHabitReminder();

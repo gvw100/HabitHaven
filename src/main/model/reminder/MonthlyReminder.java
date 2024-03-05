@@ -1,9 +1,10 @@
-package model;
+package model.reminder;
 
 import javafx.util.Pair;
+import model.Habit;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import ui.ReminderScheduler;
+import ui.reminder.ReminderScheduler;
 
 import java.time.*;
 import java.util.HashSet;

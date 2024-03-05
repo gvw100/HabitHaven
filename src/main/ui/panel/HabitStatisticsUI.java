@@ -1,4 +1,4 @@
-package ui;
+package ui.panel;
 
 import model.Habit;
 import model.HabitStatistics;
@@ -54,7 +54,7 @@ public class HabitStatisticsUI extends JPanel {
 
     private JLabel getTitleLabel() {
         statsTitle = new JLabel(getTitleText());
-        statsTitle.setFont(HUGE_FONT);
+        statsTitle.setFont(BIG_FONT);
         statsTitle.setForeground(FONT_COLOUR);
         statsTitle.setAlignmentX(CENTER_ALIGNMENT);
         return statsTitle;
@@ -101,7 +101,7 @@ public class HabitStatisticsUI extends JPanel {
     }
 
     private String getTotalNumSuccessText() {
-        return "Lifetime number of completions: " + habitStats.getTotalNumSuccess()
+        return "Lifetime Number of Completions: " + habitStats.getTotalNumSuccess()
                 + (habitStats.getTotalNumSuccess() == 1 ? " time" : " times");
     }
 
@@ -114,9 +114,10 @@ public class HabitStatisticsUI extends JPanel {
     }
 
     private String getNumPeriodSuccessText() {
-        String[] plural = new String[]{"days", "weeks", "months"};
-        String[] strings = habitStats.getNumPeriodSuccess() == 1 ? new String[]{"day", "week", "month"} : plural;
-        return "Number of successful " + getPeriodString(plural) + ": "
+        String[] plural = new String[]{"Days", "Weeks", "Months"};
+        String[] strings = habitStats.getNumPeriodSuccess() == 1 ? new String[]{"day", "week", "month"} :
+                new String[]{"days", "weeks", "months"};
+        return "Number of Successful " + getPeriodString(plural) + ": "
                 + habitStats.getNumPeriodSuccess() + " " + getPeriodString(strings);
     }
 
@@ -129,10 +130,10 @@ public class HabitStatisticsUI extends JPanel {
     }
 
     private String getNumPeriodText() {
-        String[] plural = new String[]{"days", "weeks", "months"};
+        String[] plural = new String[]{"Days", "Weeks", "Months"};
         String[] strings = habitStats.getNumPeriod() == 1 ? new String[]{"day", "week", "month"}
-                : plural;
-        return "Number of " + getPeriodString(plural) + " tracked: "
+                : new String[]{"days", "weeks", "months"};
+        return "Number of " + getPeriodString(plural) + " Tracked: "
                 + habitStats.getNumPeriod() + " " + getPeriodString(strings);
     }
 

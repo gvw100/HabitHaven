@@ -1,10 +1,12 @@
-package model;
+package model.reminder;
 
+import model.Habit;
+import model.Period;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.quartz.SchedulerException;
 import org.quartz.impl.matchers.GroupMatcher;
-import ui.ReminderScheduler;
+import ui.reminder.ReminderScheduler;
 
 import java.time.*;
 import java.util.HashSet;
@@ -32,8 +34,8 @@ public class WeeklyReminderTest {
         c2 = getFixedClock("2024-11-10T08:59:00Z");
         c3 = getFixedClock("2024-03-27T09:01:00Z");
 
-        h1 = new Habit("habit1", "weekly", Period.WEEKLY, 15, true, c1);
-        h2 = new Habit("habit2", "weekly", Period.WEEKLY, 2, true, c2);
+        h1 = new Habit("habit1", "weekly", model.Period.WEEKLY, 15, true, c1);
+        h2 = new Habit("habit2", "weekly", model.Period.WEEKLY, 2, true, c2);
         h3 = new Habit("habit3", "weekly", Period.WEEKLY, 9, true, c3);
 
         wr1 = (WeeklyReminder) h1.getHabitReminder();

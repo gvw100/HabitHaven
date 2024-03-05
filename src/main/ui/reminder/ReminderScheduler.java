@@ -1,8 +1,9 @@
-package ui;
+package ui.reminder;
 
 import model.Habit;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+
 import static org.quartz.JobBuilder.*;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.*;
