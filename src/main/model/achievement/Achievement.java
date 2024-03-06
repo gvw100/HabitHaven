@@ -35,4 +35,18 @@ public class Achievement {
     public AchievementTier getTier() {
         return this.tier;
     }
+
+    // EFFECTS: returns true if the achievement is equal to the given object, for testing purposes
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Achievement)) {
+            return false;
+        }
+        Achievement a = (Achievement) o;
+        return target == a.target && name.equals(a.name) && description.equals(a.description) && type == a.type
+                && tier == a.tier;
+    }
 }

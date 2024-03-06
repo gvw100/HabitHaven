@@ -1,4 +1,4 @@
-package ui.panel;
+package ui.card;
 
 import model.Habit;
 import model.HabitManager;

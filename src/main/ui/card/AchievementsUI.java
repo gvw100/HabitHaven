@@ -1,4 +1,4 @@
-package ui.panel;
+package ui.card;
 
 import model.Habit;
 import model.achievement.Achievement;
@@ -214,7 +214,6 @@ public class AchievementsUI extends JPanel {
     }
 
     public void updateAchievementsUI() {
-        habit.setAchievements(getAchieved(habit.getHabitStats(), habit.getPeriod()));
         updateBronze();
         updateSilver();
         updateGold();
@@ -226,7 +225,6 @@ public class AchievementsUI extends JPanel {
         setupTitlePanel(childBronze, "Bronze Tier Achievements");
         setupGrids(childBronze, BRONZE_ICON, getBronzeAchievements(habit.getPeriod()));
         setupEmptyRow(childBronze);
-        parentBronze.setViewportView(childBronze);
     }
 
     private void updateSilver() {
@@ -234,7 +232,6 @@ public class AchievementsUI extends JPanel {
         setupTitlePanel(childSilver, "Silver Tier Achievements");
         setupGrids(childSilver, SILVER_ICON, getSilverAchievements(habit.getPeriod()));
         setupEmptyRow(childSilver);
-        parentSilver.setViewportView(childSilver);
     }
 
     private void updateGold() {
@@ -242,7 +239,6 @@ public class AchievementsUI extends JPanel {
         setupTitlePanel(childGold, "Gold Tier Achievements");
         setupGrids(childGold, GOLD_ICON, getGoldAchievements(habit.getPeriod()));
         setupEmptyRow(childGold);
-        parentGold.setViewportView(childGold);
     }
 
     private void updatePlatinum() {
@@ -250,6 +246,5 @@ public class AchievementsUI extends JPanel {
         setupTitlePanel(childPlatinum, "Platinum Tier Achievements");
         setupGrids(childPlatinum, PLATINUM_ICON, getPlatinumAchievements(habit.getPeriod()));
         setupEmptyRow(childPlatinum);
-        parentPlatinum.setViewportView(childPlatinum);
     }
 }

@@ -2,9 +2,9 @@ package ui;
 
 import model.HabitManager;
 import persistence.JsonReader;
-import ui.panel.HabitManagerUI;
-import ui.panel.NewUserUI;
-import ui.panel.StartUI;
+import ui.card.HabitManagerUI;
+import ui.card.NewUserUI;
+import ui.card.StartUI;
 import ui.reminder.SendReminder;
 
 import javax.swing.*;

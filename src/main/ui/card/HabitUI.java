@@ -1,7 +1,11 @@
-package ui.panel;
+package ui.card;
 
+import javafx.util.Pair;
 import model.Habit;
 import model.Period;
+import model.achievement.Achievement;
+import model.achievement.AchievementManager;
+import ui.AchievementToast;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -10,11 +14,13 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.util.List;
 
 import static ui.Constants.*;
 
 public class HabitUI extends JPanel {
     private Habit habit;
+    private AchievementToast achievementToast;
     private JTabbedPane tabbedPane;
     private JPanel habitPanel;
     private JPanel contentsPanel;
@@ -37,8 +43,9 @@ public class HabitUI extends JPanel {
     private JButton changePeriod;
 
 
-    public HabitUI(Habit habit) {
+    public HabitUI(Habit habit, AchievementToast achievementToast) {
         this.habit = habit;
+        this.achievementToast = achievementToast;
         UIManager.put("TabbedPane.selected", APP_COLOUR.brighter().brighter().brighter());
         tabbedPane = new JTabbedPane();
         setupPanels();
@@ -319,13 +326,27 @@ public class HabitUI extends JPanel {
         decrementSuccess = new JButton("-");
         makeButton(incrementSuccess, 50, 50, MEDIUM_FONT);
         makeButton(decrementSuccess, 50, 50, MEDIUM_FONT);
+        setupIncrementListener();
+        setupDecrementListener();
+    }
+
+    private void setupIncrementListener() {
         incrementSuccess.addActionListener(e -> {
+            List<Achievement> current = habit.getAchievements();
             if (habit.finishHabit()) {
                 habitNumSuccess.setText(String.valueOf(habit.getNumSuccess()));
                 HabitManagerUI.setIsSaved(false);
+                List<Achievement> newlyAchieved = AchievementManager.getNewlyAchieved(current, habit.getHabitStats(),
+                        habit.getPeriod());
+                for (Achievement achievement : newlyAchieved) {
+                    achievementToast.add(new Pair<>(habit.getName(), achievement));
+                }
                 updateOtherPanels();
             }
         });
+    }
+
+    private void setupDecrementListener() {
         decrementSuccess.addActionListener(e -> {
             if (habit.undoFinishHabit()) {
                 habitNumSuccess.setText(String.valueOf(habit.getNumSuccess()));

@@ -85,10 +85,6 @@ public class Habit {
         this.description = description;
     }
 
-    public void setAchievements(List<Achievement> achievements) {
-        this.achievements = achievements;
-    }
-
     // MODIFIES: this
     // EFFECTS: set this.clock, and habitReminder.clock, solely for testing purposes
     public void setClock(Clock clock) {
@@ -212,6 +208,10 @@ public class Habit {
         return this.habitReminder;
     }
 
+    public List<Achievement> getAchievements() {
+        return this.achievements;
+    }
+
     public Clock getClock() {
         return this.clock;
     }
@@ -237,12 +237,13 @@ public class Habit {
 
     // MODIFIES: this
     // EFFECTS: if numSuccess < frequency, increments numSuccess,
-    //          updates habit statistics and reminders, returns whether habit was incremented
+    //          updates habit statistics, reminders, and achievements, returns whether habit was incremented
     public boolean finishHabit() {
         if (numSuccess < frequency) {
             numSuccess++;
             habitStats.incrementTotalNumSuccess();
             checkPeriodComplete();
+            achievements = getAchieved(habitStats, period);
             return true;
         }
         return false;
@@ -251,7 +252,8 @@ public class Habit {
     // MODIFIES: this
     // EFFECTS: if numSuccess > 0, decrements numSuccess and habitStats.totalNumSuccess,
     //          if isPeriodComplete(), then decrements habitStats.numPeriodSuccess and habitStats.streak,
-    //          if notifyEnabled, then updates reminders, returns whether habit was decremented
+    //          if notifyEnabled, then updates reminders,
+    //          updates achievements, returns whether habit was decremented
     public boolean undoFinishHabit() {
         if (numSuccess > 0) {
             if (isPeriodComplete()) {
@@ -264,6 +266,7 @@ public class Habit {
             if (isNotifyEnabled()) {
                 habitReminder.updateReminders();
             }
+            achievements = getAchieved(habitStats, period);
             return true;
         }
         return false;

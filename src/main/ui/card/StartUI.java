@@ -1,4 +1,4 @@
-package ui.panel;
+package ui.card;
 
 import javax.swing.*;
 import java.awt.*;

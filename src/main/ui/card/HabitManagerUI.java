@@ -1,10 +1,14 @@
-package ui.panel;
+package ui.card;
 
+import javafx.util.Pair;
 import model.Habit;
 import model.HabitManager;
+import model.achievement.Achievement;
+import model.achievement.AchievementManager;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import persistence.JsonWriter;
+import ui.AchievementToast;
 import ui.HabitApp;
 import ui.UpdateHabits;
 
@@ -16,6 +20,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.quartz.CronScheduleBuilder.dailyAtHourAndMinute;
@@ -24,17 +29,23 @@ import static org.quartz.TriggerBuilder.newTrigger;
 import static ui.Constants.*;
 
 public class HabitManagerUI extends JPanel {
+    private JLayeredPane layeredPane;
+    private JPanel wholePanel;
     private JPanel sidebar;
     private JPanel mainPanel;
     private CardLayout cardLayout;
     private JPanel habitsPanel;
     private JScrollPane scrollPane;
+    private AchievementToast achievementToast;
 
     private static boolean isSaved;
     private HabitManager habitManager;
 
     public HabitManagerUI(boolean isSaved, JFrame frame, HabitManager habitManager) {
         this.habitManager = habitManager;
+        this.achievementToast = new AchievementToast();
+        this.layeredPane = new JLayeredPane();
+        add(layeredPane);
         setIsSaved(isSaved);
         if (isSaved) {
             updateAllHabits();
@@ -66,9 +77,15 @@ public class HabitManagerUI extends JPanel {
     }
 
     private void setupPanel() {
-        BorderLayout layout = new BorderLayout();
-        setLayout(layout);
-        setBackground(APP_COLOUR);
+        setLayout(new GridLayout(1, 1));
+        wholePanel = new JPanel();
+        wholePanel.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+        wholePanel.setLayout(new BorderLayout());
+        wholePanel.setBackground(APP_COLOUR);
+        layeredPane.add(wholePanel, JLayeredPane.DEFAULT_LAYER);
+        layeredPane.add(achievementToast, JLayeredPane.PALETTE_LAYER);
+        wholePanel.setBounds(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+        achievementToast.setBounds(0, 0, WINDOW_WIDTH, 100);
         mainPanel = new JPanel();
         cardLayout = new CardLayout();
         scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -76,10 +93,11 @@ public class HabitManagerUI extends JPanel {
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);
         setupSidebar();
         setupHabitsUI();
-        add(sidebar, BorderLayout.LINE_START);
-        add(mainPanel, BorderLayout.CENTER);
+        wholePanel.add(sidebar, BorderLayout.LINE_START);
+        wholePanel.add(mainPanel, BorderLayout.CENTER);
     }
 
+    // Inspiration taken from: https://www.youtube.com/watch?v=Wlbk47TltNY
     private void setupSidebar() {
         setupSidebarGradient();
         sidebar.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
@@ -615,10 +633,18 @@ public class HabitManagerUI extends JPanel {
     }
 
     // MODIFIES: this
-    // EFFECTS: updates all habits in habit manager based on current time
+    // EFFECTS: updates all habits in habit manager based on current time, updates achievements, displaying toast if
+    //          any new achievements are achieved
     private void updateAllHabits() {
+        List<Achievement> newlyAchieved = new ArrayList<>();
         for (Habit habit : habitManager.getHabits()) {
+            List<Achievement> current = habit.getAchievements();
             habit.updateHabit();
+            newlyAchieved.addAll(
+                    AchievementManager.getNewlyAchieved(current, habit.getHabitStats(), habit.getPeriod()));
+        }
+        for (Achievement achievement : newlyAchieved) {
+            achievementToast.add(new Pair<>(HabitManager.getUsername(), achievement));
         }
     }
 
@@ -633,7 +659,7 @@ public class HabitManagerUI extends JPanel {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            HabitUI habitUI = new HabitUI(habit);
+            HabitUI habitUI = new HabitUI(habit, achievementToast);
             mainPanel.add(habitUI, "habit");
             cardLayout.show(mainPanel, "habit");
         }

@@ -7,6 +7,7 @@ public class Constants {
     public static final int WINDOW_WIDTH = 1300;
     public static final int WINDOW_HEIGHT = 800;
     public static final int SIDE_BAR_WIDTH = 200;
+    public static final String ACHIEVEMENT_SOUND = "./data/achievement.wav";
     // LOGO from https://www.canva.com/templates/EAFvMagh96A-colorful-modern-infinity-technology-free-logo/
     public static final ImageIcon LOGO = new ImageIcon("./data/logo.png");
     public static final ImageIcon LOGO_ICON = new ImageIcon("./data/logo_icon.png");

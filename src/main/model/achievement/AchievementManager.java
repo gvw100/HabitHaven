@@ -21,6 +21,13 @@ public class AchievementManager extends AchievementList {
         }
     }
 
+    public static List<Achievement> getNewlyAchieved(List<Achievement> old,
+                                                     HabitStatistics habitStatistics, Period period) {
+        List<Achievement> newlyAchieved = getAchieved(habitStatistics, period);
+        newlyAchieved.removeAll(old);
+        return newlyAchieved;
+    }
+
     public static List<Achievement> getNotAchieved(HabitStatistics habitStatistics, Period period) {
         List<Achievement> notAchieved = new ArrayList<>();
         switch (period) {
