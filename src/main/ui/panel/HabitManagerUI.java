@@ -379,7 +379,7 @@ public class HabitManagerUI extends JPanel {
         JPanel notificationsPanel = new JPanel();
         notificationsPanel.setLayout(new FlowLayout());
         notificationsPanel.setBackground(
-                habit.isPeriodComplete() ? Color.GREEN.darker().darker().darker() : APP_COLOUR);
+                habit.isPeriodComplete() ? SUCCESS_GREEN : APP_COLOUR);
         notificationsPanel.add(setupNotificationsLabel(habit));
         notificationsPanel.setPreferredSize(new Dimension(30, 50));
         return notificationsPanel;
@@ -429,7 +429,7 @@ public class HabitManagerUI extends JPanel {
     private JPanel setupDeletePanel(Habit habit) {
         JPanel deletePanel = new JPanel();
         deletePanel.setLayout(new FlowLayout());
-        deletePanel.setBackground(habit.isPeriodComplete() ? Color.GREEN.darker().darker().darker() : APP_COLOUR);
+        deletePanel.setBackground(habit.isPeriodComplete() ? SUCCESS_GREEN : APP_COLOUR);
         deletePanel.add(setupDeleteLabel(habit));
         deletePanel.setPreferredSize(new Dimension(30, 50));
         return deletePanel;
@@ -473,6 +473,11 @@ public class HabitManagerUI extends JPanel {
     }
 
     private void setupFirstRows() {
+        addTitleRow();
+        addHeadingRow();
+    }
+
+    private void addTitleRow() {
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new FlowLayout());
         JLabel title = new JLabel(HabitManager.getUsername() + "'s Habits");
@@ -482,7 +487,6 @@ public class HabitManagerUI extends JPanel {
         titlePanel.setBackground(APP_COLOUR);
         GridBagConstraints titleConstraints = getTitleConstraints();
         habitsPanel.add(titlePanel, titleConstraints);
-        addHeadingRow();
     }
 
     private void addHeadingRow() {
@@ -574,12 +578,12 @@ public class HabitManagerUI extends JPanel {
     private JPanel setupHabitPanel(String text, boolean isPeriodComplete) {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout());
-        panel.setBackground(isPeriodComplete ? Color.GREEN.darker().darker().darker() : APP_COLOUR);
+        panel.setBackground(isPeriodComplete ? SUCCESS_GREEN : APP_COLOUR);
         panel.setPreferredSize(new Dimension((WINDOW_WIDTH - SIDE_BAR_WIDTH) / 6, 50));
         JLabel label = new JLabel(text);
         label.setFont(MEDIUM_FONT);
         label.setForeground(FONT_COLOUR);
-        label.setBackground(isPeriodComplete ? Color.GREEN.darker().darker().darker() : APP_COLOUR);
+        label.setBackground(isPeriodComplete ? SUCCESS_GREEN : APP_COLOUR);
         panel.add(label);
         return panel;
     }
@@ -638,15 +642,15 @@ public class HabitManagerUI extends JPanel {
         public void mouseEntered(MouseEvent e) {
             for (JPanel panel : panels) {
                 panel.setBackground(
-                        habit.isPeriodComplete() ? Color.GREEN.darker().darker() :
-                                APP_COLOUR.brighter().brighter().brighter());
+                        habit.isPeriodComplete() ? SUCCESS_GREEN_LIGHT :
+                                APP_COLOUR_LIGHT);
             }
         }
 
         @Override
         public void mouseExited(MouseEvent e) {
             for (JPanel panel : panels) {
-                panel.setBackground(habit.isPeriodComplete() ? Color.GREEN.darker().darker().darker() : APP_COLOUR);
+                panel.setBackground(habit.isPeriodComplete() ? SUCCESS_GREEN : APP_COLOUR);
             }
         }
     }

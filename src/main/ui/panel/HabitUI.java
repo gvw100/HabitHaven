@@ -69,7 +69,7 @@ public class HabitUI extends JPanel {
         setupHabitDescription();
         setupHabitSuccessFrequencyPeriod();
         habitPanel.add(contentsPanel);
-        tabbedPane.addTab("Habit", null, habitPanel, "View your habit");
+        tabbedPane.addTab("Habit", HABIT_ICON, habitPanel, "View your habit");
     }
 
     private void setupHabitName() {
@@ -424,16 +424,16 @@ public class HabitUI extends JPanel {
 
     private void setupHabitStatsPanel() {
         habitStatsPanel = new HabitStatisticsUI(habit);
-        tabbedPane.addTab("In-depth Statistics", null, habitStatsPanel, "View your statistics");
+        tabbedPane.addTab("Statistics", STATS_ICON, habitStatsPanel, "View your statistics");
     }
 
     private void setupHabitRemindersPanel() {
         habitRemindersPanel = new HabitRemindersUI(habit);
-        tabbedPane.addTab("Notifications", null, habitRemindersPanel, "Set your notifications");
+        tabbedPane.addTab("Notifications", BELL_ON, habitRemindersPanel, "Set your notifications");
     }
 
     private void setupAchievementsPanel() {
         achievementsPanel = new AchievementsUI(habit);
-        tabbedPane.addTab("Achievements", null, achievementsPanel, "View your achievements");
+        tabbedPane.addTab("Achievements", TROPHY_ICON, achievementsPanel, "View your achievements");
     }
 }

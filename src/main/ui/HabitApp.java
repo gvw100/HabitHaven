@@ -92,6 +92,22 @@ public class HabitApp extends JFrame {
         SETTINGS_ICON.setImage(settings);
         Image credits = CREDITS_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         CREDITS_ICON.setImage(credits);
+        Image habit = HABIT_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        HABIT_ICON.setImage(habit);
+        Image trophy = TROPHY_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        TROPHY_ICON.setImage(trophy);
+        scaleAchievements();
+    }
+
+    private void scaleAchievements() {
+        Image bronze = BRONZE_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        BRONZE_ICON.setImage(bronze);
+        Image silver = SILVER_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        SILVER_ICON.setImage(silver);
+        Image gold = GOLD_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        GOLD_ICON.setImage(gold);
+        Image platinum = PLATINUM_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        PLATINUM_ICON.setImage(platinum);
     }
 
     private void onNewUser() {

@@ -82,7 +82,7 @@ public class SendReminder implements Job {
     private void sendUIReminder(String message) {
         try {
             SystemTray tray = SystemTray.getSystemTray();
-            Image image = ImageIO.read(new File("./data/icon.png"));
+            Image image = ImageIO.read(new File("./data/logo_icon.png"));
             TrayIcon trayIcon = new TrayIcon(image, "Habit Reminder");
             trayIcon.setImageAutoSize(true);
             tray.add(trayIcon);

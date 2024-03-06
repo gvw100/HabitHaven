@@ -8,8 +8,8 @@ public class Constants {
     public static final int WINDOW_HEIGHT = 800;
     public static final int SIDE_BAR_WIDTH = 200;
     // LOGO from https://www.canva.com/templates/EAFvMagh96A-colorful-modern-infinity-technology-free-logo/
-    public static final ImageIcon LOGO = new ImageIcon("./data/LOGO.png");
-    public static final ImageIcon LOGO_ICON = new ImageIcon("./data/icon.png");
+    public static final ImageIcon LOGO = new ImageIcon("./data/logo.png");
+    public static final ImageIcon LOGO_ICON = new ImageIcon("./data/logo_icon.png");
     public static final ImageIcon TRANSPARENT_ICON = new ImageIcon("./data/transparent_icon.png");
     // DELETE_ICON from https://icons8.com/icon/DU8dSXkvLUkx/trash by Icons8
     public static final ImageIcon DELETE_ICON = new ImageIcon("./data/delete.png");
@@ -32,6 +32,16 @@ public class Constants {
     public static final ImageIcon SETTINGS_ICON = new ImageIcon("./data/settings.png");
     // CREDITS_ICON from https://icons8.com/icon/ts5e28mdzD3N/quote-left by Icons8
     public static final ImageIcon CREDITS_ICON =  new ImageIcon("./data/credits.png");
+    // HABIT_ICON from https://icons8.com/icon/5NjoP1iD5kon/rocket by Icons8
+    public static final ImageIcon HABIT_ICON = new ImageIcon("./data/rocket.png");
+    // TROPHY_ICON from https://icons8.com/icon/ISeAs3TMaXUN/trophy by Icons8
+    public static final ImageIcon TROPHY_ICON = new ImageIcon("./data/trophy.png");
+    // Achievement icons from
+    // https://www.freepik.com/free-vector/game-badges-buttons-hexagon-frame-with-wings_37205228.htm#page=3&query=bronze%20silver%20gold%20platinum&position=35&from_view=keyword&track=ais&uuid=66e3a10c-974e-4d4e-9234-d8dc58f37278 by upklyak on Freepik
+    public static final ImageIcon BRONZE_ICON = new ImageIcon("./data/bronze.png");
+    public static final ImageIcon SILVER_ICON = new ImageIcon("./data/silver.png");
+    public static final ImageIcon GOLD_ICON = new ImageIcon("./data/gold.png");
+    public static final ImageIcon PLATINUM_ICON = new ImageIcon("./data/platinum.png");
     public static final int LOGO_WIDTH = 300;
     public static final int LOGO_HEIGHT = 300;
     public static final int LARGE_BUTTON_WIDTH = 275;
@@ -39,6 +49,8 @@ public class Constants {
     public static final int PADDING = 35;
     public static final Color APP_COLOUR = Color.decode("#100d28");
     public static final Color APP_COLOUR_LIGHT = APP_COLOUR.brighter().brighter().brighter();
+    public static final Color SUCCESS_GREEN = Color.GREEN.darker().darker().darker();
+    public static final Color SUCCESS_GREEN_LIGHT = SUCCESS_GREEN.brighter();
     public static final Color SIDEBAR_COLOUR = Color.decode("#1c76c7").darker().darker().darker();
     public static final Color FONT_COLOUR = Color.WHITE;
     public static final String APP_FONT = "Arial";
