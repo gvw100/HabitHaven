@@ -255,20 +255,20 @@
         {
             "period": "DAILY",
             "nextPeriodEnd": "2024-03-07T23:59",
-            "isPreviousComplete": false,
+            "isPreviousComplete": true,
             "habitStats": {
-                "bestStreak": 0,
-                "totalNumSuccess": 0,
+                "bestStreak": 1,
+                "totalNumSuccess": 15,
                 "numPeriod": 0,
-                "streak": 0,
-                "numPeriodSuccess": 0
+                "streak": 1,
+                "numPeriodSuccess": 1
             },
             "notifyEnabled": true,
             "currentPeriodEnd": "2024-03-06T23:59",
             "name": "Achievement",
             "description": "Description (optional)",
             "id": "fcd1e419-e06f-4283-8551-d1a28633055c",
-            "numSuccess": 0,
+            "numSuccess": 15,
             "frequency": 15,
             "habitReminder": {
                 "reminders": [

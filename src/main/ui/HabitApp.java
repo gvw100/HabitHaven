@@ -56,6 +56,8 @@ public class HabitApp extends JFrame {
         setTitle("HabitHaven");
         setIconImage(LOGO_ICON.getImage());
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setResizable(false);
         setLocationRelativeTo(null);
         setLayout(cardLayout);
     }

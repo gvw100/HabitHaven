@@ -29,6 +29,7 @@ import static org.quartz.TriggerBuilder.newTrigger;
 import static ui.Constants.*;
 
 public class HabitManagerUI extends JPanel {
+    private JFrame frame;
     private JLayeredPane layeredPane;
     private JPanel wholePanel;
     private JPanel sidebar;
@@ -45,6 +46,7 @@ public class HabitManagerUI extends JPanel {
         this.habitManager = habitManager;
         this.achievementToast = new AchievementToast();
         this.layeredPane = new JLayeredPane();
+        this.frame = frame;
         add(layeredPane);
         setIsSaved(isSaved);
         if (isSaved) {

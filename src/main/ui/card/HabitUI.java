@@ -55,7 +55,6 @@ public class HabitUI extends JPanel {
         setBackground(APP_COLOUR);
         setLayout(new GridLayout(1, 1));
         setPreferredSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, WINDOW_HEIGHT));
-        tabbedPane.setPreferredSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, WINDOW_HEIGHT));
         tabbedPane.setBackground(APP_COLOUR);
         tabbedPane.setForeground(FONT_COLOUR);
         tabbedPane.setFont(MEDIUM_FONT);
@@ -71,7 +70,7 @@ public class HabitUI extends JPanel {
         habitPanel = new JPanel();
         habitPanel.setLayout(new BoxLayout(habitPanel, BoxLayout.Y_AXIS));
         habitPanel.setBackground(APP_COLOUR);
-        habitPanel.setPreferredSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, WINDOW_HEIGHT));
+        habitPanel.setMinimumSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, WINDOW_HEIGHT));
         setupHabitName();
         setupHabitDescription();
         setupHabitSuccessFrequencyPeriod();
@@ -134,7 +133,7 @@ public class HabitUI extends JPanel {
         habitName.setCaretColor(FONT_COLOUR);
         habitName.setHorizontalAlignment(JTextField.CENTER);
         habitName.setAlignmentX(Component.CENTER_ALIGNMENT);
-        habitName.setPreferredSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, TEXT_FIELD_HEIGHT * 2));
+        habitName.setMinimumSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, TEXT_FIELD_HEIGHT * 2));
     }
 
     private void setNewName() {
@@ -218,7 +217,7 @@ public class HabitUI extends JPanel {
         habitDescriptionArea.setLineWrap(true);
         habitDescriptionArea.setWrapStyleWord(true);
         habitDescriptionArea.setAlignmentY(Component.TOP_ALIGNMENT);
-        habitDescription.setPreferredSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, TEXT_FIELD_HEIGHT * 7));
+        habitDescription.setMinimumSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, TEXT_FIELD_HEIGHT * 7));
         habitDescription.setAlignmentX(Component.LEFT_ALIGNMENT);
         habitDescription.add(Box.createRigidArea(new Dimension(PADDING, 0)));
         habitDescription.add(habitDescriptionArea);

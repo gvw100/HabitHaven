@@ -80,8 +80,8 @@ public class AchievementToast extends JPanel {
                 setBackground(new Color(red, green, blue, 255));
                 setVisible(true);
                 playSound();
-                Thread.sleep(3000);
-                fadeAway();
+                Thread.sleep(4000);
+                setVisible(false);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
@@ -108,30 +108,15 @@ public class AchievementToast extends JPanel {
     private void updateToast(Pair<String, Achievement> achievement) {
         ImageIcon icon = getTierIcon(achievement);
         title.setIcon(icon);
-        title.setText(achievement.getKey() + " - " + achievement.getValue().getName() + " Achieved!");
+        title.setText(achievement.getKey() + " - " + achievement.getValue().getName());
         description.setText(achievement.getValue().getDescription());
-    }
-
-    private void fadeAway() {
-        try {
-            for (int i = 0; i < 9; i++) {
-                Thread.sleep(100);
-                setBackground(new Color(APP_COLOUR_LIGHT.getRed(),
-                        APP_COLOUR_LIGHT.getGreen(), APP_COLOUR_LIGHT.getBlue(), 255 - i * 28));
-            }
-            setVisible(false);
-            audioClip.close();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D graphics2d = (Graphics2D) g;
-        GradientPaint gradientPaint = new GradientPaint(
-                0, (float) 0,
+        GradientPaint gradientPaint = new GradientPaint(0, (float) 0,
                 APP_COLOUR.brighter(), getWidth(), getHeight(), APP_COLOUR_LIGHT.brighter());
         graphics2d.setPaint(gradientPaint);
         graphics2d.fillRect(0, 0, getWidth(), getHeight());

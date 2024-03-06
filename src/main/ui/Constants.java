@@ -4,8 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Constants {
-    public static final int WINDOW_WIDTH = 1300;
-    public static final int WINDOW_HEIGHT = 800;
+    public static final int WINDOW_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
+    public static final int WINDOW_HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
     public static final int SIDE_BAR_WIDTH = 200;
     public static final String ACHIEVEMENT_SOUND = "./data/achievement.wav";
     // LOGO from https://www.canva.com/templates/EAFvMagh96A-colorful-modern-infinity-technology-free-logo/

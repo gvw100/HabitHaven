@@ -28,23 +28,6 @@ public class AchievementManager extends AchievementList {
         return newlyAchieved;
     }
 
-    public static List<Achievement> getNotAchieved(HabitStatistics habitStatistics, Period period) {
-        List<Achievement> notAchieved = new ArrayList<>();
-        switch (period) {
-            case DAILY:
-                notAchieved.addAll(DAILY_ACHIEVEMENTS);
-                break;
-            case WEEKLY:
-                notAchieved.addAll(WEEKLY_ACHIEVEMENTS);
-                break;
-            default:
-                notAchieved.addAll(MONTHLY_ACHIEVEMENTS);
-        }
-        List<Achievement> achievedAchievements = getAchieved(habitStatistics, period);
-        notAchieved.removeAll(achievedAchievements);
-        return notAchieved;
-    }
-
     public static boolean isAchieved(HabitStatistics habitStatistics, Achievement achievement) {
         if (achievement.getType() == AchievementType.STREAK) {
             return habitStatistics.getBestStreak() >= achievement.getTarget();
