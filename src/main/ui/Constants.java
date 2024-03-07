@@ -43,6 +43,10 @@ public class Constants {
     public static final ImageIcon SILVER_ICON = new ImageIcon("./data/silver.png");
     public static final ImageIcon GOLD_ICON = new ImageIcon("./data/gold.png");
     public static final ImageIcon PLATINUM_ICON = new ImageIcon("./data/platinum.png");
+    public static final ImageIcon BRONZE_TOAST = new ImageIcon("./data/bronze.png");
+    public static final ImageIcon SILVER_TOAST = new ImageIcon("./data/silver.png");
+    public static final ImageIcon GOLD_TOAST = new ImageIcon("./data/gold.png");
+    public static final ImageIcon PLATINUM_TOAST = new ImageIcon("./data/platinum.png");
     public static final int LOGO_WIDTH = 300;
     public static final int LOGO_HEIGHT = 300;
     public static final int LARGE_BUTTON_WIDTH = 275;

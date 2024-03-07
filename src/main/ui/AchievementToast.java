@@ -25,7 +25,7 @@ public class AchievementToast extends JPanel {
     public AchievementToast() {
         achievementQueue = new LinkedBlockingQueue<>();
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setSize(WINDOW_WIDTH, 100);
+        setMinimumSize(new Dimension(WINDOW_WIDTH, 500));
         setupPlaceholderToast();
     }
 
@@ -39,33 +39,36 @@ public class AchievementToast extends JPanel {
     }
 
     private void setupPlaceholderToast() {
-        title = new JLabel("Placeholder", BRONZE_ICON, SwingConstants.LEFT);
+        title = new JLabel("Placeholder", BRONZE_TOAST, SwingConstants.LEFT);
         title.setFont(MEDIUM_FONT);
         title.setForeground(FONT_COLOUR);
         title.setBackground(APP_COLOUR_LIGHT);
         title.setAlignmentX(CENTER_ALIGNMENT);
         add(title);
-        add(Box.createRigidArea(new Dimension(0, 10)));
+        add(Box.createVerticalGlue());
         description = new JLabel("Description");
         description.setFont(SMALL_FONT);
         description.setForeground(FONT_COLOUR);
         description.setBackground(APP_COLOUR_LIGHT);
         description.setAlignmentX(CENTER_ALIGNMENT);
         add(description);
-        add(Box.createRigidArea(new Dimension(0, 10)));
+        JPanel empty = new JPanel();
+        empty.setBackground(APP_COLOUR_LIGHT);
+        empty.setPreferredSize(new Dimension(WINDOW_WIDTH, PADDING));
+        add(empty);
         setVisible(false);
     }
 
     private ImageIcon getTierIcon(Pair<String, Achievement> achievement) {
         switch (achievement.getValue().getTier()) {
             case BRONZE:
-                return BRONZE_ICON;
+                return BRONZE_TOAST;
             case SILVER:
-                return SILVER_ICON;
+                return SILVER_TOAST;
             case GOLD:
-                return GOLD_ICON;
+                return GOLD_TOAST;
             default:
-                return PLATINUM_ICON;
+                return PLATINUM_TOAST;
         }
     }
 
@@ -106,10 +109,13 @@ public class AchievementToast extends JPanel {
     }
 
     private void updateToast(Pair<String, Achievement> achievement) {
-        ImageIcon icon = getTierIcon(achievement);
-        title.setIcon(icon);
-        title.setText(achievement.getKey() + " - " + achievement.getValue().getName());
-        description.setText(achievement.getValue().getDescription());
+        Runnable runnable = () -> {
+            ImageIcon icon = getTierIcon(achievement);
+            title.setIcon(icon);
+            title.setText(achievement.getKey() + " - " + achievement.getValue().getName());
+            description.setText(achievement.getValue().getDescription());
+        };
+        SwingUtilities.invokeLater(runnable);
     }
 
     @Override

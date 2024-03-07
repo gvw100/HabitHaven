@@ -16,6 +16,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.List;
 
+import static javax.swing.SwingUtilities.invokeLater;
 import static ui.Constants.*;
 
 public class HabitUI extends JPanel {
@@ -149,7 +150,7 @@ public class HabitUI extends JPanel {
             HabitManagerUI.setIsSaved(false);
             updateOtherPanels();
         };
-        SwingUtilities.invokeLater(runnable);
+        invokeLater(runnable);
     }
 
     private void setupHabitDescription() {
@@ -242,7 +243,7 @@ public class HabitUI extends JPanel {
             HabitManagerUI.setIsSaved(false);
             updateOtherPanels();
         };
-        SwingUtilities.invokeLater(runnable);
+        invokeLater(runnable);
     }
 
     private void setupHabitSuccessFrequencyPeriod() {
@@ -330,29 +331,29 @@ public class HabitUI extends JPanel {
     }
 
     private void setupIncrementListener() {
-        incrementSuccess.addActionListener(e -> {
+        incrementSuccess.addActionListener(e -> invokeLater(() -> {
             List<Achievement> current = habit.getAchievements();
             if (habit.finishHabit()) {
                 habitNumSuccess.setText(String.valueOf(habit.getNumSuccess()));
                 HabitManagerUI.setIsSaved(false);
-                List<Achievement> newlyAchieved = AchievementManager.getNewlyAchieved(current, habit.getHabitStats(),
-                        habit.getPeriod());
+                List<Achievement> newlyAchieved = AchievementManager.getNewlyAchieved(
+                        current, habit.getHabitStats(), habit.getPeriod());
                 for (Achievement achievement : newlyAchieved) {
                     achievementToast.add(new Pair<>(habit.getName(), achievement));
                 }
                 updateOtherPanels();
             }
-        });
+        }));
     }
 
     private void setupDecrementListener() {
-        decrementSuccess.addActionListener(e -> {
+        decrementSuccess.addActionListener(e -> invokeLater(() -> {
             if (habit.undoFinishHabit()) {
                 habitNumSuccess.setText(String.valueOf(habit.getNumSuccess()));
                 HabitManagerUI.setIsSaved(false);
                 updateOtherPanels();
             }
-        });
+        }));
     }
 
     private void setupFrequencyPeriodButtons() {
@@ -365,7 +366,7 @@ public class HabitUI extends JPanel {
                     + " Are you sure you want to continue?";
             if (JOptionPane.showConfirmDialog(null, message, "Change Frequency", JOptionPane.YES_NO_OPTION)
                     == JOptionPane.YES_OPTION) {
-                changeFrequency();
+                invokeLater(this::changeFrequency);
             }
 
         });
@@ -374,7 +375,7 @@ public class HabitUI extends JPanel {
                     + " Are you sure you want to continue?";
             if (JOptionPane.showConfirmDialog(null, message, "Change Period", JOptionPane.YES_NO_OPTION)
                     == JOptionPane.YES_OPTION) {
-                changePeriod();
+                invokeLater(this::changePeriod);
             }
         });
     }

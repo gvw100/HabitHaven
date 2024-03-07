@@ -23,13 +23,13 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.swing.SwingUtilities.invokeLater;
 import static org.quartz.CronScheduleBuilder.dailyAtHourAndMinute;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 import static ui.Constants.*;
 
 public class HabitManagerUI extends JPanel {
-    private JFrame frame;
     private JLayeredPane layeredPane;
     private JPanel wholePanel;
     private JPanel sidebar;
@@ -46,7 +46,6 @@ public class HabitManagerUI extends JPanel {
         this.habitManager = habitManager;
         this.achievementToast = new AchievementToast();
         this.layeredPane = new JLayeredPane();
-        this.frame = frame;
         add(layeredPane);
         setIsSaved(isSaved);
         if (isSaved) {
@@ -159,7 +158,7 @@ public class HabitManagerUI extends JPanel {
     }
 
     public void toHabitList() {
-        updateHabitList();
+        invokeLater(this::updateHabitList);
         cardLayout.show(mainPanel, "habits");
     }
 
@@ -223,7 +222,9 @@ public class HabitManagerUI extends JPanel {
         lifetimeStats.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
+                LifetimeStatisticsUI lifetimeStatisticsUI = new LifetimeStatisticsUI(habitManager);
+                mainPanel.add(lifetimeStatisticsUI, "lifetimeStatistics");
+                cardLayout.show(mainPanel, "lifetimeStatistics");
             }
         });
     }
@@ -422,7 +423,7 @@ public class HabitManagerUI extends JPanel {
                         == JOptionPane.YES_OPTION) {
                     habit.setNotifyEnabled(!habit.isNotifyEnabled());
                     setIsSaved(false);
-                    updateHabitList();
+                    invokeLater(() -> updateHabitList());
                 }
             }
 
@@ -466,7 +467,7 @@ public class HabitManagerUI extends JPanel {
                         "Delete Habit", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     habitManager.deleteHabit(habit);
                     setIsSaved(false);
-                    updateHabitList();
+                    invokeLater(() -> updateHabitList());
                 }
             }
 
@@ -612,7 +613,7 @@ public class HabitManagerUI extends JPanel {
     private void scheduleHabitUpdates() {
         Runnable updateAllHabits = () -> {
             updateAllHabits();
-            updateHabitList();
+            invokeLater(this::updateHabitList);
         };
         JobDataMap data = new JobDataMap();
         data.put("updateHabits", updateAllHabits);

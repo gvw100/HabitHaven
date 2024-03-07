@@ -110,6 +110,14 @@ public class HabitApp extends JFrame {
         GOLD_ICON.setImage(gold);
         Image platinum = PLATINUM_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         PLATINUM_ICON.setImage(platinum);
+        Image bronzeToast = BRONZE_TOAST.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+        BRONZE_TOAST.setImage(bronzeToast);
+        Image silverToast = SILVER_TOAST.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+        SILVER_TOAST.setImage(silverToast);
+        Image goldToast = GOLD_TOAST.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+        GOLD_TOAST.setImage(goldToast);
+        Image platinumToast = PLATINUM_TOAST.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+        PLATINUM_TOAST.setImage(platinumToast);
     }
 
     private void onNewUser() {
