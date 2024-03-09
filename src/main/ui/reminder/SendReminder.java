@@ -86,26 +86,22 @@ public class SendReminder implements Job {
             TrayIcon trayIcon = new TrayIcon(image, "Habit Reminder");
             trayIcon.setImageAutoSize(true);
             tray.add(trayIcon);
-            trayIcon.displayMessage("Habit Reminder: " + habitName, message, TrayIcon.MessageType.NONE);
+            trayIcon.displayMessage(
+                    "Habit Reminder: " + habitName, message, TrayIcon.MessageType.NONE);
             addListener(trayIcon);
-        } catch (IOException e) {
+        } catch (IOException | AWTException e) {
             e.printStackTrace();
-            System.out.println("Could not read icon file.");
-        } catch (AWTException e) {
-            e.printStackTrace();
-            System.out.println("Could not display reminder.");
         }
     }
 
+
     // EFFECTS: adds a listener to the tray icon, so that the user can click on it to open the app
     private void addListener(TrayIcon trayIcon) {
-        trayIcon.addActionListener(e -> {
-            {
-                if (!HabitApp.appIsOpen()) {
-                    invokeLater(HabitApp::new);
-                }
+        trayIcon.addActionListener(e -> invokeLater(() -> {
+            if (!HabitApp.appIsOpen()) {
+                HabitApp.getInstance();
             }
-        });
+        }));
     }
 
     // EFFECTS: returns a message about the user's goals

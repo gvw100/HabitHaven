@@ -41,11 +41,11 @@ public class AchievementsUI extends JPanel {
         tabbedPane.setForeground(FONT_COLOUR);
         tabbedPane.setFont(MEDIUM_FONT);
         tabbedPane.setMinimumSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, WINDOW_HEIGHT));
-        setupPanels();
+        setupTabs();
         add(tabbedPane);
     }
 
-    private void setupPanels() {
+    private void setupTabs() {
         setupBronzeTier();
         setupSilverTier();
         setupGoldTier();

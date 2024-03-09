@@ -696,9 +696,7 @@ public class ConsoleApp {
             int hours = processHourInput(i);
             int minutes = processMinuteInput(i);
             LocalDateTime reminder = DailyReminder.makeDailyReminder(LocalTime.of(hours, minutes), clock);
-            int size = reminders.size();
-            reminders.add(reminder);
-            if (size != reminders.size()) {
+            if (!reminders.add(reminder)) {
                 break;
             } else {
                 System.out.println("Reminder already exists for that time");
@@ -714,9 +712,7 @@ public class ConsoleApp {
             int hours = processHourInput(i);
             int minutes = processMinuteInput(i);
             LocalDateTime reminder = WeeklyReminder.makeWeeklyReminder(dayOfWeek, LocalTime.of(hours, minutes), clock);
-            int size = reminders.size();
-            reminders.add(reminder);
-            if (size != reminders.size()) {
+            if (!reminders.add(reminder)) {
                 break;
             } else {
                 System.out.println("Reminder already exists for that time");
@@ -733,9 +729,7 @@ public class ConsoleApp {
             int minutes = processMinuteInput(i);
             LocalTime time = LocalTime.of(hours, minutes);
             Pair<Integer, LocalTime> pair = new Pair<>(dayOfMonth, time);
-            int size = pairs.size();
-            pairs.add(pair);
-            if (size != pairs.size()) {
+            if (!pairs.add(pair)) {
                 break;
             } else {
                 System.out.println("Reminder already exists for that time");

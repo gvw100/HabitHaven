@@ -84,6 +84,13 @@ public class HabitReminderTest extends HabitHelperTest {
     }
 
     @Test
+    void testGetClock() {
+        assertEquals(dc, dr.getClock());
+        assertEquals(wc, wr.getClock());
+        assertEquals(mc, mr.getClock());
+    }
+
+    @Test
     void testGetActiveReminders() {
         LocalDateTime boundary = LocalDateTime.now(wc);
         LocalDateTime boundaryUpper = LocalDateTime.now(wc).plusNanos(1);

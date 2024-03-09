@@ -5,8 +5,9 @@ import java.awt.*;
 
 public class Constants {
     public static final int WINDOW_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
-    public static final int WINDOW_HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
+    public static final int WINDOW_HEIGHT = Math.round(Toolkit.getDefaultToolkit().getScreenSize().height * 0.99f);
     public static final int SIDE_BAR_WIDTH = 200;
+    // ACHIEVEMENT_SOUND by Robtop Games
     public static final String ACHIEVEMENT_SOUND = "./data/achievement.wav";
     // LOGO from https://www.canva.com/templates/EAFvMagh96A-colorful-modern-infinity-technology-free-logo/
     public static final ImageIcon LOGO = new ImageIcon("./data/logo.png");
@@ -21,14 +22,17 @@ public class Constants {
     public static final ImageIcon ADD_ICON_HOVER = new ImageIcon("./data/add.png");
     // BELL_ON from https://icons8.com/icon/9xjQNFjDCyFj/alarm by Icons8
     public static final ImageIcon BELL_ON = new ImageIcon("./data/bell_on.png");
+    public static final ImageIcon BELL_ON_HOVER = new ImageIcon("./data/bell_on.png");
     // BELL_OFF from https://www.flaticon.com/free-icons/alarm-off Alarm off icons created by IYAHICON - Flaticon
     public static final ImageIcon BELL_OFF = new ImageIcon("./data/bell_off.png");
+    public static final ImageIcon BELL_OFF_HOVER = new ImageIcon("./data/bell_off.png");
     // LIST_ICON from https://icons8.com/icon/5T76ABfXaynZ/list by Icons8
     public static final ImageIcon LIST_ICON = new ImageIcon("./data/list.png");
     // STATS_ICON from https://icons8.com/icon/wdfmkgweCGDk/analytics by Icons8
     public static final ImageIcon STATS_ICON = new ImageIcon("./data/stats.png");
     // SAVE_ICON from https://icons8.com/icon/btak6xPsAuHB/save by Icons8
     public static final ImageIcon SAVE_ICON = new ImageIcon("./data/save.png");
+    public static final ImageIcon SAVE_OFF_ICON = new ImageIcon("./data/save_off.png");
     // SETTINGS_ICON from https://icons8.com/icon/Zydyx4gBcOrY/settings by Icons8
     public static final ImageIcon SETTINGS_ICON = new ImageIcon("./data/settings.png");
     // CREDITS_ICON from https://icons8.com/icon/ts5e28mdzD3N/quote-left by Icons8
@@ -70,7 +74,6 @@ public class Constants {
     public static final int MAX_DESCRIPTION_LENGTH = 1000;
     public static final int MAX_FREQUENCY = 15;
     public static final int MONTH_MAX_DAYS = 31;
-    public static final int MAX_REMINDERS_PER_DAY = 15;
     public static final String HABIT_MANAGER_STORE = "./data/habitManager.json";
 
     public static void makeButton(JButton button, int width, int height, Font font) {

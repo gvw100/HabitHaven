@@ -20,7 +20,6 @@ public class AchievementToast extends JPanel {
     private Lock lock = new ReentrantLock();
     private JLabel title;
     private JLabel description;
-    private Clip audioClip;
 
     public AchievementToast() {
         achievementQueue = new LinkedBlockingQueue<>();
@@ -30,6 +29,9 @@ public class AchievementToast extends JPanel {
     }
 
     public void add(Pair<String, Achievement> achievement) {
+        if (!HabitApp.appIsOpen()) {
+            return;
+        }
         try {
             achievementQueue.put(achievement);
             displayToast();
@@ -100,7 +102,7 @@ public class AchievementToast extends JPanel {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
             AudioFormat format = audioInputStream.getFormat();
             Line.Info info = new DataLine.Info(Clip.class, format);
-            audioClip = (Clip) AudioSystem.getLine(info);
+            Clip audioClip = (Clip) AudioSystem.getLine(info);
             audioClip.open(AudioSystem.getAudioInputStream(new File(ACHIEVEMENT_SOUND)));
             audioClip.start();
         } catch (Exception e) {

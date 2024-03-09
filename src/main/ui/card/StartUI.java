@@ -3,6 +3,7 @@ package ui.card;
 import javax.swing.*;
 import java.awt.*;
 
+import static javax.swing.SwingUtilities.invokeLater;
 import static ui.Constants.*;
 
 public class StartUI extends JPanel {
@@ -28,19 +29,19 @@ public class StartUI extends JPanel {
     }
 
     public void setNewUserListener(Runnable toNewUser) {
-        newUserButton.addActionListener(e -> {
+        newUserButton.addActionListener(e -> invokeLater(() -> {
             newUserButton.setEnabled(false);
             loadUserButton.setEnabled(false);
             toNewUser.run();
-        });
+        }));
     }
 
     public void setLoadUserListener(Runnable toHabits) {
-        loadUserButton.addActionListener(e -> {
+        loadUserButton.addActionListener(e -> invokeLater(() -> {
             newUserButton.setEnabled(false);
             loadUserButton.setEnabled(false);
             toHabits.run();
-        });
+        }));
     }
 
     private void createStartScreen(JButton newUserButton, JButton loadUserButton) {

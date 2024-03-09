@@ -11,10 +11,7 @@ import static ui.Constants.*;
 
 public class LifetimeStatisticsUI extends JPanel {
     private HabitManager habitManager;
-    private JScrollPane scrollPane;
     private JPanel mainPanel;
-    private JLabel title;
-    private JLabel numHabits;
     private JLabel allSingularCompletions;
     private JLabel dailySingularCompletions;
     private JLabel weeklySingularCompletions;
@@ -38,7 +35,7 @@ public class LifetimeStatisticsUI extends JPanel {
 
     private void setupPanel() {
         setLayout(new GridLayout(1, 1));
-        scrollPane = new JScrollPane(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+        JScrollPane scrollPane = new JScrollPane(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);
         mainPanel = new JPanel();
@@ -55,7 +52,7 @@ public class LifetimeStatisticsUI extends JPanel {
     }
 
     private void setupTitle() {
-        title = new JLabel("Lifetime Habit Statistics");
+        JLabel title = new JLabel("Lifetime Habit Statistics");
         title.setFont(HUGE_FONT);
         title.setForeground(FONT_COLOUR);
         title.setAlignmentX(CENTER_ALIGNMENT);
@@ -82,7 +79,7 @@ public class LifetimeStatisticsUI extends JPanel {
     }
 
     private void setupNoHabits() {
-        JLabel noHabits = new JLabel("No habits to display statistics for.");
+        JLabel noHabits = new JLabel("No habits to display statistics for");
         noHabits.setFont(BIG_FONT);
         noHabits.setForeground(FONT_COLOUR);
         noHabits.setAlignmentX(CENTER_ALIGNMENT);
@@ -94,7 +91,7 @@ public class LifetimeStatisticsUI extends JPanel {
     }
 
     private void setupNumHabits() {
-        numHabits = new JLabel("        Number of Habits: " + habitManager.getHabits().size());
+        JLabel numHabits = new JLabel("        Number of Habits: " + habitManager.getHabits().size());
         numHabits.setFont(MEDIUM_FONT);
         numHabits.setForeground(FONT_COLOUR);
         GridBagConstraints constraints = new GridBagConstraints();
@@ -282,6 +279,14 @@ public class LifetimeStatisticsUI extends JPanel {
         mainPanel.add(dailyAverageSuccessRate, getCenterConstraints(14));
         mainPanel.add(weeklyAverageSuccessRate, getCenterConstraints(15));
         mainPanel.add(monthlySuccessRate, getCenterConstraints(16));
+        mainPanel.add(getEmptyRow(), getCenterConstraints(17));
+    }
+
+    private JPanel getEmptyRow() {
+        JPanel empty = new JPanel();
+        empty.setBackground(APP_COLOUR);
+        empty.setPreferredSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, 50));
+        return empty;
     }
 
     private void getAverageSuccessRate(double[] average, double[] daily, double[] weekly, double[] monthly) {

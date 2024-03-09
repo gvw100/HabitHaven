@@ -55,6 +55,7 @@ public class JsonReader {
     private HabitManager parseHabitManager(JSONObject jsonObject) {
         HabitManager hm = new HabitManager();
         addHabits(hm, jsonObject);
+        HabitManager.setIsAutoSave(jsonObject.getBoolean("isAutoSave"));
         HabitManager.setUsername(jsonObject.getString("username"));
         return hm;
     }

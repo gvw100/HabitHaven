@@ -3,6 +3,7 @@ package ui.card;
 import javax.swing.*;
 import java.awt.*;
 
+import static javax.swing.SwingUtilities.invokeLater;
 import static ui.Constants.*;
 
 // Represents the user interface for a new user
@@ -36,7 +37,7 @@ public class NewUserUI extends JPanel {
     }
 
     public void setSubmitListener(Runnable toHabits) {
-        submit.addActionListener(e -> {
+        submit.addActionListener(e -> invokeLater(() -> {
             if (usernameField.getText().length() > MAX_NAME_LENGTH) {
                 JOptionPane.showMessageDialog(this, "Maximum username length is"
                         + MAX_NAME_LENGTH + " characters.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -48,15 +49,15 @@ public class NewUserUI extends JPanel {
             } else {
                 JOptionPane.showMessageDialog(this, "Please enter a username.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        });
+        }));
     }
 
     public void setBackListener(Runnable toStart) {
-        back.addActionListener(e -> {
+        back.addActionListener(e -> invokeLater(() -> {
             back.setEnabled(false);
             submit.setEnabled(false);
             toStart.run();
-        });
+        }));
     }
 
     public String getText() {

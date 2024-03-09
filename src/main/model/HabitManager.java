@@ -8,12 +8,15 @@ import java.util.List;
 
 // Represents list of the user's habits
 public class HabitManager {
+
     private final List<Habit> habits;
     private static String username;
+    private static boolean isAutoSave;
 
     // EFFECTS: constructs a habit manager with an empty list of habits
     public HabitManager() {
         habits = new ArrayList<>();
+        isAutoSave = false;
     }
 
     public List<Habit> getHabits() {
@@ -26,11 +29,19 @@ public class HabitManager {
     }
 
     public static String getUsername() {
-        return username;
+        return HabitManager.username;
+    }
+
+    public static boolean isIsAutoSave() {
+        return HabitManager.isAutoSave;
     }
 
     public static void setUsername(String username) {
         HabitManager.username = username;
+    }
+
+    public static void setIsAutoSave(boolean isAutoSave) {
+        HabitManager.isAutoSave = isAutoSave;
     }
 
     // MODIFIES: this
@@ -61,6 +72,7 @@ public class HabitManager {
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("username", HabitManager.getUsername());
+        json.put("isAutoSave", HabitManager.isAutoSave);
         json.put("habits", habitsToJson());
         return json;
     }

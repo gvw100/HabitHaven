@@ -13,11 +13,11 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.time.Clock;
 
+import static javax.swing.SwingUtilities.invokeLater;
 import static ui.Constants.*;
 
 public class CreateHabitUI extends JPanel {
     private JTextField habitName;
-    private JPanel habitDescriptionPanel;
     private JTextArea habitDescription;
     private JComboBox<String> periodBox;
     private JComboBox<String> frequencyBox;
@@ -39,7 +39,7 @@ public class CreateHabitUI extends JPanel {
 
     private void setupPanel() {
         setBackground(APP_COLOUR);
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new GridBagLayout());
         setPreferredSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, WINDOW_HEIGHT));
         setupHabitName();
         setupHabitDescription();
@@ -59,8 +59,7 @@ public class CreateHabitUI extends JPanel {
         habitName.setAlignmentX(Component.CENTER_ALIGNMENT);
         habitName.setText("Enter Habit Name");
         setupNameListener();
-        add(habitName);
-        add(Box.createRigidArea(new Dimension(0, PADDING)));
+        add(habitName, getCreateHabitConstraints(0));
     }
     
     private void setupNameListener() {
@@ -72,17 +71,21 @@ public class CreateHabitUI extends JPanel {
         habitName.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (habitName.getText().equals("Enter Habit Name")) {
-                    habitName.selectAll();
-                }
+                invokeLater(() -> {
+                    if (habitName.getText().equals("Enter Habit Name")) {
+                        habitName.selectAll();
+                    }
+                });
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (habitName.getText().isBlank()) {
-                    habitName.setText("Enter Habit Name");
-                    habitName.selectAll();
-                }
+                invokeLater(() -> {
+                    if (habitName.getText().isBlank()) {
+                        habitName.setText("Enter Habit Name");
+                        habitName.selectAll();
+                    }
+                });
             }
         });
     }
@@ -116,11 +119,11 @@ public class CreateHabitUI extends JPanel {
                 habitName.selectAll();
             }
         };
-        SwingUtilities.invokeLater(runnable);
+        invokeLater(runnable);
     }
 
     private void setupHabitDescription() {
-        habitDescriptionPanel = new JPanel();
+        JPanel habitDescriptionPanel = new JPanel();
         habitDescriptionPanel.setLayout(new GridLayout(1, 1));
         habitDescriptionPanel.setLayout(new BoxLayout(habitDescriptionPanel, BoxLayout.Y_AXIS));
         habitDescriptionPanel.setBackground(APP_COLOUR);
@@ -137,8 +140,7 @@ public class CreateHabitUI extends JPanel {
         habitDescription.setAlignmentX(Component.CENTER_ALIGNMENT);
         setupDescriptionListener();
         habitDescriptionPanel.add(habitDescription);
-        add(habitDescriptionPanel);
-        add(Box.createRigidArea(new Dimension(0, PADDING)));
+        add(habitDescriptionPanel, getCreateHabitConstraints(1));
     }
 
     private void setupDescriptionListener() {
@@ -150,17 +152,21 @@ public class CreateHabitUI extends JPanel {
         habitDescription.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (habitDescription.getText().equals("Description (optional)")) {
-                    habitDescription.selectAll();
-                }
+                invokeLater(() -> {
+                    if (habitDescription.getText().equals("Description (optional)")) {
+                        habitDescription.selectAll();
+                    }
+                });
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (habitDescription.getText().isBlank()) {
-                    habitDescription.setText("Description (optional)");
-                    habitDescription.selectAll();
-                }
+                invokeLater(() -> {
+                    if (habitDescription.getText().isBlank()) {
+                        habitDescription.setText("Description (optional)");
+                        habitDescription.selectAll();
+                    }
+                });
             }
         });
     }
@@ -194,7 +200,7 @@ public class CreateHabitUI extends JPanel {
                 habitDescription.selectAll();
             }
         };
-        SwingUtilities.invokeLater(runnable);
+        invokeLater(runnable);
     }
 
     private void setupPeriodBox() {
@@ -205,18 +211,17 @@ public class CreateHabitUI extends JPanel {
         periodBox.setForeground(FONT_COLOUR);
         periodBox.setAlignmentX(Component.CENTER_ALIGNMENT);
         setupPeriodListener();
-        add(periodBox);
-        add(Box.createRigidArea(new Dimension(0, PADDING)));
+        add(periodBox, getCreateHabitConstraints(2));
     }
 
     private void setupPeriodListener() {
-        periodBox.addActionListener(e -> {
+        periodBox.addActionListener(e -> invokeLater(() -> {
             if (periodBox.getSelectedIndex() != 0) {
                 checkValidHabit();
             } else {
                 createHabitButton.setEnabled(false);
             }
-        });
+        }));
     }
 
     private void setupFrequencyBox() {
@@ -231,18 +236,17 @@ public class CreateHabitUI extends JPanel {
         frequencyBox.setForeground(FONT_COLOUR);
         frequencyBox.setAlignmentX(Component.CENTER_ALIGNMENT);
         setupFrequencyListener();
-        add(frequencyBox);
-        add(Box.createRigidArea(new Dimension(0, PADDING)));
+        add(frequencyBox, getCreateHabitConstraints(3));
     }
 
     private void setupFrequencyListener() {
-        frequencyBox.addActionListener(e -> {
+        frequencyBox.addActionListener(e -> invokeLater(() -> {
             if (frequencyBox.getSelectedIndex() != 0) {
                 checkValidHabit();
             } else {
                 createHabitButton.setEnabled(false);
             }
-        });
+        }));
     }
 
     private void setupNotificationBox() {
@@ -252,18 +256,17 @@ public class CreateHabitUI extends JPanel {
         notificationBox.setForeground(FONT_COLOUR);
         notificationBox.setAlignmentX(Component.CENTER_ALIGNMENT);
         setupNotificationListener();
-        add(notificationBox);
-        add(Box.createRigidArea(new Dimension(0, PADDING)));
+        add(notificationBox, getCreateHabitConstraints(4));
     }
 
     private void setupNotificationListener() {
-        notificationBox.addActionListener(e -> {
+        notificationBox.addActionListener(e -> invokeLater(() -> {
             if (notificationBox.getSelectedIndex() != 0) {
                 checkValidHabit();
             } else {
                 createHabitButton.setEnabled(false);
             }
-        });
+        }));
     }
     
     private void checkValidHabit() {
@@ -278,21 +281,41 @@ public class CreateHabitUI extends JPanel {
         makeButton(createHabitButton, LARGE_BUTTON_WIDTH, LARGE_BUTTON_HEIGHT, BIG_FONT);
         createHabitButton.setEnabled(false);
         setupCreateHabitListener();
-        add(createHabitButton);
-        add(Box.createRigidArea(new Dimension(0, PADDING)));
+        add(createHabitButton, getCreateHabitConstraints(5));
     }
 
     private void setupCreateHabitListener() {
-        createHabitButton.addActionListener(e -> {
+        createHabitButton.addActionListener(e -> invokeLater(() -> {
             String name = habitName.getText();
             String description = habitDescription.getText();
-            Period period = Period.valueOf(((String) periodBox.getSelectedItem()).toUpperCase());
-            int frequency = Integer.parseInt((String) frequencyBox.getSelectedItem());
+            Period period = getPeriod();
+            int frequency = frequencyBox.getSelectedIndex();
             boolean notifyEnabled = notificationBox.getSelectedIndex() == 1;
             Habit habit = new Habit(name, description, period, frequency, notifyEnabled, Clock.systemDefaultZone());
             habitManager.addHabit(habit);
-            HabitManagerUI.setIsSaved(false);
+            HabitManagerUI.changeMade();
             habitManagerUI.toHabitList();
-        });
+        }));
+    }
+
+    private Period getPeriod() {
+        switch (periodBox.getSelectedIndex()) {
+            case 1:
+                return Period.DAILY;
+            case 2:
+                return Period.WEEKLY;
+            default:
+                return Period.MONTHLY;
+        }
+    }
+
+    private GridBagConstraints getCreateHabitConstraints(int index) {
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridx = 0;
+        constraints.gridy = index;
+        constraints.weightx = 1;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.insets = new Insets(0, 0, PADDING, 0);
+        return constraints;
     }
 }

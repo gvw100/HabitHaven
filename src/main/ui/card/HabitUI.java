@@ -110,17 +110,21 @@ public class HabitUI extends JPanel {
         habitName.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (habitName.getText().equals("New Habit")) {
-                    habitName.selectAll();
-                }
+                invokeLater(() -> {
+                    if (habitName.getText().equals("New Habit")) {
+                        habitName.selectAll();
+                    }
+                });
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (habitName.getText().isBlank()) {
-                    habitName.setText("New Habit");
-                    habitName.selectAll();
-                }
+                invokeLater(() -> {
+                    if (habitName.getText().isBlank()) {
+                        habitName.setText("New Habit");
+                        habitName.selectAll();
+                    }
+                });
             }
         });
     }
@@ -138,7 +142,7 @@ public class HabitUI extends JPanel {
     }
 
     private void setNewName() {
-        Runnable runnable = () -> {
+        invokeLater(() -> {
             if (habitName.getText().length() > MAX_HABIT_NAME_LENGTH) {
                 habitName.setText(habitName.getText().substring(0, MAX_HABIT_NAME_LENGTH));
             }
@@ -147,10 +151,9 @@ public class HabitUI extends JPanel {
                 habitName.selectAll();
             }
             habit.setName(habitName.getText());
-            HabitManagerUI.setIsSaved(false);
+            HabitManagerUI.changeMade();
             updateOtherPanels();
-        };
-        invokeLater(runnable);
+        });
     }
 
     private void setupHabitDescription() {
@@ -188,17 +191,21 @@ public class HabitUI extends JPanel {
         habitDescriptionArea.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (habitDescriptionArea.getText().equals("Description (optional)")) {
-                    habitDescriptionArea.selectAll();
-                }
+                invokeLater(() -> {
+                    if (habitDescriptionArea.getText().equals("Description (optional)")) {
+                        habitDescriptionArea.selectAll();
+                    }
+                });
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (habitDescriptionArea.getText().isBlank()) {
-                    habitDescriptionArea.setText("Description (optional)");
-                    habitDescriptionArea.selectAll();
-                }
+                invokeLater(() -> {
+                    if (habitDescriptionArea.getText().isBlank()) {
+                        habitDescriptionArea.setText("Description (optional)");
+                        habitDescriptionArea.selectAll();
+                    }
+                });
             }
         });
     }
@@ -231,7 +238,7 @@ public class HabitUI extends JPanel {
     }
 
     private void setNewDescription() {
-        Runnable runnable = () -> {
+        invokeLater(() -> {
             if (habitDescriptionArea.getText().length() > MAX_DESCRIPTION_LENGTH) {
                 habitDescriptionArea.setText(habitDescriptionArea.getText().substring(0, MAX_DESCRIPTION_LENGTH));
             }
@@ -240,10 +247,9 @@ public class HabitUI extends JPanel {
                 habitDescriptionArea.selectAll();
             }
             habit.setDescription(habitDescriptionArea.getText());
-            HabitManagerUI.setIsSaved(false);
+            HabitManagerUI.changeMade();
             updateOtherPanels();
-        };
-        invokeLater(runnable);
+        });
     }
 
     private void setupHabitSuccessFrequencyPeriod() {
@@ -260,7 +266,7 @@ public class HabitUI extends JPanel {
         contentsPanel.add(frequencyPanel);
         contentsPanel.add(Box.createRigidArea(new Dimension(0, PADDING)));
         contentsPanel.add(periodPanel);
-        contentsPanel.add(Box.createRigidArea(new Dimension(0, PADDING)));
+        contentsPanel.add(Box.createRigidArea(new Dimension(0, PADDING * 2)));
     }
 
     private void setupSuccessPanel() {
@@ -295,6 +301,7 @@ public class HabitUI extends JPanel {
         periodPanel.add(habitPeriod);
         periodPanel.add(Box.createRigidArea(new Dimension(PADDING, 0)));
         periodPanel.add(changePeriod);
+        periodPanel.add(Box.createRigidArea(new Dimension(PADDING, 0)));
     }
 
     private JPanel setupHorizontalPanel() {
@@ -335,7 +342,7 @@ public class HabitUI extends JPanel {
             List<Achievement> current = habit.getAchievements();
             if (habit.finishHabit()) {
                 habitNumSuccess.setText(String.valueOf(habit.getNumSuccess()));
-                HabitManagerUI.setIsSaved(false);
+                HabitManagerUI.changeMade();
                 List<Achievement> newlyAchieved = AchievementManager.getNewlyAchieved(
                         current, habit.getHabitStats(), habit.getPeriod());
                 for (Achievement achievement : newlyAchieved) {
@@ -350,7 +357,7 @@ public class HabitUI extends JPanel {
         decrementSuccess.addActionListener(e -> invokeLater(() -> {
             if (habit.undoFinishHabit()) {
                 habitNumSuccess.setText(String.valueOf(habit.getNumSuccess()));
-                HabitManagerUI.setIsSaved(false);
+                HabitManagerUI.changeMade();
                 updateOtherPanels();
             }
         }));
@@ -361,23 +368,26 @@ public class HabitUI extends JPanel {
         changePeriod = new JButton("Change");
         makeButton(changeFrequency, 150, 50, MEDIUM_FONT);
         makeButton(changePeriod, 150, 50, MEDIUM_FONT);
-        changeFrequency.addActionListener(e -> {
+        setupFrequencyPeriodListeners();
+    }
+
+    private void setupFrequencyPeriodListeners() {
+        changeFrequency.addActionListener(e -> invokeLater(() -> {
             String message = "Changing frequency will reset habit progress, statistics, and achievements."
                     + " Are you sure you want to continue?";
             if (JOptionPane.showConfirmDialog(null, message, "Change Frequency", JOptionPane.YES_NO_OPTION)
                     == JOptionPane.YES_OPTION) {
-                invokeLater(this::changeFrequency);
+                changeFrequency();
             }
-
-        });
-        changePeriod.addActionListener(e -> {
+        }));
+        changePeriod.addActionListener(e -> invokeLater(() -> {
             String message = "Changing period will reset habit progress, statistics, and achievements."
                     + " Are you sure you want to continue?";
             if (JOptionPane.showConfirmDialog(null, message, "Change Period", JOptionPane.YES_NO_OPTION)
                     == JOptionPane.YES_OPTION) {
-                invokeLater(this::changePeriod);
+                changePeriod();
             }
-        });
+        }));
     }
 
     private void changeFrequency() {
@@ -390,7 +400,7 @@ public class HabitUI extends JPanel {
                 JOptionPane.QUESTION_MESSAGE, null, options, options[current - 1]));
         if (choice != null) {
             if (habit.setFrequency((int) choice)) {
-                HabitManagerUI.setIsSaved(false);
+                HabitManagerUI.changeMade();
             }
             updateHabitUI();
         }
@@ -403,7 +413,7 @@ public class HabitUI extends JPanel {
                 JOptionPane.QUESTION_MESSAGE, null, options, options[current]);
         if (choice != null) {
             if (habit.setPeriod(Period.valueOf((choice.toString().toUpperCase())))) {
-                HabitManagerUI.setIsSaved(false);
+                HabitManagerUI.changeMade();
             }
             updateHabitUI();
         }
@@ -449,8 +459,19 @@ public class HabitUI extends JPanel {
     }
 
     private void setupHabitRemindersPanel() {
-        habitRemindersPanel = new HabitRemindersUI(habit);
+        habitRemindersPanel = getHabitRemindersUI();
         tabbedPane.addTab("Notifications", BELL_ON, habitRemindersPanel, "Set your notifications");
+    }
+    
+    private HabitRemindersUI getHabitRemindersUI() {
+        switch (habit.getPeriod()) {
+            case DAILY:
+                return new DailyRemindersUI(habit);
+            case WEEKLY:
+                return new WeeklyRemindersUI(habit);
+            default:
+                return new MonthlyRemindersUI(habit);
+        }
     }
 
     private void setupAchievementsPanel() {

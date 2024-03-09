@@ -14,7 +14,11 @@ import java.io.IOException;
 import static ui.Constants.*;
 
 // Habit tracker Swing application
+// Singleton pattern ensures no duplicate notifications
+// and allows app to be re-opened back to the same state
 public class HabitApp extends JFrame {
+    private static HabitApp habitApp;
+
     private CardLayout cardLayout;
     private StartUI startScreen;
     private NewUserUI newUserScreen;
@@ -23,10 +27,19 @@ public class HabitApp extends JFrame {
     private static boolean appIsOpen;
 
     // EFFECTS: starts the application
-    public HabitApp() {
+    private HabitApp() {
         SendReminder.setIsConsoleApp(false);
         appIsOpen = true;
         startApp();
+    }
+
+    public static void getInstance() {
+        if (habitApp == null) {
+            habitApp = new HabitApp();
+        } else {
+            habitApp.setVisible(true);
+            appIsOpen = true;
+        }
     }
 
     // EFFECTS: returns true if the application is open
@@ -56,9 +69,9 @@ public class HabitApp extends JFrame {
         setTitle("HabitHaven");
         setIconImage(LOGO_ICON.getImage());
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setResizable(false);
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setLayout(cardLayout);
     }
 
@@ -80,16 +93,15 @@ public class HabitApp extends JFrame {
     }
 
     private void scaleMoreIcons() {
-        Image bellOn = BELL_ON.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-        BELL_ON.setImage(bellOn);
-        Image bellOff = BELL_OFF.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
-        BELL_OFF.setImage(bellOff);
+        scaleNotificationIcons();
         Image list = LIST_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         LIST_ICON.setImage(list);
         Image stats = STATS_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         STATS_ICON.setImage(stats);
         Image save = SAVE_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         SAVE_ICON.setImage(save);
+        Image saveOff = SAVE_OFF_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        SAVE_OFF_ICON.setImage(saveOff);
         Image settings = SETTINGS_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         SETTINGS_ICON.setImage(settings);
         Image credits = CREDITS_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
@@ -99,6 +111,17 @@ public class HabitApp extends JFrame {
         Image trophy = TROPHY_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         TROPHY_ICON.setImage(trophy);
         scaleAchievements();
+    }
+
+    private void scaleNotificationIcons() {
+        Image bellOn = BELL_ON.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+        BELL_ON.setImage(bellOn);
+        Image bellOff = BELL_OFF.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+        BELL_OFF.setImage(bellOff);
+        Image bellOnHover = BELL_ON_HOVER.getImage().getScaledInstance(38, 38, Image.SCALE_SMOOTH);
+        BELL_ON_HOVER.setImage(bellOnHover);
+        Image bellOffHover = BELL_OFF_HOVER.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        BELL_OFF_HOVER.setImage(bellOffHover);
     }
 
     private void scaleAchievements() {

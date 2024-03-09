@@ -20,7 +20,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static javax.swing.SwingUtilities.invokeLater;
@@ -30,8 +29,8 @@ import static org.quartz.TriggerBuilder.newTrigger;
 import static ui.Constants.*;
 
 public class HabitManagerUI extends JPanel {
+    private JFrame parent;
     private JLayeredPane layeredPane;
-    private JPanel wholePanel;
     private JPanel sidebar;
     private JPanel mainPanel;
     private CardLayout cardLayout;
@@ -40,20 +39,33 @@ public class HabitManagerUI extends JPanel {
     private AchievementToast achievementToast;
 
     private static boolean isSaved;
-    private HabitManager habitManager;
+    private static HabitManager habitManager;
 
-    public HabitManagerUI(boolean isSaved, JFrame frame, HabitManager habitManager) {
-        this.habitManager = habitManager;
+    public HabitManagerUI(boolean isLoaded, JFrame frame, HabitManager habitManager) {
+        HabitManagerUI.habitManager = habitManager;
         this.achievementToast = new AchievementToast();
         this.layeredPane = new JLayeredPane();
+        this.parent = frame;
         add(layeredPane);
-        setIsSaved(isSaved);
-        if (isSaved) {
+        HabitManagerUI.isSaved = isLoaded;
+        if (isLoaded) {
             updateAllHabits();
         }
         scheduleHabitUpdates();
         setupPanel();
         setupWindowListener(frame);
+    }
+
+    public static void setHabitManager(HabitManager habitManager) {
+        HabitManagerUI.habitManager = habitManager;
+    }
+
+    public static void changeMade() {
+        if (HabitManager.isIsAutoSave()) {
+            nonSideBarSaveHabits(habitManager);
+        } else {
+            setIsSaved(false);
+        }
     }
 
     public static void setIsSaved(boolean isSaved) {
@@ -64,22 +76,27 @@ public class HabitManagerUI extends JPanel {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
-                if (!isSaved) {
-                    int result = JOptionPane.showConfirmDialog(frame,
-                            "Would you like to save your habits before exiting?", "Save Habits?",
-                            JOptionPane.YES_NO_OPTION);
-                    if (result == JOptionPane.YES_OPTION) {
-                        exitSaveHabits();
+                invokeLater(() -> {
+                    if (HabitManager.isIsAutoSave()) {
+                        return;
                     }
-                }
-                HabitApp.setAppIsOpen(false);
+                    if (!isSaved) {
+                        int result = JOptionPane.showConfirmDialog(frame,
+                                "Would you like to save your habits before exiting?", "Save Habits?",
+                                JOptionPane.YES_NO_OPTION);
+                        if (result == JOptionPane.YES_OPTION) {
+                            nonSideBarSaveHabits(habitManager);
+                        }
+                    }
+                    HabitApp.setAppIsOpen(false);
+                });
             }
         });
     }
 
     private void setupPanel() {
         setLayout(new GridLayout(1, 1));
-        wholePanel = new JPanel();
+        JPanel wholePanel = new JPanel();
         wholePanel.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         wholePanel.setLayout(new BorderLayout());
         wholePanel.setBackground(APP_COLOUR);
@@ -152,13 +169,13 @@ public class HabitManagerUI extends JPanel {
         habitList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                toHabitList();
+                invokeLater(() -> toHabitList());
             }
         });
     }
 
     public void toHabitList() {
-        invokeLater(this::updateHabitList);
+        updateHabitList();
         cardLayout.show(mainPanel, "habits");
     }
 
@@ -166,7 +183,7 @@ public class HabitManagerUI extends JPanel {
         save.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                manualSaveHabits(save, (JLabel) save.getComponent(0));
+                invokeLater(() -> manualSaveHabits(save, (JLabel) save.getComponent(0)));
             }
         });
     }
@@ -192,7 +209,7 @@ public class HabitManagerUI extends JPanel {
         }
     }
 
-    private void exitSaveHabits() {
+    private static void nonSideBarSaveHabits(HabitManager habitManager) {
         JsonWriter jsonWriter = new JsonWriter(HABIT_MANAGER_STORE);
         try {
             jsonWriter.open();
@@ -207,7 +224,7 @@ public class HabitManagerUI extends JPanel {
         createHabit.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                createHabit();
+                invokeLater(() -> createHabit());
             }
         });
     }
@@ -222,9 +239,11 @@ public class HabitManagerUI extends JPanel {
         lifetimeStats.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                LifetimeStatisticsUI lifetimeStatisticsUI = new LifetimeStatisticsUI(habitManager);
-                mainPanel.add(lifetimeStatisticsUI, "lifetimeStatistics");
-                cardLayout.show(mainPanel, "lifetimeStatistics");
+                invokeLater(() -> {
+                    LifetimeStatisticsUI lifetimeStatisticsUI = new LifetimeStatisticsUI(habitManager);
+                    mainPanel.add(lifetimeStatisticsUI, "lifetimeStatistics");
+                    cardLayout.show(mainPanel, "lifetimeStatistics");
+                });
             }
         });
     }
@@ -233,9 +252,11 @@ public class HabitManagerUI extends JPanel {
         settings.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                SettingsUI settingsUI = new SettingsUI(habitManager);
-                mainPanel.add(settingsUI, "settings");
-                cardLayout.show(mainPanel, "settings");
+                invokeLater(() -> {
+                    SettingsUI settingsUI = new SettingsUI(habitManager, parent);
+                    mainPanel.add(settingsUI, "settings");
+                    cardLayout.show(mainPanel, "settings");
+                });
             }
         });
     }
@@ -267,14 +288,15 @@ public class HabitManagerUI extends JPanel {
         option.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                option.setBackground(SIDEBAR_COLOUR.brighter().brighter());
-                option.setForeground(Color.lightGray);
+                invokeLater(() -> option.setBackground(SIDEBAR_COLOUR.brighter().brighter()));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                option.setBackground(SIDEBAR_COLOUR);
-                option.setForeground(FONT_COLOUR);
+                invokeLater(() -> {
+                    option.setBackground(SIDEBAR_COLOUR);
+                    option.setForeground(FONT_COLOUR);
+                });
             }
         });
     }
@@ -418,33 +440,27 @@ public class HabitManagerUI extends JPanel {
         notifications.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                String message = habit.isNotifyEnabled() ? "Disable notifications?" : "Enable notifications?";
-                if (JOptionPane.showConfirmDialog(null, message, "Notifications", JOptionPane.YES_NO_OPTION)
-                        == JOptionPane.YES_OPTION) {
-                    habit.setNotifyEnabled(!habit.isNotifyEnabled());
-                    setIsSaved(false);
-                    invokeLater(() -> updateHabitList());
-                }
+                invokeLater(() -> {
+                    String message = habit.isNotifyEnabled() ? "Disable notifications?" : "Enable notifications?";
+                    if (JOptionPane.showConfirmDialog(null, message, "Notifications", JOptionPane.YES_NO_OPTION)
+                            == JOptionPane.YES_OPTION) {
+                        habit.setNotifyEnabled(!habit.isNotifyEnabled());
+                        changeMade();
+                        updateHabitList();
+                    }
+                });
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                enlargeNotificationIcon(notifications, habit);
+                invokeLater(() -> notifications.setIcon(habit.isNotifyEnabled() ? BELL_ON_HOVER : BELL_OFF_HOVER));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                notifications.setIcon(habit.isNotifyEnabled() ? BELL_ON : BELL_OFF);
+                invokeLater(() -> notifications.setIcon(habit.isNotifyEnabled() ? BELL_ON : BELL_OFF));
             }
         });
-    }
-
-    private void enlargeNotificationIcon(JLabel notifications, Habit habit) {
-        ImageIcon icon = habit.isNotifyEnabled() ? BELL_ON : BELL_OFF;
-        int size = icon.getIconHeight();
-        ImageIcon resized = new ImageIcon(icon.getImage().getScaledInstance(
-                (int) (Math.round(1.2 * size)), (int) (Math.round(1.2 * size)), Image.SCALE_SMOOTH));
-        notifications.setIcon(new ImageIcon(resized.getImage()));
     }
 
     private JPanel setupDeletePanel(Habit habit) {
@@ -460,28 +476,34 @@ public class HabitManagerUI extends JPanel {
         JLabel delete = new JLabel(DELETE_ICON);
         delete.setFont(MEDIUM_FONT);
         delete.setPreferredSize(new Dimension(30, 30));
+        setupDeleteListener(delete, habit);
+        return delete;
+    }
+
+    private void setupDeleteListener(JLabel delete, Habit habit) {
         delete.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this habit?",
-                        "Delete Habit", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                    habitManager.deleteHabit(habit);
-                    setIsSaved(false);
-                    invokeLater(() -> updateHabitList());
-                }
+                invokeLater(() -> {
+                    if (JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this habit?",
+                            "Delete Habit", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                        habitManager.deleteHabit(habit);
+                        changeMade();
+                        updateHabitList();
+                    }
+                });
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                delete.setIcon(DELETE_ICON_HOVER);
+                invokeLater(() -> delete.setIcon(DELETE_ICON_HOVER));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                delete.setIcon(DELETE_ICON);
+                invokeLater(() -> delete.setIcon(DELETE_ICON));
             }
         });
-        return delete;
     }
 
     private JPanel makeGap(int width, int height) {
@@ -573,17 +595,17 @@ public class HabitManagerUI extends JPanel {
         add.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                createHabit();
+                invokeLater(() -> createHabit());
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                add.setIcon(ADD_ICON_HOVER);
+                invokeLater(() -> add.setIcon(ADD_ICON_HOVER));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                add.setIcon(ADD_ICON);
+                invokeLater(() -> add.setIcon(ADD_ICON));
             }
         });
         return add;
@@ -639,15 +661,13 @@ public class HabitManagerUI extends JPanel {
     // EFFECTS: updates all habits in habit manager based on current time, updates achievements, displaying toast if
     //          any new achievements are achieved
     private void updateAllHabits() {
-        List<Achievement> newlyAchieved = new ArrayList<>();
         for (Habit habit : habitManager.getHabits()) {
             List<Achievement> current = habit.getAchievements();
             habit.updateHabit();
-            newlyAchieved.addAll(
-                    AchievementManager.getNewlyAchieved(current, habit.getHabitStats(), habit.getPeriod()));
-        }
-        for (Achievement achievement : newlyAchieved) {
-            achievementToast.add(new Pair<>(HabitManager.getUsername(), achievement));
+            for (Achievement achievement :
+                    AchievementManager.getNewlyAchieved(current, habit.getHabitStats(), habit.getPeriod())) {
+                achievementToast.add(new Pair<>(habit.getName(), achievement));
+            }
         }
     }
 
@@ -662,25 +682,31 @@ public class HabitManagerUI extends JPanel {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            HabitUI habitUI = new HabitUI(habit, achievementToast);
-            mainPanel.add(habitUI, "habit");
-            cardLayout.show(mainPanel, "habit");
+            invokeLater(() -> {
+                HabitUI habitUI = new HabitUI(habit, achievementToast);
+                mainPanel.add(habitUI, "habit");
+                cardLayout.show(mainPanel, "habit");
+            });
         }
 
         @Override
         public void mouseEntered(MouseEvent e) {
-            for (JPanel panel : panels) {
-                panel.setBackground(
-                        habit.isPeriodComplete() ? SUCCESS_GREEN_LIGHT :
-                                APP_COLOUR_LIGHT);
-            }
+            invokeLater(() -> {
+                for (JPanel panel : panels) {
+                    panel.setBackground(
+                            habit.isPeriodComplete() ? SUCCESS_GREEN_LIGHT :
+                                    APP_COLOUR_LIGHT);
+                }
+            });
         }
 
         @Override
         public void mouseExited(MouseEvent e) {
-            for (JPanel panel : panels) {
-                panel.setBackground(habit.isPeriodComplete() ? SUCCESS_GREEN : APP_COLOUR);
-            }
+            invokeLater(() -> {
+                for (JPanel panel : panels) {
+                    panel.setBackground(habit.isPeriodComplete() ? SUCCESS_GREEN : APP_COLOUR);
+                }
+            });
         }
     }
 }

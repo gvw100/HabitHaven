@@ -288,15 +288,11 @@ public class Habit {
 
     // REQUIRES: LocalDateTime.now(clock) is after currentPeriodEnd
     // MODIFIES: this
-    // EFFECTS: updates currentPeriodEnd and nextPeriodEnd, resets numSuccess to 0, increments numPeriod,
-    //          if notifyEnabled, updates to new reminders
+    // EFFECTS: updates currentPeriodEnd and nextPeriodEnd, resets numSuccess to 0, increments numPeriod
     public void nextHabitPeriod() {
         updateDateTime();
         numSuccess = 0;
         habitStats.incrementNumPeriod();
-        if (isNotifyEnabled()) {
-            habitReminder.updateReminders();
-        }
     }
 
     // MODIFIES: this
@@ -329,7 +325,8 @@ public class Habit {
             nextHabitPeriod();
             habitStats.resetStreak();
             isPreviousComplete = false;
-        } else if (isNotifyEnabled()) {
+        }
+        if (isNotifyEnabled()) {
             habitReminder.updateReminders();
         }
     }
