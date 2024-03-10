@@ -267,7 +267,7 @@ public class HabitManagerUI extends JPanel {
         credits.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
+                // TODO
             }
         });
     }

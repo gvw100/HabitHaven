@@ -44,6 +44,7 @@ public class HabitUI extends JPanel {
     private JButton changePeriod;
 
 
+    // EFFECTS: initializes habit JPanel
     public HabitUI(Habit habit, AchievementToast achievementToast) {
         this.habit = habit;
         this.achievementToast = achievementToast;
@@ -52,6 +53,8 @@ public class HabitUI extends JPanel {
         setupPanels();
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups panels in the Habit JPanel
     private void setupPanels() {
         setBackground(APP_COLOUR);
         setLayout(new GridLayout(1, 1));
@@ -67,6 +70,8 @@ public class HabitUI extends JPanel {
         add(tabbedPane);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups habit tab of the tabbed pane
     private void setupHabitPanel() {
         habitPanel = new JPanel();
         habitPanel.setLayout(new BoxLayout(habitPanel, BoxLayout.Y_AXIS));
@@ -79,6 +84,8 @@ public class HabitUI extends JPanel {
         tabbedPane.addTab("Habit", HABIT_ICON, habitPanel, "View your habit");
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups habit name field in the habit tab
     private void setupHabitName() {
         setupNameField();
         setupNameDocumentListener();
@@ -87,6 +94,8 @@ public class HabitUI extends JPanel {
         habitPanel.add(Box.createRigidArea(new Dimension(0, PADDING)));
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups document listener for the name text field
     private void setupNameDocumentListener() {
         habitName.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -106,6 +115,8 @@ public class HabitUI extends JPanel {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups focus listener for the name text field
     private void setupNameFocusListener() {
         habitName.addFocusListener(new FocusAdapter() {
             @Override
@@ -129,6 +140,8 @@ public class HabitUI extends JPanel {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups up name text field
     private void setupNameField() {
         habitName = new JTextField(habit.getName());
         habitName.setFont(HUGE_FONT);
@@ -141,6 +154,8 @@ public class HabitUI extends JPanel {
         habitName.setMinimumSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, TEXT_FIELD_HEIGHT * 2));
     }
 
+    // MODIFIES: this
+    // EFFECTS:
     private void setNewName() {
         invokeLater(() -> {
             if (habitName.getText().length() > MAX_HABIT_NAME_LENGTH) {
@@ -156,6 +171,8 @@ public class HabitUI extends JPanel {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups habit description text area
     private void setupHabitDescription() {
         contentsPanel = new JPanel();
         contentsPanel.setLayout(new BoxLayout(contentsPanel, BoxLayout.Y_AXIS));
@@ -168,6 +185,8 @@ public class HabitUI extends JPanel {
         contentsPanel.add(Box.createRigidArea(new Dimension(0, PADDING)));
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups description document listener
     private void setupDescriptionDocumentListener() {
         habitDescriptionArea.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -187,6 +206,8 @@ public class HabitUI extends JPanel {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups up description focus listener
     private void setupDescriptionFocusListener() {
         habitDescriptionArea.addFocusListener(new FocusAdapter() {
             @Override
@@ -210,6 +231,8 @@ public class HabitUI extends JPanel {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: setsup habit description area properties
     private void initializeHabitDescription() {
         habitDescription = setupHorizontalPanel();
         JLabel descriptionLabel = getDescriptionLabel();
@@ -231,12 +254,16 @@ public class HabitUI extends JPanel {
         habitDescription.add(habitDescriptionArea);
     }
 
+    // EFFECTS: returns description label
     private JLabel getDescriptionLabel() {
         JLabel descriptionLabel = setupLabel("  Description: ");
         descriptionLabel.setAlignmentY(Component.TOP_ALIGNMENT);
         return descriptionLabel;
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets the habit description to the value in the text area. Length restricted to MAX_DESCRIPTION_LENGTH
+    //          and blank descriptions are not allowed
     private void setNewDescription() {
         invokeLater(() -> {
             if (habitDescriptionArea.getText().length() > MAX_DESCRIPTION_LENGTH) {
@@ -252,6 +279,8 @@ public class HabitUI extends JPanel {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups numSuccess, frequency, and period panels
     private void setupHabitSuccessFrequencyPeriod() {
         setupNumSuccessField();
         setupIncrementDecrementButtons();
@@ -269,6 +298,8 @@ public class HabitUI extends JPanel {
         contentsPanel.add(Box.createRigidArea(new Dimension(0, PADDING * 2)));
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups numSuccess panel
     private void setupSuccessPanel() {
         habitSuccesses = setupHorizontalPanel();
         habitSuccesses.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -281,6 +312,8 @@ public class HabitUI extends JPanel {
         habitSuccesses.add(incrementSuccess);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups frequency panel
     private void setupFrequencyPanel() {
         frequencyPanel = setupHorizontalPanel();
         frequencyPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -292,6 +325,8 @@ public class HabitUI extends JPanel {
         frequencyPanel.add(changeFrequency);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups period panel
     private void setupPeriodPanel() {
         JLabel period = setupLabel("  Period: ");
         periodPanel = setupHorizontalPanel();
@@ -304,6 +339,7 @@ public class HabitUI extends JPanel {
         periodPanel.add(Box.createRigidArea(new Dimension(PADDING, 0)));
     }
 
+    // EFFECTS: returns a panel with a horizontal box layout
     private JPanel setupHorizontalPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
@@ -311,6 +347,8 @@ public class HabitUI extends JPanel {
         return panel;
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups numSuccess label
     private void setupNumSuccessField() {
         habitNumSuccess = new JLabel(String.valueOf(habit.getNumSuccess()));
         habitNumSuccess.setFont(MEDIUM_FONT);
@@ -319,6 +357,8 @@ public class HabitUI extends JPanel {
         habitNumSuccess.setAlignmentY(Component.CENTER_ALIGNMENT);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups frequency label
     private void setupFrequencyField() {
         habitFrequency = new JLabel(String.valueOf(habit.getFrequency()));
         habitFrequency.setFont(MEDIUM_FONT);
@@ -328,6 +368,8 @@ public class HabitUI extends JPanel {
         habitFrequency.setPreferredSize(new Dimension(19, TEXT_FIELD_HEIGHT));
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups increment and decrement buttons for numSuccess
     private void setupIncrementDecrementButtons() {
         incrementSuccess = new JButton("+");
         decrementSuccess = new JButton("-");
@@ -337,6 +379,9 @@ public class HabitUI extends JPanel {
         setupDecrementListener();
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups listener for the increment button, checks whether any new achievements were earned,
+    //          adds to achievementToast queue, updates entire habit panel
     private void setupIncrementListener() {
         incrementSuccess.addActionListener(e -> invokeLater(() -> {
             List<Achievement> current = habit.getAchievements();
@@ -353,6 +398,8 @@ public class HabitUI extends JPanel {
         }));
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups decrement button listener, updates numSuccess label and entire habit panel accordingly
     private void setupDecrementListener() {
         decrementSuccess.addActionListener(e -> invokeLater(() -> {
             if (habit.undoFinishHabit()) {
@@ -363,6 +410,8 @@ public class HabitUI extends JPanel {
         }));
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups change frequency and period buttons
     private void setupFrequencyPeriodButtons() {
         changeFrequency = new JButton("Change");
         changePeriod = new JButton("Change");
@@ -371,6 +420,8 @@ public class HabitUI extends JPanel {
         setupFrequencyPeriodListeners();
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups listeners for the change period and change frequency buttons
     private void setupFrequencyPeriodListeners() {
         changeFrequency.addActionListener(e -> invokeLater(() -> {
             String message = "Changing frequency will reset habit progress, statistics, and achievements."
@@ -390,6 +441,8 @@ public class HabitUI extends JPanel {
         }));
     }
 
+    // MODIFIES: this
+    // EFFECTS: prompts user to choose a new frequency
     private void changeFrequency() {
         Integer[] options = new Integer[MAX_FREQUENCY];
         for (int i = 0; i < MAX_FREQUENCY; i++) {
@@ -406,6 +459,8 @@ public class HabitUI extends JPanel {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: prompts users to choose a new period
     private void changePeriod() {
         String[] options = {"Daily", "Weekly", "Monthly"};
         int current = habit.getPeriod().ordinal();
@@ -419,6 +474,8 @@ public class HabitUI extends JPanel {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: updates the entire habit panel (including other tabs)
     private void updateHabitUI() {
         String lower = habit.getPeriod().toString().toLowerCase();
         String capital = lower.substring(0, 1).toUpperCase() + lower.substring(1);
@@ -428,12 +485,16 @@ public class HabitUI extends JPanel {
         updateOtherPanels();
     }
 
+    // MODIFIES: this
+    // EFFECTS: updates all other tabs in the habit panel
     private void updateOtherPanels() {
         habitStatsPanel.updateStatsUI();
         habitRemindersPanel.updateRemindersUI();
         achievementsPanel.updateAchievementsUI();
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups period label
     private void setupPeriodField() {
         String lower = habit.getPeriod().toString().toLowerCase();
         String capital = lower.substring(0, 1).toUpperCase() + lower.substring(1);
@@ -445,6 +506,8 @@ public class HabitUI extends JPanel {
         habitPeriod.setPreferredSize(new Dimension(18, TEXT_FIELD_HEIGHT));
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups a new label with the given text
     private JLabel setupLabel(String label) {
         JLabel newLabel = new JLabel(label);
         newLabel.setFont(MEDIUM_FONT);
@@ -453,16 +516,21 @@ public class HabitUI extends JPanel {
         return newLabel;
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups habit statistics tab
     private void setupHabitStatsPanel() {
         habitStatsPanel = new HabitStatisticsUI(habit);
         tabbedPane.addTab("Statistics", STATS_ICON, habitStatsPanel, "View your statistics");
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups habit reminders tab
     private void setupHabitRemindersPanel() {
         habitRemindersPanel = getHabitRemindersUI();
         tabbedPane.addTab("Notifications", BELL_ON, habitRemindersPanel, "Set your notifications");
     }
-    
+
+    // EFFECTS: gets the appropriate habit reminder panel depending on habit period
     private HabitRemindersUI getHabitRemindersUI() {
         switch (habit.getPeriod()) {
             case DAILY:
@@ -474,6 +542,8 @@ public class HabitUI extends JPanel {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups achievement tab
     private void setupAchievementsPanel() {
         achievementsPanel = new AchievementsUI(habit);
         tabbedPane.addTab("Achievements", TROPHY_ICON, achievementsPanel, "View your achievements");
