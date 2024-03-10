@@ -10,7 +10,9 @@ import ui.reminder.SendReminder;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.nio.file.*;
 
+import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static ui.Constants.*;
 
 // Habit tracker Swing application
@@ -28,6 +30,7 @@ public class HabitApp extends JFrame {
 
     // EFFECTS: starts the application
     private HabitApp() {
+        checkExistingInstance();
         SendReminder.setIsConsoleApp(false);
         appIsOpen = true;
         startApp();
@@ -40,6 +43,69 @@ public class HabitApp extends JFrame {
             habitApp.setVisible(true);
             appIsOpen = true;
         }
+    }
+
+    private void checkExistingInstance() {
+        try {
+            if (checkAbnormalExit()) {
+                removeAllFiles();
+            }
+            if (INSTANCE_EXISTS.exists()) {
+                SIGNAL_VISIBLE.createNewFile();
+                System.exit(0);
+            } else {
+                INSTANCE_EXISTS.deleteOnExit();
+                SIGNAL_VISIBLE.deleteOnExit();
+                INSTANCE_EXISTS.createNewFile();
+                setupWatchService();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean checkAbnormalExit() {
+        if (!INSTANCE_EXISTS.exists() && !SIGNAL_VISIBLE.exists()) {
+            return false;
+        }
+        if (INSTANCE_EXISTS.exists() && !SIGNAL_VISIBLE.exists()) {
+            return false;
+        }
+        return true;
+    }
+
+    private void removeAllFiles() throws IOException {
+        if (INSTANCE_EXISTS.exists()) {
+            Files.delete(INSTANCE_EXISTS.toPath());
+        }
+        if (SIGNAL_VISIBLE.exists()) {
+            Files.delete(SIGNAL_VISIBLE.toPath());
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: sets up a watch service to detect when the application is opened
+    // Learnt from https://www.baeldung.com/java-nio2-watchservice
+    private void setupWatchService() {
+        Thread thread = new Thread(() -> {
+            try {
+                WatchService watchService = FileSystems.getDefault().newWatchService();
+                Path path = Paths.get("./data/signal");
+                path.register(watchService, ENTRY_CREATE);
+                WatchKey key;
+                while (true) {
+                    key = watchService.take();
+                    if (SIGNAL_VISIBLE.exists()) {
+                        getInstance();
+                        Files.delete(SIGNAL_VISIBLE.toPath());
+                    }
+                    key.reset();
+                }
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        thread.start();
     }
 
     // EFFECTS: returns true if the application is open
@@ -125,6 +191,10 @@ public class HabitApp extends JFrame {
     }
 
     private void scaleAchievements() {
+        Image achievementOn = ACHIEVEMENT_ON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        ACHIEVEMENT_ON.setImage(achievementOn);
+        Image achievementOff = ACHIEVEMENT_OFF.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        ACHIEVEMENT_OFF.setImage(achievementOff);
         Image bronze = BRONZE_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         BRONZE_ICON.setImage(bronze);
         Image silver = SILVER_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);

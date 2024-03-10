@@ -23,19 +23,26 @@ completions, etc.)
  think of many small habits that I can strive for. An app would help organize the 
  habit formation process, bringing the user one step closer to transforming their
  life.
- ## User Stories 
+ ## User Stories (All Implemented)
 - As a user, I want to be able to add a habit to my list of habits and specify the
 name, description, period, and frequency. 
-- As a user, I want to be able to mark a habit as completed for the current time period.
+- As a user, I want to be able to finish and undo finishing a habit.
 - As a user, I want to be able to view a list of all my habits.
 - As a user, I want to be able to edit my habits.
+- As a user, I want to be able to change my username.
 - As a user, I want to be able to delete my habits.
+- As a user, I want to be able to delete all my habits at once.
 - As a user, I want to be able to view in-depth statistics for each habit.
+- As a user, I want to be able to view lifetime statistics for all of my active habits.
 - As a user, I want to have the option to receive notifications for each habit.
 - As a user, I want to have the option to either customize the notifications or keep the default settings.
 - As a user, I want to be able to disable all my notifications at once.
-- As a user, when I quit the application with unsaved changes, I want to be reminded to save my habits to file and have the option to do so or not.
 - As a user, I want to be given the option to load my habits from file (if I so choose).
+- As a user, when I quit the application with unsaved changes, I want to be reminded to save my habits to file and have the option to do so or not.
+- Or, as a user, I want to be able to have the option to enable auto-save.
+- As a user, I want to be given the option to export my save file to my computer.
+- As a user, I want to be given the option to import a save file from my computer.
+- As a user, I want to be able to view and be notified of my achievements for each habit.
 ## Instructions for Grader
 - You can add habits to your habit list in one of two ways: 
   - Click the "Create Habit" option in the sidebar.

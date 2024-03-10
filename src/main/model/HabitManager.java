@@ -12,11 +12,14 @@ public class HabitManager {
     private final List<Habit> habits;
     private static String username;
     private static boolean isAutoSave;
+    private static boolean achievementToastsEnabled;
 
-    // EFFECTS: constructs a habit manager with an empty list of habits
+    // EFFECTS: constructs a habit manager with an empty list of habits,
+    //          by default auto save is off and achievement toasts are enabled
     public HabitManager() {
         habits = new ArrayList<>();
         isAutoSave = false;
+        achievementToastsEnabled = true;
     }
 
     public List<Habit> getHabits() {
@@ -32,8 +35,12 @@ public class HabitManager {
         return HabitManager.username;
     }
 
-    public static boolean isIsAutoSave() {
+    public static boolean isAutoSave() {
         return HabitManager.isAutoSave;
+    }
+
+    public static boolean isAchievementToastsEnabled() {
+        return HabitManager.achievementToastsEnabled;
     }
 
     public static void setUsername(String username) {
@@ -42,6 +49,10 @@ public class HabitManager {
 
     public static void setIsAutoSave(boolean isAutoSave) {
         HabitManager.isAutoSave = isAutoSave;
+    }
+
+    public static void setAchievementToastsEnabled(boolean achievementToastsEnabled) {
+        HabitManager.achievementToastsEnabled = achievementToastsEnabled;
     }
 
     // MODIFIES: this
@@ -73,6 +84,7 @@ public class HabitManager {
         JSONObject json = new JSONObject();
         json.put("username", HabitManager.getUsername());
         json.put("isAutoSave", HabitManager.isAutoSave);
+        json.put("achievementToastsEnabled", HabitManager.isAchievementToastsEnabled());
         json.put("habits", habitsToJson());
         return json;
     }

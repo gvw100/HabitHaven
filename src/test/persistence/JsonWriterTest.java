@@ -30,7 +30,7 @@ public class JsonWriterTest extends JsonTest {
             JsonReader reader = new JsonReader("./data/testWriterEmptyHabitManager.json");
             hm = reader.read();
             assertEquals("Gavin", HabitManager.getUsername());
-            assertFalse(HabitManager.isIsAutoSave());
+            assertFalse(HabitManager.isAutoSave());
             assertEquals(0, hm.getSize());
         } catch (IOException e) {
             fail("Exception should not have been thrown");
@@ -49,7 +49,7 @@ public class JsonWriterTest extends JsonTest {
             JsonReader reader2 = new JsonReader("./data/testWriterGeneralHabitManager.json");
             hm = reader2.read();
             assertEquals(6, hm.getSize());
-            assertTrue(HabitManager.isIsAutoSave());
+            assertTrue(HabitManager.isAutoSave());
             assertEquals("Gavin", HabitManager.getUsername());
             requestCheckHabit1(hm);
         } catch (IOException e) {

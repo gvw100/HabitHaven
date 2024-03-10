@@ -20,16 +20,22 @@ public class AchievementToast extends JPanel {
     private Lock lock = new ReentrantLock();
     private JLabel title;
     private JLabel description;
+    private boolean achievementToastsEnabled;
 
-    public AchievementToast() {
+    public AchievementToast(boolean achievementToastsEnabled) {
+        this.achievementToastsEnabled = achievementToastsEnabled;
         achievementQueue = new LinkedBlockingQueue<>();
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setMinimumSize(new Dimension(WINDOW_WIDTH, 500));
         setupPlaceholderToast();
     }
 
+    public void setAchievementToastsEnabled(boolean achievementToastsEnabled) {
+        this.achievementToastsEnabled = achievementToastsEnabled;
+    }
+
     public void add(Pair<String, Achievement> achievement) {
-        if (!HabitApp.appIsOpen()) {
+        if (!HabitApp.appIsOpen() || !achievementToastsEnabled) {
             return;
         }
         try {
@@ -78,15 +84,17 @@ public class AchievementToast extends JPanel {
         Thread thread = new Thread(() -> {
             try {
                 lock.lock();
-                updateToast(achievementQueue.take());
-                int red = APP_COLOUR_LIGHT.getRed();
-                int green = APP_COLOUR_LIGHT.getGreen();
-                int blue = APP_COLOUR_LIGHT.getBlue();
-                setBackground(new Color(red, green, blue, 255));
-                setVisible(true);
-                playSound();
-                Thread.sleep(4000);
-                setVisible(false);
+                if (HabitApp.appIsOpen()) {
+                    updateToast(achievementQueue.take());
+                    int red = APP_COLOUR_LIGHT.getRed();
+                    int green = APP_COLOUR_LIGHT.getGreen();
+                    int blue = APP_COLOUR_LIGHT.getBlue();
+                    setBackground(new Color(red, green, blue, 255));
+                    setVisible(true);
+                    playSound();
+                    Thread.sleep(4000);
+                    setVisible(false);
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {

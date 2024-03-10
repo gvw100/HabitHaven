@@ -231,5 +231,6 @@
     }
   ],
   "isAutoSave": true,
+  "achievementToastsEnabled": false,
   "username": "Gavin"
 }

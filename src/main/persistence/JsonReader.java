@@ -56,6 +56,7 @@ public class JsonReader {
         HabitManager hm = new HabitManager();
         addHabits(hm, jsonObject);
         HabitManager.setIsAutoSave(jsonObject.getBoolean("isAutoSave"));
+        HabitManager.setAchievementToastsEnabled(jsonObject.getBoolean("achievementToastsEnabled"));
         HabitManager.setUsername(jsonObject.getString("username"));
         return hm;
     }

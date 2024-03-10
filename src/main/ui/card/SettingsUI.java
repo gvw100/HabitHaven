@@ -1,14 +1,17 @@
 package ui.card;
 
 import model.HabitManager;
+import org.json.JSONException;
 import persistence.JsonReader;
 import persistence.JsonWriter;
+import ui.AchievementToast;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 
 import static javax.swing.SwingUtilities.invokeLater;
@@ -18,9 +21,11 @@ public class SettingsUI extends JPanel {
     private HabitManager habitManager;
     private JPanel mainPanel;
     private JFrame parent;
+    private AchievementToast toast;
 
-    public SettingsUI(HabitManager habitManager, JFrame parent) {
+    public SettingsUI(HabitManager habitManager, JFrame parent, AchievementToast toast) {
         this.habitManager = habitManager;
+        this.toast = toast;
         setupPanel();
         this.parent = parent;
     }
@@ -44,6 +49,7 @@ public class SettingsUI extends JPanel {
         setupChangeUserNameButton();
         setupToggleAutoSaveButton();
         setupTurnOffNotificationsButton();
+        setupToggleAchievements();
         setupExportButton();
         setupImportButton();
         setupDeleteAllHabitsButton();
@@ -84,18 +90,9 @@ public class SettingsUI extends JPanel {
     }
 
     private void setupToggleAutoSaveButton() {
-        boolean isAutoSave = HabitManager.isIsAutoSave();
+        boolean isAutoSave = HabitManager.isAutoSave();
         String text = isAutoSave ? "Turn Off Auto Save" : "Turn On Auto Save";
-        JToggleButton toggleAutoSave = new JToggleButton(text, isAutoSave ? SAVE_OFF_ICON : SAVE_ICON, isAutoSave);
-        toggleAutoSave.setBackground(APP_COLOUR);
-        toggleAutoSave.setForeground(FONT_COLOUR);
-        toggleAutoSave.setFont(MEDIUM_FONT);
-        toggleAutoSave.setContentAreaFilled(false);
-        toggleAutoSave.setFocusable(false);
-        toggleAutoSave.setPreferredSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, LARGE_BUTTON_HEIGHT));
-        toggleAutoSave.setMaximumSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, LARGE_BUTTON_HEIGHT));
-        toggleAutoSave.setMinimumSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, LARGE_BUTTON_HEIGHT));
-        toggleAutoSave.setAlignmentX(CENTER_ALIGNMENT);
+        JToggleButton toggleAutoSave = getToggleButton(text, isAutoSave ? SAVE_OFF_ICON : SAVE_ICON, isAutoSave);
         setupAutoSaveListener(toggleAutoSave);
         mainPanel.add(toggleAutoSave, getSettingsConstraints(2));
     }
@@ -105,10 +102,10 @@ public class SettingsUI extends JPanel {
     }
 
     private void toggleAutoSaveButton(JToggleButton autoSave) {
-        HabitManager.setIsAutoSave(!HabitManager.isIsAutoSave());
+        HabitManager.setIsAutoSave(!HabitManager.isAutoSave());
         HabitManagerUI.changeMade();
-        autoSave.setText(HabitManager.isIsAutoSave() ? "Turn Off Auto Save" : "Turn On Auto Save");
-        autoSave.setIcon(HabitManager.isIsAutoSave() ? SAVE_OFF_ICON : SAVE_ICON);
+        autoSave.setText(HabitManager.isAutoSave() ? "Turn Off Auto Save" : "Turn On Auto Save");
+        autoSave.setIcon(HabitManager.isAutoSave() ? SAVE_OFF_ICON : SAVE_ICON);
     }
 
     private void setupTurnOffNotificationsButton() {
@@ -127,6 +124,25 @@ public class SettingsUI extends JPanel {
         mainPanel.add(turnOffNotifications, getSettingsConstraints(3));
     }
 
+    private void setupToggleAchievements() {
+        boolean isToasts = HabitManager.isAchievementToastsEnabled();
+        String text = isToasts ? "Turn Off Achievement Toasts"
+                : "Turn On Achievement Toasts";
+        ImageIcon icon = isToasts ? ACHIEVEMENT_OFF : ACHIEVEMENT_ON;
+        JToggleButton turnOffToasts = getToggleButton(text, icon, isToasts);
+        turnOffToasts.addActionListener(e -> invokeLater(() -> toggleToasts(turnOffToasts)));
+        mainPanel.add(turnOffToasts, getSettingsConstraints(4));
+    }
+
+    private void toggleToasts(JToggleButton button) {
+        boolean isToasts = !HabitManager.isAchievementToastsEnabled();
+        HabitManager.setAchievementToastsEnabled(isToasts);
+        toast.setAchievementToastsEnabled(isToasts);
+        HabitManagerUI.changeMade();
+        button.setText(isToasts ? "Turn Off Achievement Toasts" : "Turn On Achievement Toasts");
+        button.setIcon(isToasts ? ACHIEVEMENT_OFF : ACHIEVEMENT_ON);
+    }
+
     private void setupExportButton() {
         JButton export = new JButton("Export to File");
         makeButton(export, WINDOW_WIDTH - SIDE_BAR_WIDTH, LARGE_BUTTON_HEIGHT, MEDIUM_FONT);
@@ -134,18 +150,23 @@ public class SettingsUI extends JPanel {
         export.addActionListener(e -> invokeLater(() -> {
             int response = fileChooser.showSaveDialog(parent);
             if (response == JFileChooser.APPROVE_OPTION) {
-                exportToFile(fileChooser.getSelectedFile().toPath());
-                JOptionPane.showMessageDialog(null, "Exported Successfully!");
+                if (exportToFile(fileChooser.getSelectedFile().toPath())) {
+                    JOptionPane.showMessageDialog(null, "Exported Successfully!");
+                }
             }
         }));
-        mainPanel.add(export, getSettingsConstraints(4));
+        mainPanel.add(export, getSettingsConstraints(5));
     }
 
     private JFileChooser setupExportChooser() {
         JFileChooser chooser = new JFileChooser() {
             @Override
             public void approveSelection() {
-                File file = new File(getSelectedFile().toString() + ".json");
+                File file = getSelectedFile();
+                if (!file.toString().endsWith("json")) {
+                    file = new File(file + ".json");
+                    setSelectedFile(file);
+                }
                 if (file.exists() && JOptionPane.showConfirmDialog(null,
                         "File already exists. Do you want to overwrite it?",
                         "Export to File", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
@@ -160,8 +181,8 @@ public class SettingsUI extends JPanel {
         return chooser;
     }
 
-    private void exportToFile(Path path) {
-        JsonWriter writer = new JsonWriter(path.toString() + ".json");
+    private boolean exportToFile(Path path) {
+        JsonWriter writer = new JsonWriter(path.toString());
         try {
             writer.open();
             writer.write(habitManager);
@@ -169,7 +190,9 @@ public class SettingsUI extends JPanel {
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Error exporting file");
+            return false;
         }
+        return true;
     }
 
     private void setupImportButton() {
@@ -184,11 +207,12 @@ public class SettingsUI extends JPanel {
             }
             int response = fileChooser.showOpenDialog(parent);
             if (response == JFileChooser.APPROVE_OPTION) {
-                importFromFile(fileChooser.getSelectedFile().toPath());
-                JOptionPane.showMessageDialog(null, "Imported Successfully!");
+                if (importFromFile(fileChooser.getSelectedFile().toPath())) {
+                    JOptionPane.showMessageDialog(null, "Imported Successfully!");
+                }
             }
         }));
-        mainPanel.add(importButton, getSettingsConstraints(5));
+        mainPanel.add(importButton, getSettingsConstraints(6));
     }
 
     private JFileChooser setupImportChooser() {
@@ -198,17 +222,23 @@ public class SettingsUI extends JPanel {
         return chooser;
     }
 
-    private void importFromFile(Path path) {
-        deleteAllHabits();
+    private boolean importFromFile(Path path) {
         JsonReader reader = new JsonReader(path.toString());
         try {
             HabitManager importedHabitManager = reader.read();
             HabitManagerUI.setHabitManager(importedHabitManager);
             HabitManagerUI.changeMade();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Error importing file");
+            return false;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Save file is corrupted");
+            return false;
         }
+        deleteAllHabits();
+        return true;
     }
 
     private void setupDeleteAllHabitsButton() {
@@ -224,7 +254,7 @@ public class SettingsUI extends JPanel {
                 JOptionPane.showMessageDialog(null, "All habits deleted successfully");
             }
         }));
-        mainPanel.add(deleteAllHabits, getSettingsConstraints(6));
+        mainPanel.add(deleteAllHabits, getSettingsConstraints(7));
     }
 
     private void deleteAllHabits() {
@@ -262,9 +292,23 @@ public class SettingsUI extends JPanel {
     private GridBagConstraints getEmptySpaceConstraints() {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
-        constraints.gridy = 7;
+        constraints.gridy = 8;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.weighty = 1;
         return constraints;
+    }
+
+    private JToggleButton getToggleButton(String text, ImageIcon icon, boolean isSelected) {
+        JToggleButton toggleButton = new JToggleButton(text, icon, isSelected);
+        toggleButton.setBackground(APP_COLOUR);
+        toggleButton.setForeground(FONT_COLOUR);
+        toggleButton.setFont(MEDIUM_FONT);
+        toggleButton.setContentAreaFilled(false);
+        toggleButton.setFocusable(false);
+        toggleButton.setPreferredSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, LARGE_BUTTON_HEIGHT));
+        toggleButton.setMaximumSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, LARGE_BUTTON_HEIGHT));
+        toggleButton.setMinimumSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, LARGE_BUTTON_HEIGHT));
+        toggleButton.setAlignmentX(CENTER_ALIGNMENT);
+        return toggleButton;
     }
 }

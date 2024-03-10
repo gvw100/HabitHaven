@@ -1,5 +1,6 @@
 {
   "habits": [],
   "isAutoSave": false,
+  "achievementToastsEnabled": true,
   "username": "gregor kiczales"
 }

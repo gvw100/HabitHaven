@@ -25,7 +25,7 @@ public class JsonReaderTest extends JsonTest {
         try {
             hm = reader.read();
             assertEquals("gregor kiczales", HabitManager.getUsername());
-            assertFalse(HabitManager.isIsAutoSave());
+            assertFalse(HabitManager.isAutoSave());
             assertEquals(0, hm.getSize());
         } catch (IOException e) {
             fail("Couldn't read from file");
@@ -38,7 +38,7 @@ public class JsonReaderTest extends JsonTest {
         try {
             hm = reader.read();
             assertEquals(6, hm.getSize());
-            assertTrue(HabitManager.isIsAutoSave());
+            assertTrue(HabitManager.isAutoSave());
             assertEquals("Gavin", HabitManager.getUsername());
             requestCheckHabit1(hm);
         } catch (IOException e) {

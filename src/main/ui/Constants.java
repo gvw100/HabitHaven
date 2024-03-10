@@ -2,13 +2,16 @@ package ui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 public class Constants {
     public static final int WINDOW_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
     public static final int WINDOW_HEIGHT = Math.round(Toolkit.getDefaultToolkit().getScreenSize().height * 0.99f);
     public static final int SIDE_BAR_WIDTH = 200;
-    // ACHIEVEMENT_SOUND by Robtop Games
+    // ACHIEVEMENT_SOUND and icon by Robtop Games
     public static final String ACHIEVEMENT_SOUND = "./data/achievement.wav";
+    public static final ImageIcon ACHIEVEMENT_ON = new ImageIcon("./data/achievement_on.png");
+    public static final ImageIcon ACHIEVEMENT_OFF = new ImageIcon("./data/achievement_off.png");
     // LOGO from https://www.canva.com/templates/EAFvMagh96A-colorful-modern-infinity-technology-free-logo/
     public static final ImageIcon LOGO = new ImageIcon("./data/logo.png");
     public static final ImageIcon LOGO_ICON = new ImageIcon("./data/logo_icon.png");
@@ -75,6 +78,10 @@ public class Constants {
     public static final int MAX_FREQUENCY = 15;
     public static final int MONTH_MAX_DAYS = 31;
     public static final String HABIT_MANAGER_STORE = "./data/habitManager.json";
+    public static final String INSTANCE_EXISTS_PATH = "./data/signal/instanceExists.txt";
+    public static final String SIGNAL_VISIBLE_PATH = "./data//signal/signalVisible.txt";
+    public static final File INSTANCE_EXISTS = new File(INSTANCE_EXISTS_PATH);
+    public static final File SIGNAL_VISIBLE = new File(SIGNAL_VISIBLE_PATH);
 
     public static void makeButton(JButton button, int width, int height, Font font) {
         button.setAlignmentX(Component.CENTER_ALIGNMENT);

@@ -42,8 +42,9 @@ public class HabitManagerUI extends JPanel {
     private static HabitManager habitManager;
 
     public HabitManagerUI(boolean isLoaded, JFrame frame, HabitManager habitManager) {
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         HabitManagerUI.habitManager = habitManager;
-        this.achievementToast = new AchievementToast();
+        this.achievementToast = new AchievementToast(HabitManager.isAchievementToastsEnabled());
         this.layeredPane = new JLayeredPane();
         this.parent = frame;
         add(layeredPane);
@@ -53,7 +54,7 @@ public class HabitManagerUI extends JPanel {
         }
         scheduleHabitUpdates();
         setupPanel();
-        setupWindowListener(frame);
+        setWindowListener();
     }
 
     public static void setHabitManager(HabitManager habitManager) {
@@ -61,7 +62,7 @@ public class HabitManagerUI extends JPanel {
     }
 
     public static void changeMade() {
-        if (HabitManager.isIsAutoSave()) {
+        if (HabitManager.isAutoSave()) {
             nonSideBarSaveHabits(habitManager);
         } else {
             setIsSaved(false);
@@ -72,22 +73,22 @@ public class HabitManagerUI extends JPanel {
         HabitManagerUI.isSaved = isSaved;
     }
 
-    private void setupWindowListener(JFrame frame) {
-        frame.addWindowListener(new WindowAdapter() {
+    private void setWindowListener() {
+        parent.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
                 invokeLater(() -> {
-                    if (HabitManager.isIsAutoSave()) {
-                        return;
-                    }
-                    if (!isSaved) {
-                        int result = JOptionPane.showConfirmDialog(frame,
+                    if (!HabitManager.isAutoSave() && !isSaved) {
+                        int result = JOptionPane.showConfirmDialog(null,
                                 "Would you like to save your habits before exiting?", "Save Habits?",
                                 JOptionPane.YES_NO_OPTION);
-                        if (result == JOptionPane.YES_OPTION) {
+                        if (result == JOptionPane.CLOSED_OPTION) {
+                            return;
+                        } else if (result == JOptionPane.YES_OPTION) {
                             nonSideBarSaveHabits(habitManager);
                         }
                     }
+                    parent.setVisible(false);
                     HabitApp.setAppIsOpen(false);
                 });
             }
@@ -215,6 +216,7 @@ public class HabitManagerUI extends JPanel {
             jsonWriter.open();
             jsonWriter.write(habitManager);
             jsonWriter.close();
+            isSaved = true;
         } catch (FileNotFoundException e) {
             System.out.println("Unable to write to file: " + HABIT_MANAGER_STORE);
         }
@@ -253,7 +255,7 @@ public class HabitManagerUI extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 invokeLater(() -> {
-                    SettingsUI settingsUI = new SettingsUI(habitManager, parent);
+                    SettingsUI settingsUI = new SettingsUI(habitManager, parent, achievementToast);
                     mainPanel.add(settingsUI, "settings");
                     cardLayout.show(mainPanel, "settings");
                 });

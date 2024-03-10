@@ -32,6 +32,8 @@ public class HabitManagerTest extends HabitHelperTest {
     @Test
     void testConstructor() {
         assertEquals(0, habitManager.getSize());
+        assertFalse(HabitManager.isAutoSave());
+        assertTrue(HabitManager.isAchievementToastsEnabled());
     }
 
     @Test
