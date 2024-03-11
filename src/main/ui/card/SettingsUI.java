@@ -50,6 +50,7 @@ public class SettingsUI extends JPanel {
         setupToggleAutoSaveButton();
         setupTurnOffNotificationsButton();
         setupToggleAchievements();
+        setupHideOnClose();
         setupExportButton();
         setupImportButton();
         setupDeleteAllHabitsButton();
@@ -130,7 +131,7 @@ public class SettingsUI extends JPanel {
                 : "Turn On Achievement Toasts";
         ImageIcon icon = isToasts ? ACHIEVEMENT_OFF : ACHIEVEMENT_ON;
         JToggleButton turnOffToasts = getToggleButton(text, icon, isToasts);
-        turnOffToasts.addActionListener(e -> invokeLater(() -> toggleToasts(turnOffToasts)));
+        turnOffToasts.addItemListener(e -> invokeLater(() -> toggleToasts(turnOffToasts)));
         mainPanel.add(turnOffToasts, getSettingsConstraints(4));
     }
 
@@ -141,6 +142,23 @@ public class SettingsUI extends JPanel {
         HabitManagerUI.changeMade();
         button.setText(isToasts ? "Turn Off Achievement Toasts" : "Turn On Achievement Toasts");
         button.setIcon(isToasts ? ACHIEVEMENT_OFF : ACHIEVEMENT_ON);
+    }
+
+    private void setupHideOnClose() {
+        boolean hideOnClose = HabitManager.isHideOnClose();
+        String text = hideOnClose ? "Make HabitHaven Exit on Close!" : "Make HabitHaven Hide on Close!";
+        ImageIcon icon = hideOnClose ? EXIT_ICON : HIDE_ICON;
+        JToggleButton toggleButton = getToggleButton(text, icon, hideOnClose);
+        toggleButton.addItemListener(e -> invokeLater(() -> toggleHideOnClose(toggleButton)));
+        mainPanel.add(toggleButton, getSettingsConstraints(5));
+    }
+
+    private void toggleHideOnClose(JToggleButton toggleButton) {
+        boolean newSelection = !HabitManager.isHideOnClose();
+        HabitManager.setHideOnClose(newSelection);
+        HabitManagerUI.changeMade();
+        toggleButton.setText(newSelection ? "Make HabitHaven Exit on Close!" : "Make HabitHaven Hide on Close!");
+        toggleButton.setIcon(newSelection ? EXIT_ICON : HIDE_ICON);
     }
 
     private void setupExportButton() {
@@ -155,7 +173,7 @@ public class SettingsUI extends JPanel {
                 }
             }
         }));
-        mainPanel.add(export, getSettingsConstraints(5));
+        mainPanel.add(export, getSettingsConstraints(6));
     }
 
     private JFileChooser setupExportChooser() {
@@ -212,7 +230,7 @@ public class SettingsUI extends JPanel {
                 }
             }
         }));
-        mainPanel.add(importButton, getSettingsConstraints(6));
+        mainPanel.add(importButton, getSettingsConstraints(7));
     }
 
     private JFileChooser setupImportChooser() {
@@ -254,7 +272,7 @@ public class SettingsUI extends JPanel {
                 JOptionPane.showMessageDialog(null, "All habits deleted successfully");
             }
         }));
-        mainPanel.add(deleteAllHabits, getSettingsConstraints(7));
+        mainPanel.add(deleteAllHabits, getSettingsConstraints(8));
     }
 
     private void deleteAllHabits() {
@@ -292,7 +310,7 @@ public class SettingsUI extends JPanel {
     private GridBagConstraints getEmptySpaceConstraints() {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
-        constraints.gridy = 8;
+        constraints.gridy = 9;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.weighty = 1;
         return constraints;

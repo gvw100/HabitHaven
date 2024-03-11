@@ -144,9 +144,9 @@ public class HabitApp extends JFrame {
     private void scaleIcons() {
         Image logo = LOGO.getImage().getScaledInstance(LOGO_WIDTH, LOGO_HEIGHT, Image.SCALE_SMOOTH);
         LOGO.setImage(logo);
-        Image logoIcon = TRANSPARENT_ICON.getImage()
+        Image icon = TRANSPARENT_ICON.getImage()
                 .getScaledInstance(SIDE_BAR_WIDTH / 3, SIDE_BAR_WIDTH / 3, Image.SCALE_SMOOTH);
-        TRANSPARENT_ICON.setImage(logoIcon);
+        TRANSPARENT_ICON.setImage(icon);
         Image delete = DELETE_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         DELETE_ICON.setImage(delete);
         Image deleteHover = DELETE_ICON_HOVER.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
@@ -155,6 +155,10 @@ public class HabitApp extends JFrame {
         ADD_ICON.setImage(add);
         Image addHover = ADD_ICON_HOVER.getImage().getScaledInstance(55, 55, Image.SCALE_SMOOTH);
         ADD_ICON_HOVER.setImage(addHover);
+        Image exit = EXIT_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        EXIT_ICON.setImage(exit);
+        Image hide = HIDE_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        HIDE_ICON.setImage(hide);
         scaleMoreIcons();
     }
 

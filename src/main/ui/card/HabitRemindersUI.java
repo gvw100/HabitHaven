@@ -501,6 +501,7 @@ public abstract class HabitRemindersUI extends JPanel {
         updateCustomizationComponents();
         updateReminderListComponents();
         repaint();
+        revalidate();
     }
 
     private void updatePresetComponents() {

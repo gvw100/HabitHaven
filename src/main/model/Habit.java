@@ -313,7 +313,9 @@ public class Habit {
     //          if now is between currentPeriodEnd and nextPeriodEnd and isPreviousComplete(),
     //          switch to next period and reset isPreviousComplete to false,
     //          if now is after nextPeriodEnd, switch to next period, reset streak, and reset isPreviousComplete
-    public void updateHabit() {
+    //          returns whether this was modified
+    public boolean updateHabit() {
+        boolean changeMade = false;
         LocalDateTime now = LocalDateTime.now(clock);
         if (!now.isBefore(currentPeriodEnd.plusMinutes(1)) && now.isBefore(nextPeriodEnd.plusMinutes(1))) {
             nextHabitPeriod();
@@ -321,14 +323,17 @@ public class Habit {
                 habitStats.resetStreak();
             }
             isPreviousComplete = false;
+            changeMade = true;
         } else if (!now.isBefore(nextPeriodEnd.plusMinutes(1))) {
             nextHabitPeriod();
             habitStats.resetStreak();
             isPreviousComplete = false;
+            changeMade = true;
         }
         if (isNotifyEnabled()) {
             habitReminder.updateReminders();
         }
+        return changeMade;
     }
 
     // MODIFIES: this

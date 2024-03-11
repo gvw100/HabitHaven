@@ -20,17 +20,19 @@ public class JsonWriterTest extends JsonTest {
     @Test
     void testWriterEmptyHabitManager() {
         try {
-            HabitManager hm = new HabitManager();
-            HabitManager.setUsername("Gavin");
+            JsonReader reader1 = new JsonReader("./data/testReaderEmptyHabitManager.json");
+            HabitManager hm = reader1.read();
             JsonWriter writer = new JsonWriter("./data/testWriterEmptyHabitManager.json");
             writer.open();
             writer.write(hm);
             writer.close();
 
-            JsonReader reader = new JsonReader("./data/testWriterEmptyHabitManager.json");
-            hm = reader.read();
-            assertEquals("Gavin", HabitManager.getUsername());
+            JsonReader reader2 = new JsonReader("./data/testWriterEmptyHabitManager.json");
+            hm = reader2.read();
+            assertEquals("gregor kiczales", HabitManager.getUsername());
             assertFalse(HabitManager.isAutoSave());
+            assertTrue(HabitManager.isAchievementToastsEnabled());
+            assertFalse(HabitManager.isHideOnClose());
             assertEquals(0, hm.getSize());
         } catch (IOException e) {
             fail("Exception should not have been thrown");
@@ -50,6 +52,8 @@ public class JsonWriterTest extends JsonTest {
             hm = reader2.read();
             assertEquals(6, hm.getSize());
             assertTrue(HabitManager.isAutoSave());
+            assertFalse(HabitManager.isAchievementToastsEnabled());
+            assertTrue(HabitManager.isHideOnClose());
             assertEquals("Gavin", HabitManager.getUsername());
             requestCheckHabit1(hm);
         } catch (IOException e) {

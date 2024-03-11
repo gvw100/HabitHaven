@@ -232,7 +232,7 @@ public class HabitUI extends JPanel {
     }
 
     // MODIFIES: this
-    // EFFECTS: setsup habit description area properties
+    // EFFECTS: sets up habit description area properties
     private void initializeHabitDescription() {
         habitDescription = setupHorizontalPanel();
         JLabel descriptionLabel = getDescriptionLabel();
@@ -469,8 +469,10 @@ public class HabitUI extends JPanel {
         if (choice != null) {
             if (habit.setPeriod(Period.valueOf((choice.toString().toUpperCase())))) {
                 HabitManagerUI.changeMade();
+                habitRemindersPanel = getHabitRemindersUI();
+                tabbedPane.setComponentAt(2, habitRemindersPanel);
+                updateHabitUI();
             }
-            updateHabitUI();
         }
     }
 

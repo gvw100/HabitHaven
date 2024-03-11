@@ -88,8 +88,12 @@ public class HabitManagerUI extends JPanel {
                             nonSideBarSaveHabits(habitManager);
                         }
                     }
-                    parent.setVisible(false);
-                    HabitApp.setAppIsOpen(false);
+                    if (HabitManager.isHideOnClose()) {
+                        parent.setVisible(false);
+                        HabitApp.setAppIsOpen(false);
+                    } else {
+                        System.exit(0);
+                    }
                 });
             }
         });
@@ -660,16 +664,22 @@ public class HabitManagerUI extends JPanel {
     }
 
     // MODIFIES: this
-    // EFFECTS: updates all habits in habit manager based on current time, updates achievements, displaying toast if
-    //          any new achievements are achieved
+    // EFFECTS: updates all habits in habit manager based on current time, updates achievements, displays toast if
+    //          any new achievements are achieved, calls changeMade if change was made to habitManager
     private void updateAllHabits() {
+        boolean changeMade = false;
         for (Habit habit : habitManager.getHabits()) {
             List<Achievement> current = habit.getAchievements();
-            habit.updateHabit();
+            if (habit.updateHabit()) {
+                changeMade = true;
+            }
             for (Achievement achievement :
                     AchievementManager.getNewlyAchieved(current, habit.getHabitStats(), habit.getPeriod())) {
                 achievementToast.add(new Pair<>(habit.getName(), achievement));
             }
+        }
+        if (changeMade) {
+            changeMade();
         }
     }
 

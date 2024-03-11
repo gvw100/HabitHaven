@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class AchievementTest {
     private Achievement achievement;
@@ -20,5 +21,11 @@ public class AchievementTest {
         assertEquals(1, achievement.getTarget());
         assertEquals(AchievementType.STREAK, achievement.getType());
         assertEquals(AchievementTier.BRONZE, achievement.getTier());
+    }
+
+    @Test
+    void testEqualsDifferentTypes() {
+        Achievement achievement = new Achievement("name", "description", 3, AchievementType.STREAK, AchievementTier.BRONZE);
+        assertFalse(achievement.equals(2));
     }
 }

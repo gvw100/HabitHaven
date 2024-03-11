@@ -2,5 +2,6 @@
   "habits": [],
   "isAutoSave": false,
   "achievementToastsEnabled": true,
+  "hideOnClose": false,
   "username": "gregor kiczales"
 }

@@ -230,6 +230,7 @@
             }
         }
     ],
+    "hideOnClose": true,
     "isAutoSave": true,
     "username": "Gavin",
     "achievementToastsEnabled": false

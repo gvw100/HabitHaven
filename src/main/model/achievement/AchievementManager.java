@@ -10,6 +10,18 @@ import java.util.stream.Collectors;
 // Represents the manager for achievements
 public class AchievementManager extends AchievementList {
 
+    // EFFECTS: returns all achievements with given period, for testing purposes
+    public static List<Achievement> getAllAchievements(Period period) {
+        switch (period) {
+            case DAILY:
+                return DAILY_ACHIEVEMENTS;
+            case WEEKLY:
+                return WEEKLY_ACHIEVEMENTS;
+            default:
+                return MONTHLY_ACHIEVEMENTS;
+        }
+    }
+
     // EFFECTS: returns list of earned achievements
     public static List<Achievement> getAchieved(HabitStatistics habitStatistics, Period period) {
         switch (period) {
@@ -47,22 +59,8 @@ public class AchievementManager extends AchievementList {
     private static List<Achievement> getAchievements(HabitStatistics habitStatistics, List<Achievement> achievements) {
         List<Achievement> achievedAchievements = new ArrayList<>();
         for (Achievement achievement : achievements) {
-            if (achievement.getType() == AchievementType.STREAK) {
-                if (habitStatistics.getBestStreak() >= achievement.getTarget()) {
-                    achievedAchievements.add(achievement);
-                }
-            } else if (achievement.getType() == AchievementType.SINGULAR_SUCCESSES) {
-                if (habitStatistics.getTotalNumSuccess() >= achievement.getTarget()) {
-                    achievedAchievements.add(achievement);
-                }
-            } else if (achievement.getType() == AchievementType.PERIODIC_SUCCESSES) {
-                if (habitStatistics.getNumPeriodSuccess() >= achievement.getTarget()) {
-                    achievedAchievements.add(achievement);
-                }
-            } else {
-                if (habitStatistics.getNumPeriod() >= achievement.getTarget()) {
-                    achievedAchievements.add(achievement);
-                }
+            if (isAchieved(habitStatistics, achievement)) {
+                achievedAchievements.add(achievement);
             }
         }
         return achievedAchievements;

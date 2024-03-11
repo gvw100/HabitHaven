@@ -12,6 +12,10 @@ public class Constants {
     public static final String ACHIEVEMENT_SOUND = "./data/achievement.wav";
     public static final ImageIcon ACHIEVEMENT_ON = new ImageIcon("./data/achievement_on.png");
     public static final ImageIcon ACHIEVEMENT_OFF = new ImageIcon("./data/achievement_off.png");
+    // EXIT_ICON from https://icons8.com/icon/8119/logout by Icons8
+    public static final ImageIcon EXIT_ICON = new ImageIcon("./data/exit.png");
+    // HIDE_ICON from https://icons8.com/icon/Onxve3d9Aj1r/hide by Icons8
+    public static final ImageIcon HIDE_ICON = new ImageIcon("./data/hide.png");
     // LOGO from https://www.canva.com/templates/EAFvMagh96A-colorful-modern-infinity-technology-free-logo/
     public static final ImageIcon LOGO = new ImageIcon("./data/logo.png");
     public static final ImageIcon LOGO_ICON = new ImageIcon("./data/logo_icon.png");
