@@ -1,11 +1,10 @@
 package model.reminder;
 
 import model.Habit;
+import model.HabitHelperTest;
 import model.Period;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.quartz.SchedulerException;
-import org.quartz.impl.matchers.GroupMatcher;
 import ui.reminder.ReminderScheduler;
 
 import java.time.*;
@@ -15,7 +14,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 // A test class for WeeklyReminder
-public class WeeklyReminderTest {
+public class WeeklyReminderTest extends HabitHelperTest {
     private Habit h1;
     private Habit h2;
     private Habit h3;
@@ -161,27 +160,5 @@ public class WeeklyReminderTest {
         Clock c3 = getFixedClock("2024-02-23T23:00:00Z");
         assertEquals(LocalDateTime.of(2024, 2, 23, 15, 30),
                 WeeklyReminder.makeWeeklyReminder(DayOfWeek.FRIDAY, LocalTime.of(15, 30), c3));
-    }
-
-    void testCorrectDistribution(WeeklyReminder wr, Set<LocalDateTime> reminders) {
-        for (LocalDateTime reminder : reminders) {
-            assertTrue(wr.reminders.contains(reminder));
-        }
-        assertEquals(reminders.size(), wr.reminders.size());
-    }
-
-    private void testJobSize(WeeklyReminder wr, int size) {
-        try {
-            assertEquals(size, wr.reminderScheduler.getScheduler()
-                    .getJobKeys(GroupMatcher
-                            .groupEquals(wr.habit.getId().toString()))
-                    .size());
-        } catch (SchedulerException e) {
-            fail();
-        }
-    }
-
-    private Clock getFixedClock(String parse) {
-        return Clock.fixed(Instant.parse(parse), ZoneId.of("Z"));
     }
 }

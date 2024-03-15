@@ -3,6 +3,7 @@ package ui;
 import javax.swing.*;
 import java.awt.*;
 
+// Constants class to store useful constants for app
 public class Constants {
     public static final int WINDOW_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
     public static final int WINDOW_HEIGHT = Math.round(Toolkit.getDefaultToolkit().getScreenSize().height * 0.99f);
@@ -84,6 +85,7 @@ public class Constants {
     public static final int SINGLE_INSTANCE_PORT = 9999;
     public static final String SIGNAL_VISIBLE = "visible";
 
+    // EFFECTS: given a button, width, height, and font, sets up the properties of the button
     public static void makeButton(JButton button, int width, int height, Font font) {
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button.setAlignmentY(Component.CENTER_ALIGNMENT);
@@ -96,6 +98,7 @@ public class Constants {
         button.setContentAreaFilled(false);
     }
 
+    // EFFECTS: setups gradient at start screen
     public static void setupStartingGradient(Graphics g, int width, int height) {
         Graphics2D graphics2d = (Graphics2D) g;
         g.fillRect(0, 0, width, height);

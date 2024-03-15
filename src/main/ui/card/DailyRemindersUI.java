@@ -147,7 +147,7 @@ public class DailyRemindersUI extends HabitRemindersUI {
         presetRow.setBackground(APP_COLOUR);
         setupStartSpinner();
         setupEndSpinner();
-        presetPanel.add(presetRow, getPresetRowConstraints(5));
+        presetPanel.add(presetRow, getTimeInputRowConstraints(5));
     }
 
     private void setupStartSpinner() {

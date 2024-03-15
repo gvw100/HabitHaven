@@ -57,6 +57,19 @@ public class SendReminder implements Job {
     // EFFECTS: sends a motivational reminder to the user
     @Override
     public void execute(JobExecutionContext context) {
+        if (isConsoleApp) {
+            sendConsoleReminder();
+        } else {
+            String message = "Hey " + username + "! Only " + (habitFrequency - habitNumSuccesses)
+                    + " more to go for " + habitName
+                    + getPeriodString(" today.", " this week.", " this month.")
+                    + (habitStreak == 0 ? " Go get that streak started!" : " Keep that streak going!");
+            sendUIReminder(message);
+        }
+    }
+
+    // EFFECTS: prints a message using System.out.println, serves as a reminder
+    private void sendConsoleReminder() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("LLL d, uuuu h:mm a");
         String messageTime = dateTime.format(formatter);
         String messageTitle = "\n" + messageTime + "\nHabit Reminder: " + habitName;
@@ -65,17 +78,9 @@ public class SendReminder implements Job {
         String messageGoals = getMessageGoals();
         String messageProgress = getMessageProgress();
         String messageStreak = getMessageStreak();
-        if (isConsoleApp) {
-            String message = messageTitle + "\n" + messageIntro + "\n\n" + messageGoals + messageProgress
-                    + "\n\n" + messageStreak;
-            System.out.println(message);
-        } else {
-            String message = "Hey " + username + "! Only " + (habitFrequency - habitNumSuccesses)
-                    + " more to go for " + habitName
-                    + getPeriodString(" today.", " this week.", " this month.")
-                    + (habitStreak == 0 ? " Go get that streak started!" : " Keep that streak going!");
-            sendUIReminder(message);
-        }
+        String message = messageTitle + "\n" + messageIntro + "\n\n" + messageGoals + messageProgress
+                + "\n\n" + messageStreak;
+        System.out.println(message);
     }
 
     // EFFECTS: sends a desktop notification to the user

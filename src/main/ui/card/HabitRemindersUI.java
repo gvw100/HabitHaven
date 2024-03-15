@@ -11,6 +11,7 @@ import java.awt.event.FocusEvent;
 import static javax.swing.SwingUtilities.invokeLater;
 import static ui.Constants.*;
 
+// Abstract class to represent a general habit reminder customization panel
 public abstract class HabitRemindersUI extends JPanel {
     protected JScrollPane parentPreset;
     protected JPanel presetPanel;
@@ -21,12 +22,15 @@ public abstract class HabitRemindersUI extends JPanel {
     protected JTabbedPane tabbedPane;
     protected Habit habit;
 
+    // EFFECTS: constructs a habit reminder panel
     public HabitRemindersUI(Habit habit) {
         this.habit = habit;
         UIManager.put("TabbedPane.selected", APP_COLOUR.brighter().brighter().brighter());
         setupPanel();
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups habit reminder panel
     private void setupPanel() {
         setLayout(new GridLayout(1, 1));
         setPreferredSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, WINDOW_HEIGHT));
@@ -36,6 +40,8 @@ public abstract class HabitRemindersUI extends JPanel {
         add(tabbedPane);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups tabbed pane
     private void setupTabbedPane() {
         tabbedPane = new JTabbedPane();
         tabbedPane.setPreferredSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, WINDOW_HEIGHT));
@@ -44,6 +50,8 @@ public abstract class HabitRemindersUI extends JPanel {
         tabbedPane.setFont(MEDIUM_FONT);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups individual tabs in the tabbed pane
     private void setupTabs() {
         parentPreset = new JScrollPane(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -62,6 +70,8 @@ public abstract class HabitRemindersUI extends JPanel {
         tabbedPane.addTab("Notification List", LIST_ICON, parentReminderList, "View Your Notifications");
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups preset tab
     private void setupPresetPanel() {
         presetPanel = new JPanel();
         presetPanel.setLayout(new GridBagLayout());
@@ -79,6 +89,8 @@ public abstract class HabitRemindersUI extends JPanel {
         parentPreset.setViewportView(presetPanel);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups preset label of preset tab based on given string
     protected void setupPresetLabel(String string) {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout());
@@ -90,6 +102,8 @@ public abstract class HabitRemindersUI extends JPanel {
         presetPanel.add(panel, getPresetLabelConstraints());
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups customization label and customization frequency combo box
     protected void setupCustomizationFrequency(int maxFrequency, String labelText, int startingIndex) {
         JPanel customizationLabel = getCustomizationLabelPanel(labelText);
         customizationPanel.add(customizationLabel, getCustomizationLabelConstraints());
@@ -104,6 +118,7 @@ public abstract class HabitRemindersUI extends JPanel {
         customizationPanel.add(customizationFrequency, getCustomizationFrequencyConstraints());
     }
 
+    // EFFECTS: returns grid bag constraints for frequency combo box
     private GridBagConstraints getCustomizationFrequencyConstraints() {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -115,6 +130,7 @@ public abstract class HabitRemindersUI extends JPanel {
         return constraints;
     }
 
+    // EFFECTS: setups listener to the customization tab frequency combo box
     private void setupCustomizationFrequencyListener(JComboBox<String> customizationFrequency) {
         customizationFrequency.addActionListener(e -> invokeLater(() -> {
             int index = customizationFrequency.getSelectedIndex();
@@ -125,15 +141,21 @@ public abstract class HabitRemindersUI extends JPanel {
         }));
     }
 
+    // EFFECTS: returns a row in the customization tab, representing a specific day and/or time
     protected abstract JPanel setupCustomizationRow(int index);
 
+    // EFFECTS: sets custom reminders based on the content in each customization row, returns whether
+    //          user inputted reminders are valid
+    //          if valid, set custom reminders to the current habit
     protected abstract boolean setCustomReminders(int frequency);
 
+    // MODIFIES: this
+    // EFFECTS: generates customization form based on given frequency
     private void generateCustomizationForm(int frequency) {
         customizationPanel.remove(5);
         for (int i = 0; i < frequency; i++) {
             JPanel row = setupCustomizationRow(i);
-            customizationPanel.add(row, getCustomizationRowConstraints(i + 5));
+            customizationPanel.add(row, getTimeInputRowConstraints(i + 5));
         }
         JButton submit = new JButton("Set Notifications");
         makeButton(submit, WINDOW_WIDTH - SIDE_BAR_WIDTH, 50, MEDIUM_FONT);
@@ -142,6 +164,7 @@ public abstract class HabitRemindersUI extends JPanel {
         addEmptySpace(customizationPanel);
     }
 
+    // EFFECTS: setups listener to the customization submit button
     private void setupCustomizationButtonListener(JButton submit, int frequency) {
         submit.addActionListener((e) -> invokeLater(() -> {
             if (setCustomReminders(frequency)) {
@@ -156,6 +179,7 @@ public abstract class HabitRemindersUI extends JPanel {
         }));
     }
 
+    // EFFECTS: returns the minutes in the given JSpinner as a String as exactly two digits (formatted like time)
     protected String getMinuteString(JSpinner minutes) {
         int min = (int) minutes.getValue();
         if (min < 10) {
@@ -165,7 +189,8 @@ public abstract class HabitRemindersUI extends JPanel {
         }
     }
 
-    private GridBagConstraints getCustomizationRowConstraints(int index) {
+    // EFFECTS: returns grid bag constraints of a time input row given a row index
+    protected GridBagConstraints getTimeInputRowConstraints(int index) {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
         constraints.gridy = index;
@@ -176,6 +201,7 @@ public abstract class HabitRemindersUI extends JPanel {
         return constraints;
     }
 
+    // EFFECTS: returns grid bag constraints of preset label
     private GridBagConstraints getPresetLabelConstraints() {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -187,8 +213,11 @@ public abstract class HabitRemindersUI extends JPanel {
         return constraints;
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups components in preset tab
     protected abstract void setupPresetComponents();
 
+    // EFFECTS: returns JPanel containing title label of preset tab
     private JPanel getPresetTitle() {
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new FlowLayout());
@@ -200,6 +229,7 @@ public abstract class HabitRemindersUI extends JPanel {
         return titlePanel;
     }
 
+    // EFFECTS: returns grid bag constraints of a row in the reminder list tab
     private GridBagConstraints getReminderListRowConstraints() {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -211,6 +241,7 @@ public abstract class HabitRemindersUI extends JPanel {
         return constraints;
     }
 
+    // EFFECTS: returns JPanel containing customization title label
     protected JPanel getCustomizationLabelPanel(String string) {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout());
@@ -222,6 +253,8 @@ public abstract class HabitRemindersUI extends JPanel {
         return panel;
     }
 
+    // MODIFIES: frequencyOptions
+    // EFFECTS: setups array of frequencyOptions based on given maximum
     private void getFrequencyOptions(String[] frequencyOptions, int max) {
         frequencyOptions[0] = "Number of Notifications";
         for (int i = 0; i < max; i++) {
@@ -229,6 +262,7 @@ public abstract class HabitRemindersUI extends JPanel {
         }
     }
 
+    // EFFECTS: returns grid bag constraints for the preset choice combo box for weekly and monthly habits
     protected GridBagConstraints getPresetChoiceConstraints() {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -240,6 +274,7 @@ public abstract class HabitRemindersUI extends JPanel {
         return constraints;
     }
 
+    // EFFECTS: setups row in reminder list tab
     protected void setupReminderListRow(String reminder) {
         JPanel row = new JPanel();
         row.setLayout(new FlowLayout());
@@ -251,6 +286,7 @@ public abstract class HabitRemindersUI extends JPanel {
         reminderListPanel.add(row, getReminderListRowConstraints());
     }
 
+    // EFFECTS: returns grid bag constraints of customization label of customization tab
     private GridBagConstraints getCustomizationLabelConstraints() {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -262,6 +298,7 @@ public abstract class HabitRemindersUI extends JPanel {
         return constraints;
     }
 
+    // EFFECTS: returns grid bag constraints of title label in each tab
     private GridBagConstraints getTitleConstraints() {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -273,6 +310,8 @@ public abstract class HabitRemindersUI extends JPanel {
         return constraints;
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups customization tab
     private void setupCustomizationPanel(int startingIndex) {
         customizationPanel = new JPanel();
         customizationPanel.setLayout(new GridBagLayout());
@@ -289,6 +328,7 @@ public abstract class HabitRemindersUI extends JPanel {
         parentCustomization.setViewportView(customizationPanel);
     }
 
+    // EFFECTS: returns grid bag constraints of revert to default button
     private GridBagConstraints getDefaultButtonConstraints() {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -300,8 +340,11 @@ public abstract class HabitRemindersUI extends JPanel {
         return constraints;
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups components in customization tab
     protected abstract void setupCustomizationComponents(int startingIndex);
 
+    // EFFECTS: returns grid bag constraints of toggle on/off button
     private GridBagConstraints getToggleButtonConstraints() {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -313,12 +356,14 @@ public abstract class HabitRemindersUI extends JPanel {
         return constraints;
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups reminder list tab
     private void setupReminderListPanel() {
         reminderListPanel = new JPanel();
         reminderListPanel.setLayout(new GridBagLayout());
         reminderListPanel.setBackground(APP_COLOUR);
         JPanel reminderListTitle = getReminderListTitle();
-        reminderListPanel.add(reminderListTitle, getReminderListTitleConstraints());
+        reminderListPanel.add(reminderListTitle, getTitleConstraints());
         if (!habit.isNotifyEnabled()) {
             reminderListPanel.add(setupNoRemindersPanel(), getNoRemindersConstraints());
         } else {
@@ -328,19 +373,11 @@ public abstract class HabitRemindersUI extends JPanel {
         parentReminderList.setViewportView(reminderListPanel);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups components in reminder list tab
     protected abstract void setupReminderListComponents();
 
-    private GridBagConstraints getReminderListTitleConstraints() {
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.weightx = 1;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.anchor = GridBagConstraints.CENTER;
-        constraints.insets = new Insets(0, 0, PADDING, 0);
-        return constraints;
-    }
-
+    // EFFECTS: returns panel containing label informing user that notifications are off
     private JPanel setupNoRemindersPanel() {
         JPanel noRemindersPanel = new JPanel();
         noRemindersPanel.setLayout(new FlowLayout());
@@ -352,6 +389,7 @@ public abstract class HabitRemindersUI extends JPanel {
         return noRemindersPanel;
     }
 
+    // EFFECTS: returns grid bag constraints of no reminders panel
     private GridBagConstraints getNoRemindersConstraints() {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -363,6 +401,7 @@ public abstract class HabitRemindersUI extends JPanel {
         return constraints;
     }
 
+    // EFFECTS: returns JPanel containing reminder list title label
     private JPanel getReminderListTitle() {
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new FlowLayout());
@@ -374,6 +413,7 @@ public abstract class HabitRemindersUI extends JPanel {
         return titlePanel;
     }
 
+    // EFFECTS: returns toggle button for toggling notifications on/off
     private JToggleButton getToggleButton() {
         boolean isNotifyEnabled = habit.isNotifyEnabled();
         String message = isNotifyEnabled ? "Turn off notifications for this habit" :
@@ -393,16 +433,20 @@ public abstract class HabitRemindersUI extends JPanel {
         return toggleButton;
     }
 
+    // EFFECTS: setups toggle button listener
     private void setupToggleButtonListener(JToggleButton toggleButton) {
         toggleButton.addItemListener(e -> invokeLater(this::toggleNotifications));
     }
 
+    // MODIFIES: this
+    // EFFECTS: toggles notifications on/off
     private void toggleNotifications() {
         HabitManagerUI.changeMade();
         habit.setNotifyEnabled(!habit.isNotifyEnabled());
         updateRemindersUI();
     }
 
+    // EFFECTS: returns revert to default button
     private JButton getDefaultButton() {
         JButton setDefaults = new JButton("Revert to Default Notifications");
         makeButton(setDefaults, WINDOW_WIDTH - SIDE_BAR_WIDTH, 50, MEDIUM_FONT);
@@ -419,6 +463,7 @@ public abstract class HabitRemindersUI extends JPanel {
         return setDefaults;
     }
 
+    // EFFECTS: adds empty space panel to bottom of given JPanel
     private void addEmptySpace(JPanel panel) {
         JPanel empty = new JPanel();
         empty.setBackground(APP_COLOUR);
@@ -427,6 +472,8 @@ public abstract class HabitRemindersUI extends JPanel {
         panel.add(empty, constraints);
     }
 
+    // EFFECTS: returns grid bag constraints of empty space,
+    //          ensures that title label is anchored to the top of panel
     private GridBagConstraints getEmptySpaceConstraints() {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -436,6 +483,7 @@ public abstract class HabitRemindersUI extends JPanel {
         return constraints;
     }
 
+    // EFFECTS: returns grid bag constraints of submit button
     protected GridBagConstraints getSubmitButtonConstraints() {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -447,17 +495,8 @@ public abstract class HabitRemindersUI extends JPanel {
         return constraints;
     }
 
-    protected GridBagConstraints getPresetRowConstraints(int index) {
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridx = 0;
-        constraints.gridy = index;
-        constraints.weightx = 1;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.anchor = GridBagConstraints.CENTER;
-        constraints.insets = new Insets(0, 0, PADDING, 0);
-        return constraints;
-    }
-
+    // EFFECTS: given a spinner, initializes properties of spinner, allowing
+    //          text field to be editable, disallowing invalid inputs
     protected void setupSpinner(JSpinner spinner) {
         spinner.setFont(MEDIUM_FONT);
         spinner.getEditor().getComponent(0).setBackground(APP_COLOUR);
@@ -466,18 +505,20 @@ public abstract class HabitRemindersUI extends JPanel {
         ((NumberFormatter) ((JSpinner.NumberEditor)
                 spinner.getEditor()).getTextField().getFormatter()).setAllowsInvalid(false);
         JFormattedTextField textField = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
-        setupSpinnerListeners(textField, spinner);
+        setupSpinnerListeners(textField);
     }
 
-    private void setupSpinnerListeners(JFormattedTextField textField, JSpinner spinner) {
+    // EFFECTS: given a JSpinner text field, selects all once focus is gained
+    private void setupSpinnerListeners(JFormattedTextField textField) {
         textField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                invokeLater(() -> ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().selectAll());
+                invokeLater(textField::selectAll);
             }
         });
     }
 
+    // EFFECTS: returns the customization tab title JPanel
     private JPanel setupCustomizationTitle() {
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new FlowLayout());
@@ -489,6 +530,7 @@ public abstract class HabitRemindersUI extends JPanel {
         return titlePanel;
     }
 
+    // EFFECTS: updates entire habit reminder JPanel
     protected void updateRemindersUI() {
         updatePresetComponents();
         updateCustomizationComponents();
@@ -497,21 +539,25 @@ public abstract class HabitRemindersUI extends JPanel {
         revalidate();
     }
 
+    // EFFECTS: updates preset tab
     private void updatePresetComponents() {
         presetPanel.removeAll();
         setupPresetPanel();
     }
 
+    // EFFECTS: updates customization tab
     private void updateCustomizationComponents() {
         customizationPanel.removeAll();
         setupCustomizationPanel(0);
     }
 
+    // EFFECTS: updates customization tab, but with customization combo box set to startingIndex
     private void updateCustomizationComponents(int startingIndex) {
         customizationPanel.removeAll();
         setupCustomizationPanel(startingIndex);
     }
 
+    // EFFECTS: updates reminder list tab
     private void updateReminderListComponents() {
         reminderListPanel.removeAll();
         setupReminderListPanel();

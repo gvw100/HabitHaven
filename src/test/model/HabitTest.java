@@ -187,11 +187,13 @@ public class HabitTest extends HabitHelperTest {
     @Test
     void testSetFrequencyDifferentFromBefore() {
         finishHabitNumTimes(h1,3);
+        assertNotEquals(0, h1.getAchievements().size());
         assertEquals(3, h1.getNumSuccess());
         assertTrue(h1.setFrequency(7));
         assertEquals(7, h1.getFrequency());
         assertEquals(0, h1.getNumSuccess());
         checkResetStats(h1);
+        assertEquals(0, h1.getAchievements().size());
     }
 
     @Test
@@ -203,10 +205,12 @@ public class HabitTest extends HabitHelperTest {
         assertEquals(0, h1.getNumSuccess());
         checkResetStats(h1);
         finishHabitNumTimes(h1,5);
+        assertNotEquals(0, h1.getAchievements().size());
         assertFalse(h1.setFrequency(5));
         assertEquals(5, h1.getFrequency());
         assertEquals(5, h1.getNumSuccess());
         checkStats(h1, 1, 1, 5, 1, 0);
+        assertNotEquals(0, h1.getAchievements().size());
     }
 
     @Test
@@ -280,6 +284,7 @@ public class HabitTest extends HabitHelperTest {
         testJobSize(h1.getHabitReminder(), 0);
         assertTrue(h1.isPreviousComplete());
         assertTrue(h1.isPeriodComplete());
+        assertNotEquals(0, h1.getAchievements().size());
         assertTrue(h1.setFrequency(7));
         testJobSize(h1.getHabitReminder(), 1);
         assertEquals(7, h1.getFrequency());
@@ -287,31 +292,38 @@ public class HabitTest extends HabitHelperTest {
         assertFalse(h1.isPeriodComplete());
         assertEquals(0, h1.getNumSuccess());
         checkResetStats(h1);
+        assertEquals(0, h1.getAchievements().size());
     }
 
     @Test
     void testSetPeriodDifferentFromBefore() {
         finishHabitNumTimes(h1, 3);
         assertEquals(3, h1.getNumSuccess());
+        assertNotEquals(0, h1.getAchievements().size());
         assertTrue(h1.setPeriod(Period.DAILY));
         assertEquals(Period.DAILY, h1.getPeriod());
         assertEquals(0, h1.getNumSuccess());
         checkResetStats(h1);
+        assertEquals(0, h1.getAchievements().size());
     }
 
     @Test
     void testSetPeriodSameAsBefore() {
         h1.finishHabit();
         assertEquals(1, h1.getNumSuccess());
+        assertNotEquals(0, h1.getAchievements().size());
         assertTrue(h1.setPeriod(Period.DAILY));
         assertEquals(Period.DAILY, h1.getPeriod());
         assertEquals(0, h1.getNumSuccess());
         checkResetStats(h1);
+        assertEquals(0, h1.getAchievements().size());
         finishHabitNumTimes(h1,3);
+        assertNotEquals(0, h1.getAchievements().size());
         assertFalse(h1.setPeriod(Period.DAILY));
         assertEquals(Period.DAILY, h1.getPeriod());
         assertEquals(3, h1.getNumSuccess());
         checkStats(h1, 1, 1, 3, 1, 0);
+        assertNotEquals(0, h1.getAchievements().size());
     }
 
     @Test
@@ -455,9 +467,11 @@ public class HabitTest extends HabitHelperTest {
 
     @Test
     void testFinishHabitNumSuccessLessThanFrequency() {
+        assertEquals(0, h2.getAchievements().size());
         assertTrue(finishHabitNumTimes(h2, 9));
         assertEquals(9, h2.getNumSuccess());
         checkStats(h2, 0, 0, 9, 0, 0);
+        assertNotEquals(0, h2.getAchievements().size());
     }
 
     @Test
@@ -465,10 +479,12 @@ public class HabitTest extends HabitHelperTest {
         h2.setClock(getFixedClock("2024-05-02T15:23:00.00Z"));
         h2.setNotifyEnabled(true);
         testJobSize(h2.getHabitReminder(), 7);
+        assertEquals(0, h2.getAchievements().size());
         assertTrue(finishHabitNumTimes(h2, 15));
         assertEquals(15, h2.getNumSuccess());
         checkStats(h2, 1, 1, 15, 1, 0);
         testJobSize(h2.getHabitReminder(), 0);
+        assertNotEquals(0, h2.getAchievements().size());
     }
 
     @Test
@@ -479,10 +495,13 @@ public class HabitTest extends HabitHelperTest {
         assertFalse(finishHabitNumTimes(h1, 10));
         assertEquals(3, h1.getNumSuccess());
         checkStats(h1, 1, 1, 3, 1, 0);
+        assertNotEquals(0, h1.getAchievements().size());
+        assertEquals(0, h2.getAchievements().size());
         assertFalse(finishHabitNumTimes(h2, 16));
         assertEquals(15, h2.getNumSuccess());
         checkStats(h2, 1, 1, 15, 1, 0);
         testJobSize(h2.getHabitReminder(), 0);
+        assertNotEquals(0, h2.getAchievements().size());
     }
 
     @Test
@@ -494,10 +513,16 @@ public class HabitTest extends HabitHelperTest {
 
     @Test
     void testUndoFinishHabitNumSuccessNotEqualToFrequency() {
+        assertEquals(0, h2.getAchievements().size());
         finishHabitNumTimes(h2, 10);
+        int size1 = h2.getAchievements().size();
+        assertNotEquals(0, size1);
         assertTrue(h2.undoFinishHabit());
         assertEquals(9, h2.getNumSuccess());
         checkStats(h2, 0, 0, 9, 0, 0);
+        int size2 = h2.getAchievements().size();
+        assertNotEquals(0, size2);
+        assertNotEquals(size1, size2);
     }
 
     @Test
@@ -505,15 +530,21 @@ public class HabitTest extends HabitHelperTest {
         h2.setClock(getFixedClock("2024-05-02T13:00:00.00Z"));
         h2.setNotifyEnabled(true);
         testJobSize(h2.getHabitReminder(), 9);
+        assertEquals(0, h2.getAchievements().size());
         finishHabitNumTimes(h2, 15);
         testJobSize(h2.getHabitReminder(), 0);
         checkStats(h2, 1, 1, 15, 1, 0);
         assertTrue(h2.isPreviousComplete());
+        int size1 = h2.getAchievements().size();
+        assertNotEquals(0, size1);
         assertTrue(h2.undoFinishHabit());
         assertEquals(14, h2.getNumSuccess());
         checkStats(h2, 0, 0, 14, 0, 0);
         assertFalse(h2.isPreviousComplete());
         testJobSize(h2.getHabitReminder(), 9);
+        int size2 = h2.getAchievements().size();
+        assertNotEquals(0, size2);
+        assertNotEquals(size1, size2);
     }
 
     @Test

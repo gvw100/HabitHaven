@@ -13,8 +13,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import static ui.Constants.*;
 
-// Inspiration taken from: https://www.codejava.net/coding/how-to-play-back-audio-in-java-with-examples and
-// https://www.tutorialspoint.com/Create-Toast-Message-in-Java-Swing
+// Inspiration taken from: https://www.codejava.net/coding/how-to-play-back-audio-in-java-with-examples
 public class AchievementToast extends JPanel {
     private LinkedBlockingQueue<Pair<String, Achievement>> achievementQueue;
     private Lock lock = new ReentrantLock();
@@ -22,6 +21,7 @@ public class AchievementToast extends JPanel {
     private JLabel description;
     private boolean achievementToastsEnabled;
 
+    // EFFECTS: initializes achievement toast panel with placeholder text
     public AchievementToast(boolean achievementToastsEnabled) {
         this.achievementToastsEnabled = achievementToastsEnabled;
         achievementQueue = new LinkedBlockingQueue<>();
@@ -34,6 +34,8 @@ public class AchievementToast extends JPanel {
         this.achievementToastsEnabled = achievementToastsEnabled;
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds an achievement to the achievementQueue, then displays toast
     public void add(Pair<String, Achievement> achievement) {
         if (!HabitApp.appIsOpen() || !achievementToastsEnabled) {
             return;
@@ -46,6 +48,8 @@ public class AchievementToast extends JPanel {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups up placeholder text in the toast
     private void setupPlaceholderToast() {
         title = new JLabel("Placeholder", BRONZE_TOAST, SwingConstants.LEFT);
         title.setFont(MEDIUM_FONT);
@@ -67,6 +71,7 @@ public class AchievementToast extends JPanel {
         setVisible(false);
     }
 
+    // EFFECTS: returns icon depending on the achievement tier
     private ImageIcon getTierIcon(Pair<String, Achievement> achievement) {
         switch (achievement.getValue().getTier()) {
             case BRONZE:
@@ -80,16 +85,20 @@ public class AchievementToast extends JPanel {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: first attempts to acquire the lock, once successful, displays achievement toast,
+    //          then waits for 4 seconds, lock ensures achievements are displayed sequentially at even intervals
+    //          in the order of the queue
     private void displayToast() {
         Thread thread = new Thread(() -> {
             try {
                 lock.lock();
-                if (HabitApp.appIsOpen()) {
+                if (HabitApp.appIsOpen() && achievementToastsEnabled) {
                     updateToast(achievementQueue.take());
                     int red = APP_COLOUR_LIGHT.getRed();
                     int green = APP_COLOUR_LIGHT.getGreen();
                     int blue = APP_COLOUR_LIGHT.getBlue();
-                    setBackground(new Color(red, green, blue, 255));
+                    setBackground(new Color(red, green, blue));
                     setVisible(true);
                     playSound();
                     Thread.sleep(4000);
@@ -104,6 +113,7 @@ public class AchievementToast extends JPanel {
         thread.start();
     }
 
+    // EFFECTS: plays the achievement sound effect
     private void playSound() {
         try {
             File soundFile = new File(ACHIEVEMENT_SOUND);
@@ -118,6 +128,8 @@ public class AchievementToast extends JPanel {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: updates the text in achievement toast based on given achievement
     private void updateToast(Pair<String, Achievement> achievement) {
         Runnable runnable = () -> {
             ImageIcon icon = getTierIcon(achievement);
@@ -128,6 +140,8 @@ public class AchievementToast extends JPanel {
         SwingUtilities.invokeLater(runnable);
     }
 
+    // MODIFIES: this
+    // EFFECTS: overridden to give achievement toast a gradient from left edge to right edge
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);

@@ -109,7 +109,7 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         makeButton(presetBegMidEndSubmit, LARGE_BUTTON_WIDTH, LARGE_BUTTON_HEIGHT, MEDIUM_FONT);
         presetBegMidEndSubmit.setEnabled(false);
         setupBegMidEndSubmitListener();
-        presetBegMidEnd.add(presetBegMidEndSubmit, getPresetConstraints(3));
+        presetBegMidEnd.add(presetBegMidEndSubmit, getSubmitButtonConstraints());
     }
 
     private void setupBegMidEndSubmitListener() {
@@ -239,7 +239,7 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         JButton submit = new JButton("Set Notifications");
         makeButton(submit, LARGE_BUTTON_WIDTH, LARGE_BUTTON_HEIGHT, MEDIUM_FONT);
         setupDayRangeSubmitListener(submit);
-        presetDayRange.add(submit, getPresetConstraints(3));
+        presetDayRange.add(submit, getSubmitButtonConstraints());
     }
 
     private void setupDayRangeSubmitListener(JButton submit) {

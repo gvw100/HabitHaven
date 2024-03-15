@@ -188,7 +188,7 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
     private void generatePresetForm(JPanel panel, int frequency) {
         for (int i = 0; i < frequency; i++) {
             JPanel row = setupPresetRow(i);
-            panel.add(row, getPresetRowConstraints(i + 1));
+            panel.add(row, getTimeInputRowConstraints(i + 1));
         }
     }
 

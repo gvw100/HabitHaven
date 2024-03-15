@@ -125,6 +125,7 @@ public class Habit {
     // MODIFIES: this
     // EFFECTS: set this.frequency,
     //          if frequency != this.frequency, reset progress,
+    //          update achievements
     //          if isNotifyEnabled, then reminders are updated
     //          returns whether frequency was changed
     public boolean setFrequency(int frequency) {
@@ -136,12 +137,14 @@ public class Habit {
             habitReminder.updateReminders();
         }
         resetProgress();
+        achievements = getAchieved(habitStats, period);
         return true;
     }
 
     // MODIFIES: this
     // EFFECTS: set this.period,
-    //          if this.period != period, resets progress, updates currentPeriodEnd and nextPeriodEnd
+    //          if this.period != period, resets progress, updates currentPeriodEnd and nextPeriodEnd, updates
+    //          achievements
     //          if notifyEnabled, then reminders are cancelled and a new reminder with default notifications is created
     //          returns whether period was changed
     public boolean setPeriod(Period period) {
@@ -155,6 +158,7 @@ public class Habit {
             habitReminder.cancelReminders();
             habitReminder = getNewReminder();
         }
+        achievements = getAchieved(habitStats, period);
         return true;
     }
 
