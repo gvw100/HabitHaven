@@ -12,8 +12,7 @@ import static model.achievement.AchievementTier.*;
 import static model.achievement.AchievementTier.GOLD;
 import static model.achievement.AchievementType.*;
 import static model.achievement.AchievementType.PERIODIC_SUCCESSES;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AchievementManagerTest {
     private HabitStatistics noAchievements;
@@ -25,6 +24,11 @@ public class AchievementManagerTest {
         noAchievements = new HabitStatistics(0, 0, 0, 0, 0);
         someAchievements = new HabitStatistics(0, 10, 20, 20, 20);
         allAchievements = new HabitStatistics(0, 2000, 4000, 2000, 2000);
+    }
+
+    @Test
+    void testCoverageDefaultConstructor() {
+        new AchievementManager();
     }
 
     @Test
