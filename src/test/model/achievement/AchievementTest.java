@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AchievementTest {
     private Achievement achievement;
@@ -26,8 +25,19 @@ public class AchievementTest {
     }
 
     @Test
-    void testEqualsDifferentTypes() {
-        assertFalse(achievement.equals(2));
+    void testEquals() {
+        assertNotEquals(2, achievement);
+        assertNotEquals(null, achievement);
+        Achievement name = new Achievement("name", "Test", 1, AchievementType.STREAK, AchievementTier.BRONZE);
+        Achievement description = new Achievement("Test", "description", 1, AchievementType.STREAK, AchievementTier.BRONZE);
+        Achievement target = new Achievement("Test", "Test", 2, AchievementType.STREAK, AchievementTier.BRONZE);
+        Achievement type = new Achievement("Test", "Test", 1, AchievementType.SINGULAR_SUCCESSES, AchievementTier.BRONZE);
+        Achievement tier = new Achievement("Test", "Test", 1, AchievementType.STREAK, AchievementTier.GOLD);
+        assertNotEquals(achievement, name);
+        assertNotEquals(achievement, description);
+        assertNotEquals(achievement, target);
+        assertNotEquals(achievement, type);
+        assertNotEquals(achievement, tier);
     }
 
     @Test
