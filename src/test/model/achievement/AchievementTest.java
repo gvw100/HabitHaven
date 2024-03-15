@@ -1,5 +1,6 @@
 package model.achievement;
 
+import model.HabitManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,8 +27,8 @@ public class AchievementTest {
 
     @Test
     void testEquals() {
-        assertNotEquals(2, achievement);
-        assertNotEquals(null, achievement);
+        assertNotEquals(achievement, new HabitManager());
+        assertNotEquals(achievement, null);
         Achievement name = new Achievement("name", "Test", 1, AchievementType.STREAK, AchievementTier.BRONZE);
         Achievement description = new Achievement("Test", "description", 1, AchievementType.STREAK, AchievementTier.BRONZE);
         Achievement target = new Achievement("Test", "Test", 2, AchievementType.STREAK, AchievementTier.BRONZE);
