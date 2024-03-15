@@ -132,6 +132,14 @@ public class HabitStatisticsTest extends HabitHelperTest {
         checkStats(habitStats, 1, 1, 0, 0, 0);
         habitStats.decrementStreak();
         checkStats(habitStats, 0, 0, 0, 0, 0);
+        for (int i = 0; i < 3; i++) {
+            habitStats.incrementStreak();
+        }
+        habitStats.resetStreak();
+        habitStats.incrementStreak();
+        checkStats(habitStats, 1, 3, 0, 0, 0);
+        habitStats.decrementStreak();
+        checkStats(habitStats, 0, 3, 0, 0, 0);
     }
 
     @Test
