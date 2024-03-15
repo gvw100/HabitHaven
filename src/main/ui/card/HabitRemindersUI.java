@@ -20,7 +20,6 @@ public abstract class HabitRemindersUI extends JPanel {
     protected JPanel reminderListPanel;
     protected JTabbedPane tabbedPane;
     protected Habit habit;
-    protected boolean isCustomizationFrequencyChanged;
 
     public HabitRemindersUI(Habit habit) {
         this.habit = habit;
@@ -56,7 +55,7 @@ public abstract class HabitRemindersUI extends JPanel {
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         parentReminderList.getVerticalScrollBar().setUnitIncrement(10);
         setupPresetPanel();
-        setupCustomizationPanel();
+        setupCustomizationPanel(0);
         setupReminderListPanel();
         tabbedPane.addTab("Preset", null, parentPreset, "Choose Preset Notifications");
         tabbedPane.addTab("Customize", null, parentCustomization, "Customize Your Notifications");
@@ -91,16 +90,16 @@ public abstract class HabitRemindersUI extends JPanel {
         presetPanel.add(panel, getPresetLabelConstraints());
     }
 
-    protected void setupCustomizationFrequency(int maxFrequency, String labelText) {
+    protected void setupCustomizationFrequency(int maxFrequency, String labelText, int startingIndex) {
         JPanel customizationLabel = getCustomizationLabelPanel(labelText);
         customizationPanel.add(customizationLabel, getCustomizationLabelConstraints());
         String[] frequencyOptions = new String[maxFrequency + 1];
         getFrequencyOptions(frequencyOptions, maxFrequency);
-        isCustomizationFrequencyChanged = true;
         JComboBox<String> customizationFrequency = new JComboBox<>(frequencyOptions);
         customizationFrequency.setFont(MEDIUM_FONT);
         customizationFrequency.setBackground(APP_COLOUR);
         customizationFrequency.setForeground(FONT_COLOUR);
+        customizationFrequency.setSelectedIndex(startingIndex);
         setupCustomizationFrequencyListener(customizationFrequency);
         customizationPanel.add(customizationFrequency, getCustomizationFrequencyConstraints());
     }
@@ -118,15 +117,9 @@ public abstract class HabitRemindersUI extends JPanel {
 
     private void setupCustomizationFrequencyListener(JComboBox<String> customizationFrequency) {
         customizationFrequency.addActionListener(e -> invokeLater(() -> {
-            if (!isCustomizationFrequencyChanged) {
-                isCustomizationFrequencyChanged = true;
-                return;
-            }
             int index = customizationFrequency.getSelectedIndex();
-            updateCustomizationComponents();
+            updateCustomizationComponents(index);
             if (index != 0) {
-                isCustomizationFrequencyChanged = false;
-                customizationFrequency.setSelectedIndex(index);
                 generateCustomizationForm(index);
             }
         }));
@@ -280,7 +273,7 @@ public abstract class HabitRemindersUI extends JPanel {
         return constraints;
     }
 
-    private void setupCustomizationPanel() {
+    private void setupCustomizationPanel(int startingIndex) {
         customizationPanel = new JPanel();
         customizationPanel.setLayout(new GridBagLayout());
         customizationPanel.setBackground(APP_COLOUR);
@@ -290,7 +283,7 @@ public abstract class HabitRemindersUI extends JPanel {
         customizationPanel.add(customizationToggleButton, getToggleButtonConstraints());
         if (habit.isNotifyEnabled()) {
             customizationPanel.add(getDefaultButton(), getDefaultButtonConstraints());
-            setupCustomizationComponents();
+            setupCustomizationComponents(startingIndex);
         }
         addEmptySpace(customizationPanel);
         parentCustomization.setViewportView(customizationPanel);
@@ -307,7 +300,7 @@ public abstract class HabitRemindersUI extends JPanel {
         return constraints;
     }
 
-    protected abstract void setupCustomizationComponents();
+    protected abstract void setupCustomizationComponents(int startingIndex);
 
     private GridBagConstraints getToggleButtonConstraints() {
         GridBagConstraints constraints = new GridBagConstraints();
@@ -511,7 +504,12 @@ public abstract class HabitRemindersUI extends JPanel {
 
     private void updateCustomizationComponents() {
         customizationPanel.removeAll();
-        setupCustomizationPanel();
+        setupCustomizationPanel(0);
+    }
+
+    private void updateCustomizationComponents(int startingIndex) {
+        customizationPanel.removeAll();
+        setupCustomizationPanel(startingIndex);
     }
 
     private void updateReminderListComponents() {

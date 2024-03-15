@@ -22,12 +22,14 @@ public class SettingsUI extends JPanel {
     private JPanel mainPanel;
     private JFrame parent;
     private AchievementToast toast;
+    private HabitManagerUI habitManagerUI;
 
-    public SettingsUI(HabitManager habitManager, JFrame parent, AchievementToast toast) {
+    public SettingsUI(HabitManager habitManager, JFrame parent, AchievementToast toast, HabitManagerUI habitManagerUI) {
         this.habitManager = habitManager;
         this.toast = toast;
-        setupPanel();
         this.parent = parent;
+        this.habitManagerUI = habitManagerUI;
+        setupPanel();
     }
 
     private void setupPanel() {
@@ -146,7 +148,7 @@ public class SettingsUI extends JPanel {
 
     private void setupHideOnClose() {
         boolean hideOnClose = HabitManager.isHideOnClose();
-        String text = hideOnClose ? "Make HabitHaven Exit on Close!" : "Make HabitHaven Hide on Close!";
+        String text = hideOnClose ? "Make HabitHaven Exit on Close" : "Make HabitHaven Hide on Close";
         ImageIcon icon = hideOnClose ? EXIT_ICON : HIDE_ICON;
         JToggleButton toggleButton = getToggleButton(text, icon, hideOnClose);
         toggleButton.addItemListener(e -> invokeLater(() -> toggleHideOnClose(toggleButton)));
@@ -157,7 +159,7 @@ public class SettingsUI extends JPanel {
         boolean newSelection = !HabitManager.isHideOnClose();
         HabitManager.setHideOnClose(newSelection);
         HabitManagerUI.changeMade();
-        toggleButton.setText(newSelection ? "Make HabitHaven Exit on Close!" : "Make HabitHaven Hide on Close!");
+        toggleButton.setText(newSelection ? "Make HabitHaven Exit on Close" : "Make HabitHaven Hide on Close");
         toggleButton.setIcon(newSelection ? EXIT_ICON : HIDE_ICON);
     }
 
@@ -245,6 +247,7 @@ public class SettingsUI extends JPanel {
         try {
             HabitManager importedHabitManager = reader.read();
             HabitManagerUI.setHabitManager(importedHabitManager);
+            habitManagerUI.updateAllHabits();
             HabitManagerUI.changeMade();
         } catch (IOException e) {
             e.printStackTrace();

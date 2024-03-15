@@ -1,5 +1,7 @@
 package model.achievement;
 
+import java.util.Objects;
+
 // Represents a habit achievement
 public class Achievement {
     private final String name;
@@ -42,11 +44,17 @@ public class Achievement {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Achievement)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Achievement a = (Achievement) o;
-        return target == a.target && name.equals(a.name) && description.equals(a.description) && type == a.type
-                && tier == a.tier;
+        Achievement that = (Achievement) o;
+        return target == that.target && Objects.equals(name, that.name) && Objects.equals(description, that.description)
+                && type == that.type && tier == that.tier;
+    }
+
+    // EFFECTS: returns hashcode of achievement
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, description, target, type, tier);
     }
 }

@@ -2,7 +2,6 @@ package ui;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 
 public class Constants {
     public static final int WINDOW_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -82,10 +81,8 @@ public class Constants {
     public static final int MAX_FREQUENCY = 15;
     public static final int MONTH_MAX_DAYS = 31;
     public static final String HABIT_MANAGER_STORE = "./data/habitManager.json";
-    public static final String INSTANCE_EXISTS_PATH = "./data/signal/instanceExists.txt";
-    public static final String SIGNAL_VISIBLE_PATH = "./data//signal/signalVisible.txt";
-    public static final File INSTANCE_EXISTS = new File(INSTANCE_EXISTS_PATH);
-    public static final File SIGNAL_VISIBLE = new File(SIGNAL_VISIBLE_PATH);
+    public static final int SINGLE_INSTANCE_PORT = 9999;
+    public static final String SIGNAL_VISIBLE = "visible";
 
     public static void makeButton(JButton button, int width, int height, Font font) {
         button.setAlignmentX(Component.CENTER_ALIGNMENT);

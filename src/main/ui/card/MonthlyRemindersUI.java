@@ -361,9 +361,9 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
     }
 
     @Override
-    protected void setupCustomizationComponents() {
+    protected void setupCustomizationComponents(int startingIndex) {
         String label = "Choose specific days and times for your notifications!";
-        setupCustomizationFrequency(MONTH_MAX_DAYS, label);
+        setupCustomizationFrequency(MONTH_MAX_DAYS, label, startingIndex);
     }
 
     @Override

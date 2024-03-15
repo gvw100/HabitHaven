@@ -33,8 +33,8 @@ public class DailyRemindersUI extends HabitRemindersUI {
     }
 
     @Override
-    protected void setupCustomizationComponents() {
-        setupCustomizationFrequency(MAX_FREQUENCY, "Choose specific times for your notifications!");
+    protected void setupCustomizationComponents(int startingIndex) {
+        setupCustomizationFrequency(MAX_FREQUENCY, "Choose specific times for your notifications!", startingIndex);
     }
 
     @Override

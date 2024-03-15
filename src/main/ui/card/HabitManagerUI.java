@@ -166,7 +166,7 @@ public class HabitManagerUI extends JPanel {
         setupHabitListListener(habitList);
         setupLifetimeStatsListener(lifetimeStats);
         setupSaveListener(save);
-        setupSettingsListener(settings);
+        setupSettingsListener(settings, this);
         setupCreditsListener(credits);
     }
 
@@ -254,12 +254,12 @@ public class HabitManagerUI extends JPanel {
         });
     }
 
-    private void setupSettingsListener(JPanel settings) {
+    private void setupSettingsListener(JPanel settings, HabitManagerUI habitManagerUI) {
         settings.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 invokeLater(() -> {
-                    SettingsUI settingsUI = new SettingsUI(habitManager, parent, achievementToast);
+                    SettingsUI settingsUI = new SettingsUI(habitManager, parent, achievementToast, habitManagerUI);
                     mainPanel.add(settingsUI, "settings");
                     cardLayout.show(mainPanel, "settings");
                 });
@@ -666,7 +666,7 @@ public class HabitManagerUI extends JPanel {
     // MODIFIES: this
     // EFFECTS: updates all habits in habit manager based on current time, updates achievements, displays toast if
     //          any new achievements are achieved, calls changeMade if change was made to habitManager
-    private void updateAllHabits() {
+    protected void updateAllHabits() {
         boolean changeMade = false;
         for (Habit habit : habitManager.getHabits()) {
             List<Achievement> current = habit.getAchievements();

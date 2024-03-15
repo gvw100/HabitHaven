@@ -9,15 +9,14 @@ import ui.reminder.SendReminder;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
-import java.nio.file.*;
+import java.io.*;
+import java.net.*;
 
-import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
+import static javax.swing.SwingUtilities.invokeLater;
 import static ui.Constants.*;
 
 // Habit tracker Swing application
-// Singleton pattern ensures no duplicate notifications
-// and allows app to be re-opened back to the same state
+// Singleton pattern allows app to be reopened to the same state
 public class HabitApp extends JFrame {
     private static HabitApp habitApp;
 
@@ -36,6 +35,8 @@ public class HabitApp extends JFrame {
         startApp();
     }
 
+    // EFFECTS: if HabitApp not yet instantiated, create a new HabitApp,
+    //          otherwise, show the existing instance
     public static void getInstance() {
         if (habitApp == null) {
             habitApp = new HabitApp();
@@ -45,67 +46,55 @@ public class HabitApp extends JFrame {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: inspiration taken from: https://stackoverflow.com/questions/41051127/javafx-single-instance-application
+    //          uses sockets to check whether an instance already exists.
+    //          if instance does not exist:
+    //          await for incoming socket messages on a separate thread
+    //          if instance already exists:
+    //          BindException caught, send message to socket and exit,
+    //          message to be read by existing instance,
+    //          JFrame of existing instance shown
     private void checkExistingInstance() {
         try {
-            if (checkAbnormalExit()) {
-                removeAllFiles();
-            }
-            if (INSTANCE_EXISTS.exists()) {
-                SIGNAL_VISIBLE.createNewFile();
-                System.exit(0);
-            } else {
-                INSTANCE_EXISTS.deleteOnExit();
-                SIGNAL_VISIBLE.deleteOnExit();
-                INSTANCE_EXISTS.createNewFile();
-                setupWatchService();
-            }
+            ServerSocket serverSocket = new ServerSocket(SINGLE_INSTANCE_PORT);
+            awaitMessages(serverSocket);
+        } catch (BindException e) {
+            signalVisibleMessage();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private boolean checkAbnormalExit() {
-        if (!INSTANCE_EXISTS.exists() && !SIGNAL_VISIBLE.exists()) {
-            return false;
-        }
-        if (INSTANCE_EXISTS.exists() && !SIGNAL_VISIBLE.exists()) {
-            return false;
-        }
-        return true;
-    }
-
-    private void removeAllFiles() throws IOException {
-        if (INSTANCE_EXISTS.exists()) {
-            Files.delete(INSTANCE_EXISTS.toPath());
-        }
-        if (SIGNAL_VISIBLE.exists()) {
-            Files.delete(SIGNAL_VISIBLE.toPath());
-        }
-    }
-
     // MODIFIES: this
-    // EFFECTS: sets up a watch service to detect when the application is opened
-    // Learnt from https://www.baeldung.com/java-nio2-watchservice
-    private void setupWatchService() {
+    // EFFECTS: starts a new thread that awaits for connection to made to socket,
+    //          if message is SIGNAL_VISIBLE, display the current instance
+    private void awaitMessages(ServerSocket serverSocket) {
         Thread thread = new Thread(() -> {
-            try {
-                WatchService watchService = FileSystems.getDefault().newWatchService();
-                Path path = Paths.get("./data/signal");
-                path.register(watchService, ENTRY_CREATE);
-                WatchKey key;
-                while (true) {
-                    key = watchService.take();
-                    if (SIGNAL_VISIBLE.exists()) {
-                        getInstance();
-                        Files.delete(SIGNAL_VISIBLE.toPath());
+            while (true) {
+                try (Socket socket = serverSocket.accept();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+                    String message = reader.readLine();
+                    if (message != null && message.contains(SIGNAL_VISIBLE)) {
+                        invokeLater(HabitApp::getInstance);
                     }
-                    key.reset();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
             }
         });
         thread.start();
+    }
+
+    // EFFECTS: writes SIGNAL_VISIBLE message to the socket, then exits the current instance
+    private void signalVisibleMessage() {
+        try (Socket socket = new Socket(InetAddress.getLocalHost(), SINGLE_INSTANCE_PORT);
+                PrintWriter writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()))) {
+            writer.println(SIGNAL_VISIBLE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.exit(0);
     }
 
     // EFFECTS: returns true if the application is open
@@ -117,6 +106,8 @@ public class HabitApp extends JFrame {
         appIsOpen = isOpen;
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets up components, frame is made visible
     private void startApp() {
         cardLayout = new CardLayout();
         setupFrame();
@@ -131,16 +122,19 @@ public class HabitApp extends JFrame {
         setVisible(true);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups the frame
     private void setupFrame() {
         setTitle("HabitHaven");
         setIconImage(LOGO_ICON.getImage());
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         setResizable(false);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(cardLayout);
     }
 
+    // EFFECTS: scales icon constants used in the app
     private void scaleIcons() {
         Image logo = LOGO.getImage().getScaledInstance(LOGO_WIDTH, LOGO_HEIGHT, Image.SCALE_SMOOTH);
         LOGO.setImage(logo);
@@ -162,6 +156,7 @@ public class HabitApp extends JFrame {
         scaleMoreIcons();
     }
 
+    // EFFECTS: scales icon constants used in the app
     private void scaleMoreIcons() {
         scaleNotificationIcons();
         Image list = LIST_ICON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
@@ -183,6 +178,7 @@ public class HabitApp extends JFrame {
         scaleAchievements();
     }
 
+    // EFFECTS: scales notification icon constants used in the app
     private void scaleNotificationIcons() {
         Image bellOn = BELL_ON.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
         BELL_ON.setImage(bellOn);
@@ -194,6 +190,7 @@ public class HabitApp extends JFrame {
         BELL_OFF_HOVER.setImage(bellOffHover);
     }
 
+    // EFFECTS: scales achievement icon constants used in the app
     private void scaleAchievements() {
         Image achievementOn = ACHIEVEMENT_ON.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         ACHIEVEMENT_ON.setImage(achievementOn);
@@ -217,12 +214,16 @@ public class HabitApp extends JFrame {
         PLATINUM_TOAST.setImage(platinumToast);
     }
 
+    // MODIFIES: this
+    // EFFECTS: switches to new user panel
     private void onNewUser() {
         setUpNewUserScreen();
         add(newUserScreen, "newUserScreen");
         cardLayout.show(getContentPane(), "newUserScreen");
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups up new user panel
     private void setUpNewUserScreen() {
         newUserScreen = new NewUserUI();
         newUserScreen.setSubmitListener(this::onNewUserSubmit);
@@ -232,12 +233,17 @@ public class HabitApp extends JFrame {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets username of new user, redirects user to main application panel
     private void onNewUserSubmit() {
         HabitManager.setUsername(newUserScreen.getText());
         habitManagerScreen = new HabitManagerUI(false, this, new HabitManager());
         toHabits();
     }
 
+    // MODIFIES: this
+    // EFFECTS: tries to load habits from file, if success, redirect user to main application panel,
+    //          otherwise, re-enable buttons in start screen
     private void loadUser() {
         if (loadHabitManager()) {
             habitManagerScreen = new HabitManagerUI(true, this, habitManager);
@@ -261,6 +267,8 @@ public class HabitApp extends JFrame {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: brings the user to the main application panel
     private void toHabits() {
         add(habitManagerScreen, "habitManagerScreen");
         cardLayout.show(getContentPane(), "habitManagerScreen");
