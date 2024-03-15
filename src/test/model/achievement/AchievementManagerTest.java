@@ -29,6 +29,7 @@ public class AchievementManagerTest {
     @Test
     void testCoverageDefaultConstructor() {
         new AchievementManager();
+        new AchievementList();
     }
 
     @Test
