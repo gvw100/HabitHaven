@@ -98,7 +98,7 @@ public class Constants {
         button.setContentAreaFilled(false);
     }
 
-    // EFFECTS: setups gradient at start screen
+    // EFFECTS: setups gradient at start screen, goes to the bottom right corner
     public static void setupStartingGradient(Graphics g, int width, int height) {
         Graphics2D graphics2d = (Graphics2D) g;
         g.fillRect(0, 0, width, height);

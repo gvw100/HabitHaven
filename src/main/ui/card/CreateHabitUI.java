@@ -75,6 +75,8 @@ public class CreateHabitUI extends JPanel {
     // EFFECTS: setups focus listeners for name text field
     private void setupNameFocusListener() {
         habitName.addFocusListener(new FocusListener() {
+            // MODIFIES: this
+            // EFFECTS: if text is still the filler text when focus is gained, select all
             @Override
             public void focusGained(FocusEvent e) {
                 invokeLater(() -> {
@@ -84,6 +86,8 @@ public class CreateHabitUI extends JPanel {
                 });
             }
 
+            // MODIFIES: this
+            // EFFECTS: if text is blank when focus is lost, set text to filler text "Enter Habit Name"
             @Override
             public void focusLost(FocusEvent e) {
                 invokeLater(() -> {
@@ -99,16 +103,22 @@ public class CreateHabitUI extends JPanel {
     // EFFECTS: setups document listeners for name text field
     private void setupNameDocumentListener() {
         habitName.getDocument().addDocumentListener(new DocumentListener() {
+            // MODIFIES: this
+            // EFFECTS: checks inputted text and changes habit name
             @Override
             public void insertUpdate(DocumentEvent e) {
                 checkNameText();
             }
 
+            // MODIFIES: this
+            // EFFECTS: checks inputted text and changes habit name
             @Override
             public void removeUpdate(DocumentEvent e) {
                 checkNameText();
             }
 
+            // MODIFIES: this
+            // EFFECTS: checks inputted text and changes habit name
             @Override
             public void changedUpdate(DocumentEvent e) {
                 checkNameText();
@@ -166,6 +176,8 @@ public class CreateHabitUI extends JPanel {
     // EFFECTS: adds focus listener to description text area
     private void setupDescriptionFocusListener() {
         habitDescription.addFocusListener(new FocusListener() {
+            // MODIFIES: this
+            // EFFECTS: if inputted text is filler text when focus is gained, then select all
             @Override
             public void focusGained(FocusEvent e) {
                 invokeLater(() -> {
@@ -175,6 +187,8 @@ public class CreateHabitUI extends JPanel {
                 });
             }
 
+            // MODIFIES: this
+            // EFFECTS: if text field is blank when focus lost, replace text with "Description (optional)"
             @Override
             public void focusLost(FocusEvent e) {
                 invokeLater(() -> {
@@ -190,16 +204,22 @@ public class CreateHabitUI extends JPanel {
     // EFFECTS: adds document listener to description text area
     private void setupDescriptionDocumentListener() {
         habitDescription.getDocument().addDocumentListener(new DocumentListener() {
+            // MODIFIES: this
+            // EFFECTS: checks inputted text and changes habit description
             @Override
             public void insertUpdate(DocumentEvent e) {
                 checkDescriptionText();
             }
 
+            // MODIFIES: this
+            // EFFECTS: checks inputted text and changes habit description
             @Override
             public void removeUpdate(DocumentEvent e) {
                 checkDescriptionText();
             }
 
+            // MODIFIES: this
+            // EFFECTS: checks inputted text and changes habit description
             @Override
             public void changedUpdate(DocumentEvent e) {
                 checkDescriptionText();
@@ -239,6 +259,9 @@ public class CreateHabitUI extends JPanel {
     // MODIFIES: this
     // EFFECTS: adds listener to period combo box
     private void setupPeriodListener() {
+        // MODIFIES: this
+        // EFFECTS: if periodBox is changed to valid selection, check that other inputs are valid
+        //          if periodBox is changed to invalid selection, disable createHabitButton
         periodBox.addActionListener(e -> invokeLater(() -> {
             if (periodBox.getSelectedIndex() != 0) {
                 checkValidHabit();
@@ -268,6 +291,9 @@ public class CreateHabitUI extends JPanel {
     // MODIFIES: this
     // EFFECTS: adds listener to frequency combo box
     private void setupFrequencyListener() {
+        // MODIFIES: this
+        // EFFECTS: if frequencyBox is changed to valid selection, check that other inputs are valid
+        //          if frequencyBox is changed to invalid selection, disable createHabitButton
         frequencyBox.addActionListener(e -> invokeLater(() -> {
             if (frequencyBox.getSelectedIndex() != 0) {
                 checkValidHabit();
@@ -292,6 +318,9 @@ public class CreateHabitUI extends JPanel {
     // MODIFIES: this
     // EFFECTS: adds listener to notification combo box
     private void setupNotificationListener() {
+        // MODIFIES: this
+        // EFFECTS: if notificationBox is changed to valid selection, check that other inputs are valid
+        //          if notificationBox is changed to invalid selection, disable createHabitButton
         notificationBox.addActionListener(e -> invokeLater(() -> {
             if (notificationBox.getSelectedIndex() != 0) {
                 checkValidHabit();
@@ -323,6 +352,8 @@ public class CreateHabitUI extends JPanel {
     // MODIFIES: this
     // EFFECTS: adds listener to the create habit button
     private void setupCreateHabitListener() {
+        // MODIFIES: this
+        // EFFECTS: creates a habit based on user selection, switches screen to habit list
         createHabitButton.addActionListener(e -> invokeLater(() -> {
             String name = habitName.getText();
             String description = habitDescription.getText();

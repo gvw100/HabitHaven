@@ -60,11 +60,7 @@ public class SendReminder implements Job {
         if (isConsoleApp) {
             sendConsoleReminder();
         } else {
-            String message = "Hey " + username + "! Only " + (habitFrequency - habitNumSuccesses)
-                    + " more to go for " + habitName
-                    + getPeriodString(" today.", " this week.", " this month.")
-                    + (habitStreak == 0 ? " Go get that streak started!" : " Keep that streak going!");
-            sendUIReminder(message);
+            sendUIReminder();
         }
     }
 
@@ -84,7 +80,11 @@ public class SendReminder implements Job {
     }
 
     // EFFECTS: sends a desktop notification to the user
-    private void sendUIReminder(String message) {
+    private void sendUIReminder() {
+        String message = "Hey " + username + "! Only " + (habitFrequency - habitNumSuccesses)
+                + " more to go for " + habitName
+                + getPeriodString(" today.", " this week.", " this month.")
+                + (habitStreak == 0 ? " Go get that streak started!" : " Keep that streak going!");
         try {
             SystemTray tray = SystemTray.getSystemTray();
             Image image = ImageIO.read(new File("./data/logo_icon.png"));
@@ -102,6 +102,7 @@ public class SendReminder implements Job {
 
     // EFFECTS: adds a listener to the tray icon, so that the user can click on it to open the app
     private void addListener(TrayIcon trayIcon) {
+        // EFFECTS: if the app is not already open, get the existing instance to reopen the main frame
         trayIcon.addActionListener(e -> invokeLater(() -> {
             if (!HabitApp.appIsOpen()) {
                 HabitApp.getInstance();

@@ -19,7 +19,6 @@ import static ui.Constants.*;
 // Singleton pattern allows app to be reopened to the same state
 public class HabitApp extends JFrame {
     private static HabitApp habitApp;
-
     private CardLayout cardLayout;
     private StartUI startScreen;
     private NewUserUI newUserScreen;
@@ -254,7 +253,7 @@ public class HabitApp extends JFrame {
     }
 
     // MODIFIES: this
-    // EFFECTS: loads user data from file, updates all habits, schedules habit updates, and displays menu
+    // EFFECTS: loads user data from file, returns whether load was successful
     private boolean loadHabitManager() {
         JsonReader jsonReader = new JsonReader(HABIT_MANAGER_STORE);
         try {

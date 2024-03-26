@@ -132,7 +132,7 @@ public class AchievementToast extends JPanel {
         SwingUtilities.invokeLater(runnable);
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, g
     // EFFECTS: overridden to give achievement toast a gradient from left edge to right edge
     @Override
     public void paintComponent(Graphics g) {

@@ -75,10 +75,12 @@ public class HabitManagerUI extends JPanel {
     }
 
     // MODIFIES: this
-    // EFFECTS: adds window listener to parent frame, if !isAutoSave(), user is given choice to save or not,
-    //          if isHideOnClose(), parent frame is hidden and appIsOpen is set to false,
-    //          otherwise, the application exits
+    // EFFECTS: adds window listener to parent frame
     private void setWindowListener() {
+        // MODIFIES: this
+        // EFFECTS: if !isAutoSave(), user is given choice to save or not,
+        //          if isHideOnClose(), parent frame is hidden and appIsOpen is set to false,
+        //          otherwise, the application exits
         parent.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
@@ -155,10 +157,12 @@ public class HabitManagerUI extends JPanel {
     }
 
     // MODIFIES: this
-    // EFFECTS: creates a gradient for the sidebar, ranging from slightly over half of the height of the sidebar,
-    //          to the bottom of the sidebar
+    // EFFECTS: setups a gradient for the sidebar
     private void setupSidebarGradient() {
         sidebar = new JPanel() {
+            // MODIFIES: this, g
+            // EFFECTS: creates a gradient for the sidebar, ranging from slightly over half of the height of the sidebar
+            //          to the bottom of the sidebar
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -188,6 +192,8 @@ public class HabitManagerUI extends JPanel {
     // MODIFIES: habitList
     // EFFECTS: adds listener to  habit list sidebar option
     private void setupHabitListListener(JPanel habitList) {
+        // MODIFIES: this
+        // EFFECTS: switches cards to habit list panel
         habitList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -199,6 +205,8 @@ public class HabitManagerUI extends JPanel {
     // MODIFIES: save
     // EFFECTS: adds listener to save sidebar option
     private void setupSaveListener(JPanel save) {
+        // MODIFIES: this
+        // EFFECTS: saves habits and updates save panel accordingly
         save.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -248,6 +256,8 @@ public class HabitManagerUI extends JPanel {
     // MODIFIES: createHabit
     // EFFECTS: adds listener to create habit sidebar option
     private void setupCreateHabitListener(JPanel createHabit) {
+        // MODIFIES: this
+        // EFFECTS: switches cards to create habit panel
         createHabit.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -267,6 +277,8 @@ public class HabitManagerUI extends JPanel {
     // MODIFIES: lifetimeStats
     // EFFECTS: adds listener to lifetime stats sidebar option
     private void setupLifetimeStatsListener(JPanel lifetimeStats) {
+        // MODIFIES: this
+        // EFFECTS: switches cards to lifetime stats panel
         lifetimeStats.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -286,6 +298,8 @@ public class HabitManagerUI extends JPanel {
     // MODIFIES: settings
     // EFFECTS: adds listener to settings sidebar option
     private void setupSettingsListener(JPanel settings, HabitManagerUI habitManagerUI) {
+        // MODIFIES: this
+        // EFFECTS: switches cards to settings panel
         settings.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -305,6 +319,8 @@ public class HabitManagerUI extends JPanel {
     // MODIFIES: credits
     // EFFECTS: adds listener to credits sidebar option
     private void setupCreditsListener(JPanel credits) {
+        // MODIFIES: this
+        // EFFECTS: switches cards to credits panel
         credits.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -340,11 +356,15 @@ public class HabitManagerUI extends JPanel {
     // EFFECTS: setups sidebar listener to the given sidebar option, hovering over makes background brighter
     private void setupSidebarListener(JPanel option) {
         option.addMouseListener(new MouseAdapter() {
+            // MODIFIES: this
+            // EFFECTS: sets background colour to a lighter colour
             @Override
             public void mouseEntered(MouseEvent e) {
                 invokeLater(() -> option.setBackground(SIDEBAR_COLOUR.brighter().brighter()));
             }
 
+            // MODIFIES: this
+            // EFFECTS: sets background colour back to regular colour
             @Override
             public void mouseExited(MouseEvent e) {
                 invokeLater(() -> {

@@ -12,6 +12,7 @@ public class NewUserUI extends JPanel {
     private JButton submit;
     private JButton back;
 
+    // EFFECTS: constructs a new user panel
     public NewUserUI() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         JLabel logo = new JLabel(LOGO);
@@ -36,23 +37,34 @@ public class NewUserUI extends JPanel {
         addComponentsToNewUser(logo, welcome, prompt, usernameField, submit, back);
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds submit listener to submit button
     public void setSubmitListener(Runnable toHabits) {
+        // MODIFIES: this
+        // EFFECTS: if username length > MAX_NAME_LENGTH, show error message and set text to "",
+        //          if username length is blank, show error message and set text to "",
+        //          otherwise, disable the back and submit buttons, and switch to habits screen
         submit.addActionListener(e -> invokeLater(() -> {
             if (usernameField.getText().length() > MAX_NAME_LENGTH) {
                 JOptionPane.showMessageDialog(this, "Maximum username length is"
                         + MAX_NAME_LENGTH + " characters.", "Error", JOptionPane.ERROR_MESSAGE);
                 usernameField.setText("");
-            } else if (!usernameField.getText().isBlank()) {
+            } else if (usernameField.getText().isBlank()) {
+                JOptionPane.showMessageDialog(this, "Please enter a username.", "Error", JOptionPane.ERROR_MESSAGE);
+                usernameField.setText("");
+            } else {
                 back.setEnabled(false);
                 submit.setEnabled(false);
                 toHabits.run();
-            } else {
-                JOptionPane.showMessageDialog(this, "Please enter a username.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }));
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds back listener to back button
     public void setBackListener(Runnable toStart) {
+        // MODIFIES: this
+        // EFFECTS: disables back and submit button and go back to start screen
         back.addActionListener(e -> invokeLater(() -> {
             back.setEnabled(false);
             submit.setEnabled(false);
@@ -60,10 +72,13 @@ public class NewUserUI extends JPanel {
         }));
     }
 
+    // EFFECTS: returns text in usernameField
     public String getText() {
         return usernameField.getText();
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds components to new user screen
     private void addComponentsToNewUser(JLabel logo, JLabel welcome, JLabel prompt, JTextField usernameField,
                                         JButton submit, JButton back) {
         setBackground(APP_COLOUR);
@@ -79,6 +94,8 @@ public class NewUserUI extends JPanel {
         add(back);
     }
 
+    // MODIFIES: this, g
+    // EFFECTS: setups gradient of title screen
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);

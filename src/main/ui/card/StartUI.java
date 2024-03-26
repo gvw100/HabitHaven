@@ -12,6 +12,7 @@ public class StartUI extends JPanel {
     private JButton newUserButton;
     private JButton loadUserButton;
 
+    // EFFECTS: constructs title screen panel
     public StartUI() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(APP_COLOUR);
@@ -24,12 +25,18 @@ public class StartUI extends JPanel {
         createStartScreen(newUserButton, loadUserButton);
     }
 
+    // MODIFIES: this
+    // EFFECTS: enables both buttons
     public void enableButtons() {
         newUserButton.setEnabled(true);
         loadUserButton.setEnabled(true);
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds listener to new user button
     public void setNewUserListener(Runnable toNewUser) {
+        // MODIFIES: this
+        // EFFECTS: disables both buttons and switches to new user screen
         newUserButton.addActionListener(e -> invokeLater(() -> {
             newUserButton.setEnabled(false);
             loadUserButton.setEnabled(false);
@@ -37,7 +44,11 @@ public class StartUI extends JPanel {
         }));
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds listener to load user button
     public void setLoadUserListener(Runnable toHabits) {
+        // MODIFIES: this
+        // EFFECTS: disables both buttons and attempts to switch to habits screen
         loadUserButton.addActionListener(e -> invokeLater(() -> {
             newUserButton.setEnabled(false);
             loadUserButton.setEnabled(false);
@@ -45,6 +56,8 @@ public class StartUI extends JPanel {
         }));
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds components to startScreen
     private void createStartScreen(JButton newUserButton, JButton loadUserButton) {
         add(logo);
         add(Box.createRigidArea(new Dimension(0, PADDING * 2)));
@@ -53,6 +66,8 @@ public class StartUI extends JPanel {
         add(loadUserButton);
     }
 
+    // MODIFIES: this, g
+    // EFFECTS: sets up gradient of starting screen
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);

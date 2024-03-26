@@ -30,6 +30,7 @@ public class HabitListUI extends JPanel {
     private AchievementToast achievementToast;
     private Runnable toCreateHabit;
 
+    // EFFECTS: constructs a HabitListUI panel
     public HabitListUI(HabitManager habitManager, CardLayout parentCardLayout,
                        JPanel parentPanel, AchievementToast achievementToast, Runnable toCreateHabit) {
         this.habitManager = habitManager;
@@ -40,6 +41,8 @@ public class HabitListUI extends JPanel {
         setupPanel();
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups the HabitListUI panel
     private void setupPanel() {
         UIManager.put("TabbedPane.selected", APP_COLOUR.brighter().brighter().brighter());
         setLayout(new GridLayout(1, 1));
@@ -57,6 +60,8 @@ public class HabitListUI extends JPanel {
         add(tabbedPane);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups the habits tab of tabbed pane - non-archived habits
     private void setupRegularList() {
         parentRegular = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -64,6 +69,8 @@ public class HabitListUI extends JPanel {
         setupGeneralList(parentRegular, habitsPanel, false);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups the archived tab of the tabbed pane - archived habits
     private void setupArchivedList() {
         parentArchived = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -71,6 +78,8 @@ public class HabitListUI extends JPanel {
         setupGeneralList(parentArchived, archivedPanel, true);
     }
 
+    // MODIFIES: parent, list
+    // EFFECTS: setups either the archived or regular habits tab
     private void setupGeneralList(JScrollPane parent, JPanel list, boolean isArchived) {
         parent.getVerticalScrollBar().setUnitIncrement(10);
         list.setLayout(new GridBagLayout());
@@ -90,14 +99,17 @@ public class HabitListUI extends JPanel {
         updateUI();
     }
 
+    // EFFECTS: returns all the archived habits
     private List<Habit> getArchivedHabits() {
         return getHabits(true);
     }
 
+    // EFFECTS: returns all the regular habits
     private List<Habit> getRegularHabits() {
         return getHabits(false);
     }
 
+    // EFFECTS: returns either all the archived habits or the regular habits
     private List<Habit> getHabits(boolean isArchived) {
         List<Habit> allHabits = habitManager.getHabits();
         List<Habit> selectedHabits = new ArrayList<>();
@@ -110,7 +122,7 @@ public class HabitListUI extends JPanel {
     }
 
     // MODIFIES: this
-    // EFFECTS: adds habit rows to habit list panel
+    // EFFECTS: adds habit rows to either the regular list tab or the archived list tab
     private void setupRows(List<Habit> habits, boolean isArchived) {
         JPanel panel;
         if (isArchived) {
@@ -134,15 +146,15 @@ public class HabitListUI extends JPanel {
         panel.add(emptySpace, constraints);
     }
 
-    // MODIFIES: this
+    // MODIFIES: panel
     // EFFECTS: setups first rows of habit list panel
     private void setupFirstRows(JPanel panel, String text) {
         addTitleRow(panel, text);
         addHeadingRow(panel);
     }
 
-    // MODIFIES: this
-    // EFFECTS: adds title row to habitsPanel
+    // MODIFIES: panel
+    // EFFECTS: adds title row to panel
     private void addTitleRow(JPanel panel, String text) {
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new FlowLayout());
@@ -155,8 +167,8 @@ public class HabitListUI extends JPanel {
         panel.add(titlePanel, titleConstraints);
     }
 
-    // MODIFIES: this
-    // EFFECTS: adds heading row to habitsPanel
+    // MODIFIES: panel
+    // EFFECTS: adds heading row to panel
     private void addHeadingRow(JPanel panel) {
         GridBagConstraints nameConstraints = getHeadingElementConstraints(0);
         GridBagConstraints completedConstraints = getHeadingElementConstraints(1);
@@ -222,16 +234,21 @@ public class HabitListUI extends JPanel {
         add.setFont(MEDIUM_FONT);
         add.setPreferredSize(new Dimension(50, 50));
         add.addMouseListener(new MouseAdapter() {
+            // EFFECTS: switches screens to createHabitUI
             @Override
             public void mouseClicked(MouseEvent e) {
                 invokeLater(toCreateHabit);
             }
 
+            // MODIFIES: this
+            // EFFECTS: sets add icon to be slightly enlarged
             @Override
             public void mouseEntered(MouseEvent e) {
                 invokeLater(() -> add.setIcon(ADD_ICON_HOVER));
             }
 
+            // MODIFIES: this
+            // EFFECTS: sets add icon back to regular size
             @Override
             public void mouseExited(MouseEvent e) {
                 invokeLater(() -> add.setIcon(ADD_ICON));
@@ -248,7 +265,7 @@ public class HabitListUI extends JPanel {
         return label;
     }
 
-    // MODIFIES: this
+    // MODIFIES: panel
     // EFFECTS: setups a row for the given habit and adds it to habitsPanel
     private void setupRow(JPanel panel, Habit habit, boolean isArchived) {
         JPanel empty = makeGap(WINDOW_WIDTH - SIDE_BAR_WIDTH, 1);
@@ -366,10 +383,14 @@ public class HabitListUI extends JPanel {
         return notifications;
     }
 
+    // REQUIRES: !habit.isArchived()
     // MODIFIES: notifications
     // EFFECTS: adds listener to notifications label
     private void setupNotificationsListener(JLabel notifications, Habit habit) {
         notifications.addMouseListener(new MouseAdapter() {
+            // MODIFIES: this
+            // EFFECTS: prompts user to toggle notifications, if yes option is selected, notifications are toggled and
+            //          habit list panel is updated
             @Override
             public void mouseClicked(MouseEvent e) {
                 invokeLater(() -> {
@@ -383,11 +404,15 @@ public class HabitListUI extends JPanel {
                 });
             }
 
+            // MODIFIES: this
+            // EFFECTS: sets notifications icon to slightly enlarged icon
             @Override
             public void mouseEntered(MouseEvent e) {
                 invokeLater(() -> notifications.setIcon(habit.isNotifyEnabled() ? BELL_ON_HOVER : BELL_OFF_HOVER));
             }
 
+            // MODIFIES: this
+            // EFFECTS: sets notifications icon to regular sized icon
             @Override
             public void mouseExited(MouseEvent e) {
                 invokeLater(() -> notifications.setIcon(habit.isNotifyEnabled() ? BELL_ON : BELL_OFF));
@@ -442,16 +467,22 @@ public class HabitListUI extends JPanel {
     // EFFECTS: adds listener to delete label
     private void setupDeleteListener(JLabel delete, Habit habit) {
         delete.addMouseListener(new MouseAdapter() {
+            // MODIFIES: this
+            // EFFECTS: user prompted to delete habit, if deleted, habit list panel updated
             @Override
             public void mouseClicked(MouseEvent e) {
                 invokeLater(() -> deleteHabit(habit));
             }
 
+            // MODIFIES: this
+            // EFFECTS: sets delete icon to red DELETE_ICON_HOVER
             @Override
             public void mouseEntered(MouseEvent e) {
                 invokeLater(() -> delete.setIcon(DELETE_ICON_HOVER));
             }
 
+            // MODIFIES: this
+            // EFFECTS: sets delete icon to white DELETE_ICON
             @Override
             public void mouseExited(MouseEvent e) {
                 invokeLater(() -> delete.setIcon(DELETE_ICON));
@@ -459,6 +490,9 @@ public class HabitListUI extends JPanel {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: prompts user to delete habit, if yes option selected, then delete the habit and update the habit list
+    //          panel
     private void deleteHabit(Habit habit) {
         if (JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this habit?",
                 "Delete Habit", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
@@ -484,6 +518,8 @@ public class HabitListUI extends JPanel {
             setupPopupMenus();
         }
 
+        // MODIFIES: this
+        // EFFECTS: processes left-clicks and right-clicks on a habit row
         @Override
         public void mouseClicked(MouseEvent e) {
             invokeLater(() -> {
@@ -495,6 +531,8 @@ public class HabitListUI extends JPanel {
             });
         }
 
+        // MODIFIES: this
+        // EFFECTS: changes background of all subcomponents in row to lighter colour
         @Override
         public void mouseEntered(MouseEvent e) {
             invokeLater(() -> {
@@ -506,6 +544,8 @@ public class HabitListUI extends JPanel {
             });
         }
 
+        // MODIFIES: this
+        // EFFECTS: changes background of all subcomponents in row to regular colour
         @Override
         public void mouseExited(MouseEvent e) {
             invokeLater(() -> {
@@ -515,11 +555,15 @@ public class HabitListUI extends JPanel {
             });
         }
 
+        // MODIFIES: this
+        // EFFECTS: setups popup menus shown on right click
         private void setupPopupMenus() {
             setupRegularPopupMenu();
             setupArchivedPopupMenu();
         }
 
+        // MODIFIES: this
+        // EFFECTS: setups regular popup menu
         private void setupRegularPopupMenu() {
             regularMenu = new JPopupMenu();
             regularMenu.add(getFinishItem());
@@ -528,6 +572,8 @@ public class HabitListUI extends JPanel {
             regularMenu.add(getDeleteItem());
         }
 
+        // MODIFIES: this
+        // EFFECTS: setups archived popup menu
         private void setupArchivedPopupMenu() {
             archivedMenu = new JPopupMenu();
             archivedMenu.add(getCloneItem());
@@ -535,8 +581,12 @@ public class HabitListUI extends JPanel {
             archivedMenu.add(getDeleteItem());
         }
 
+        // EFFECTS: returns finish item in popup menu
         private JMenuItem getFinishItem() {
             JMenuItem item = new JMenuItem("Finish the Habit");
+            // MODIFIES: this
+            // EFFECTS: if habit is finished successfully, get newly achieved achievements and add them to
+            //          achievement queue, updates habit list panel
             item.addActionListener((e) -> {
                 List<Achievement> current = habit.getAchievements();
                 if (habit.finishHabit()) {
@@ -554,8 +604,12 @@ public class HabitListUI extends JPanel {
             return item;
         }
 
+        // EFFECTS: returns clone item in popup menu
         private JMenuItem getCloneItem() {
             JMenuItem item = new JMenuItem("Clone the Habit");
+            // MODIFIES: this
+            // EFFECTS: creates a new habit with the same properties as current habit and adds it to
+            //          habitManager, updates habit list panel
             item.addActionListener((e) -> invokeLater(() -> {
                 habitManager.addHabit(new Habit(habit.getName(), habit.getDescription(),
                         habit.getPeriod(), habit.getFrequency(), habit.isNotifyEnabled(), habit.getClock()));
@@ -565,8 +619,11 @@ public class HabitListUI extends JPanel {
             return item;
         }
 
+        // EFFECTS: returns archive item in popup menu with the given text
         private JMenuItem getArchiveItem(String text) {
             JMenuItem item = new JMenuItem(text);
+            // MODIFIES: this
+            // EFFECTS: toggle isArchived for the current habit and updates habit list panel
             item.addActionListener((e) -> invokeLater(() -> {
                 habit.toggleIsArchived();
                 changeMade();
@@ -575,20 +632,28 @@ public class HabitListUI extends JPanel {
             return item;
         }
 
+        // EFFECTS: returns delete item in popup menu
         private JMenuItem getDeleteItem() {
             Image icon = DELETE_ICON_HOVER.getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
             ImageIcon deleteIcon = new ImageIcon(icon);
             JMenuItem item = new JMenuItem("Delete the Habit", deleteIcon);
+            // MODIFIES: this
+            // EFFECTS: deletes the habit from habitManager and updates habit list panel
             item.addActionListener((e) -> invokeLater(() -> deleteHabit(habit)));
             return item;
         }
 
+        // MODIFIES: this
+        // EFFECTS: if user right clicks archived habit, show archived menu at the mouse position
         private void archivedHabitsClicked(MouseEvent e) {
             if (e.getButton() == MouseEvent.BUTTON3) {
                 archivedMenu.show(e.getComponent(), e.getX(), e.getY());
             }
         }
 
+        // MODIFIES: this
+        // EFFECTS: if user left clicks regular habit, go to habit screen
+        //          if user right clicks regular habit, show regular habit menu at mouse position
         private void regularHabitsClicked(MouseEvent e) {
             if (e.getButton() == MouseEvent.BUTTON1) {
                 HabitUI habitUI = new HabitUI(habit, achievementToast);

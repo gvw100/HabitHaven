@@ -144,8 +144,10 @@ public class DailyRemindersUI extends HabitRemindersUI {
     }
 
     // MODIFIES: this
-    // EFFECTS: adds listener to preset frequency combo box, submit button is enabled if index != 0
+    // EFFECTS: adds listener to preset frequency combo box
     private void setupPresetFrequencyListener() {
+        // MODIFIES: this
+        // EFFECTS: submit button is enabled if index != 0
         presetFrequency.addActionListener(e ->
                 invokeLater(() -> presetSubmitButton.setEnabled(presetFrequency.getSelectedIndex() != 0)));
     }
@@ -212,11 +214,14 @@ public class DailyRemindersUI extends HabitRemindersUI {
     }
 
     // MODIFIES: this
-    // EFFECTS: setups preset submit button
+    // EFFECTS: setups preset submit button,
     private void setupPresetButton() {
         presetSubmitButton = new JButton("Set Notifications");
         makeButton(presetSubmitButton, WINDOW_WIDTH - SIDE_BAR_WIDTH, 50, MEDIUM_FONT);
         presetSubmitButton.setEnabled(false);
+        // MODIFIES: this
+        // EFFECTS: if submit button pressed, first commit spinner edits,
+        //          notify user whether reminder generation was successful
         presetSubmitButton.addActionListener(e -> invokeLater(() -> {
             commitPresetSpinners();
             if (generateReminders()) {

@@ -134,6 +134,8 @@ public abstract class HabitRemindersUI extends JPanel {
     // MODIFIES: customizationFrequency
     // EFFECTS: setups listener to the customization tab frequency combo box
     private void setupCustomizationFrequencyListener(JComboBox<String> customizationFrequency) {
+        // MODIFIES: this
+        // EFFECTS: updates customization components and generates customization form with index number of rows
         customizationFrequency.addActionListener(e -> invokeLater(() -> {
             int index = customizationFrequency.getSelectedIndex();
             updateCustomizationComponents(index);
@@ -143,7 +145,7 @@ public abstract class HabitRemindersUI extends JPanel {
         }));
     }
 
-    // EFFECTS: returns a row in the customization tab, representing a specific day and/or time
+    // EFFECTS: returns a row in the customization tab, representing a specific time and/or day
     protected abstract JPanel setupCustomizationRow(int index);
 
     // MODIFIES: customizationPanel
@@ -170,6 +172,9 @@ public abstract class HabitRemindersUI extends JPanel {
     // MODIFIES: submit
     // EFFECTS: setups listener to the customization submit button
     private void setupCustomizationButtonListener(JButton submit, int frequency) {
+        // MODIFIES: this
+        // EFFECTS: notify user whether custom reminders are set successfully
+        //          if successful, update reminders UI
         submit.addActionListener((e) -> invokeLater(() -> {
             if (setCustomReminders(frequency)) {
                 HabitManagerUI.changeMade();
@@ -437,8 +442,11 @@ public abstract class HabitRemindersUI extends JPanel {
         return toggleButton;
     }
 
+    // MODIFIES: toggleButton
     // EFFECTS: setups toggle button listener
     private void setupToggleButtonListener(JToggleButton toggleButton) {
+        // MODIFIES: this
+        // EFFECTS: toggles notifications
         toggleButton.addItemListener(e -> invokeLater(this::toggleNotifications));
     }
 
@@ -456,6 +464,8 @@ public abstract class HabitRemindersUI extends JPanel {
         makeButton(setDefaults, WINDOW_WIDTH - SIDE_BAR_WIDTH, 50, MEDIUM_FONT);
         setDefaults.setForeground(FONT_COLOUR);
         setDefaults.setEnabled(!habit.getHabitReminder().isDefault());
+        // MODIFIES: this
+        // EFFECTS: reverts to default notifications, disabled default button
         setDefaults.addActionListener(e -> invokeLater(() -> {
             HabitManagerUI.changeMade();
             habit.getHabitReminder().setDefaultReminders();
@@ -499,6 +509,7 @@ public abstract class HabitRemindersUI extends JPanel {
         return constraints;
     }
 
+    // MODIFIES: spinner
     // EFFECTS: given a spinner, initializes properties of spinner, allowing
     //          text field to be editable, disallowing invalid inputs
     protected void setupSpinner(JSpinner spinner) {
@@ -515,6 +526,8 @@ public abstract class HabitRemindersUI extends JPanel {
     // MODIFIES: textField
     // EFFECTS: given a JSpinner text field, selects all once focus is gained
     private void setupSpinnerListeners(JFormattedTextField textField) {
+        // MODIFIES: textField
+        // EFFECTS: selects all in the textField
         textField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -568,12 +581,12 @@ public abstract class HabitRemindersUI extends JPanel {
         setupReminderListPanel();
     }
 
-    // MODIFIES: hours, minutes
+    // MODIFIES: first, second
     // EFFECTS: commits edits in both spinners
-    protected void commitSpinners(JSpinner hours, JSpinner minutes) {
+    protected void commitSpinners(JSpinner first, JSpinner second) {
         try {
-            hours.commitEdit();
-            minutes.commitEdit();
+            first.commitEdit();
+            second.commitEdit();
         } catch (ParseException e) {
             e.printStackTrace();
         }

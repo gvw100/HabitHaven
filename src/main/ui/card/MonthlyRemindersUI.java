@@ -25,10 +25,13 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
     private JPanel presetDayRange;
     private JComboBox<String> presetChoiceBox;
 
+    // EFFECTS: constructs a monthly reminder panel
     public MonthlyRemindersUI(Habit habit) {
         super(habit);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups components in preset tab
     @Override
     protected void setupPresetComponents() {
         setupPresetLabel("Set up to 31 notifications per month!");
@@ -37,6 +40,8 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         setupPresetDayRange();
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups preset choice combo box
     private void setupPresetChoiceBox() {
         String[] presetOptions =
                 new String[]{"Select a Preset", "Beginning, Middle, or End of Month", "Specific Day Range"};
@@ -48,10 +53,19 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         presetPanel.add(presetChoiceBox, getPresetChoiceConstraints());
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds preset choice listener to presetChoiceBox
     private void setupPresetChoiceListener() {
+        // MODIFIES: this
+        // EFFECTS: displays preset form depending on selected option in combo box
         presetChoiceBox.addActionListener(e -> invokeLater(this::displayPresetForm));
     }
 
+    // MODIFIES: this
+    // EFFECTS: displays preset form depending on selected option in combo box
+    //          if first preset selected, presetBegMidEnd is visible,
+    //          if second preset selected, presetDayRange is visible,
+    //          if neither preset is selected, both are not visible
     private void displayPresetForm() {
         switch (presetChoiceBox.getSelectedIndex()) {
             case 1:
@@ -68,6 +82,8 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups presetBegMidEnd panel
     private void setupPresetBegMidEnd() {
         presetBegMidEnd = new JPanel();
         presetBegMidEnd.setLayout(new GridBagLayout());
@@ -80,6 +96,8 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         presetPanel.add(presetBegMidEnd, getPresetConstraints(5));
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds begMidEndRow to presetBedMidEnd
     private void setupBegMidEndRow() {
         JPanel row = new JPanel();
         row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
@@ -105,6 +123,8 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         presetBegMidEnd.add(row, getPresetConstraints(2));
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups begMidEnd submit button
     private void setupBegMidEndSubmit() {
         presetBegMidEndSubmit = new JButton("Set Notifications");
         makeButton(presetBegMidEndSubmit, LARGE_BUTTON_WIDTH, LARGE_BUTTON_HEIGHT, MEDIUM_FONT);
@@ -113,10 +133,16 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         presetBegMidEnd.add(presetBegMidEndSubmit, getSubmitButtonConstraints());
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups begMidEnd submit button listener
     private void setupBegMidEndSubmitListener() {
+        // MODIFIES: this
+        // EFFECTS: sets monthly reminders based on begMidEnd selection
         presetBegMidEndSubmit.addActionListener(e -> invokeLater(this::setBegMidEndReminders));
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets monthly reminders based on begMidEndSelection, then updates reminders UI
     private void setBegMidEndReminders() {
         JPanel checkboxes = (JPanel) presetBegMidEnd.getComponent(1);
         JPanel row = (JPanel) presetBegMidEnd.getComponent(2);
@@ -141,10 +167,11 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         updateRemindersUI();
     }
 
+    // EFFECTS: returns the inputted time based on row
     private LocalTime getBegMidTime(JPanel row) {
         JSpinner hours = (JSpinner) row.getComponent(2);
         JSpinner minutes = (JSpinner) row.getComponent(4);
-        commitPresetSpinners(hours, minutes);
+        commitSpinners(hours, minutes);
         int hour = (int) hours.getValue();
         int minute = (int) minutes.getValue();
         String amPm = (String) ((JComboBox<String>) row.getComponent(6)).getSelectedItem();
@@ -157,15 +184,8 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         return LocalTime.parse(hour + ":" + stringMin + " " + amPm, DateTimeFormatter.ofPattern("h:mm a"));
     }
 
-    private void commitPresetSpinners(JSpinner hours, JSpinner minutes) {
-        try {
-            hours.commitEdit();
-            minutes.commitEdit();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-    }
-    
+    // MODIFIES: this
+    // EFFECTS: setups begMidEnd preset label and adds to presetBegMidEnd
     private void setupBegMidEndLabel() {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout());
@@ -176,7 +196,9 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         panel.add(label);
         presetBegMidEnd.add(panel, getPresetConstraints(0));
     }
-    
+
+    // MODIFIES: this
+    // EFFECTS: setups begMidEnd checkboxes and adds them to presetBegMidEnd
     private void setupPresetCheckboxes() {
         JPanel checkboxes = new JPanel();
         checkboxes.setLayout(new FlowLayout(FlowLayout.CENTER, PADDING * 2, 0));
@@ -191,6 +213,7 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         presetBegMidEnd.add(checkboxes, getPresetConstraints(1));
     }
 
+    // EFFECTS: returns a checkbox with the given text
     private JCheckBox getCheckbox(String string) {
         JCheckBox checkbox = new JCheckBox(string);
         checkbox.setFont(MEDIUM_FONT);
@@ -202,17 +225,24 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         return checkbox;
     }
 
+    // MODIFIES: beginning, middle, end
+    // EFFECTS: adds listeners to beginning, middle, and end
     private void setupCheckboxListeners(JCheckBox beginning, JCheckBox middle, JCheckBox end) {
+        // MODIFIES: this
+        // EFFECTS: enabled submit button if at least one of checkboxes is selected
         ItemListener listener = e -> invokeLater(() -> checkAtLeastOneSelected(beginning, middle, end));
         beginning.addItemListener(listener);
         middle.addItemListener(listener);
         end.addItemListener(listener);
     }
 
+    // MODIFIES: this
+    // EFFECTS: enabled submit button if at least one of checkboxes is selected
     private void checkAtLeastOneSelected(JCheckBox beginning, JCheckBox middle, JCheckBox end) {
         presetBegMidEndSubmit.setEnabled(beginning.isSelected() || middle.isSelected() || end.isSelected());
     }
 
+    // EFFECTS: returns grid bag constraints of preset component at given index
     private GridBagConstraints getPresetConstraints(int index) {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -224,6 +254,8 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         return constraints;
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups day range preset panel
     private void setupPresetDayRange() {
         presetDayRange = new JPanel();
         presetDayRange.setLayout(new GridBagLayout());
@@ -236,6 +268,8 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         presetPanel.add(presetDayRange, getPresetConstraints(5));
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups day range submit button
     private void setupDayRangeSubmit() {
         JButton submit = new JButton("Set Notifications");
         makeButton(submit, LARGE_BUTTON_WIDTH, LARGE_BUTTON_HEIGHT, MEDIUM_FONT);
@@ -243,7 +277,11 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         presetDayRange.add(submit, getSubmitButtonConstraints());
     }
 
+    // MODIFIES: submit
+    // EFFECTS: adds listener to day range button
     private void setupDayRangeSubmitListener(JButton submit) {
+        // MODIFIES: this
+        // EFFECTS: notify user whether preset reminders were set successfully, if successful update reminders UI
         submit.addActionListener(e -> invokeLater(() -> {
             if (setDayRangeReminders()) {
                 HabitManagerUI.changeMade();
@@ -257,23 +295,27 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         }));
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets day range reminders based on user input, returns whether reminders are valid
     private boolean setDayRangeReminders() {
         JSpinner startDay = (JSpinner) ((JPanel) presetDayRange.getComponent(1)).getComponent(1);
         JSpinner endDay = (JSpinner) ((JPanel) presetDayRange.getComponent(1)).getComponent(3);
-        commitPresetSpinners(startDay, endDay);
+        commitSpinners(startDay, endDay);
         int start = (int) startDay.getValue();
         int end = (int) endDay.getValue();
         JPanel row = (JPanel) presetDayRange.getComponent(2);
         JSpinner hours = (JSpinner) row.getComponent(2);
         JSpinner minutes = (JSpinner) row.getComponent(4);
-        commitPresetSpinners(hours, minutes);
+        commitSpinners(hours, minutes);
         JComboBox<String> amPm = (JComboBox<String>) row.getComponent(6);
         String minString = getMinuteString(minutes);
         LocalTime time = LocalTime.parse(hours.getValue() + ":" + minString + " " + amPm.getSelectedItem(),
                 DateTimeFormatter.ofPattern("h:mm a"));
         return setDayRangePreset(start, end, time);
     }
-    
+
+    // MODIFIES: this
+    // EFFECTS: sets day range preset reminders, returns whether day range is valid - only valid if start <= end
     private boolean setDayRangePreset(int start, int end, LocalTime time) {
         if (start > end) {
             return false;
@@ -290,7 +332,9 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         ((MonthlyReminder) habit.getHabitReminder()).setCustomMonthlyReminders(reminders);
         return true;
     }
-    
+
+    // MODIFIES: this
+    // EFFECTS: setups day range label and adds it to presetDayRange panel
     private void setupDayRangeLabel() {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout());
@@ -302,6 +346,8 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         presetDayRange.add(panel, getPresetConstraints(0));
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups day range spinner row and adds it to presetDayRange panel
     private void setupDayRangeSpinnerRow() {
         JPanel spinner = new JPanel();
         spinner.setLayout(new FlowLayout(FlowLayout.CENTER, PADDING, 0));
@@ -320,6 +366,8 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         presetDayRange.add(spinner, getPresetConstraints(1));
     }
 
+    // MODIFIES: startDay, endDay
+    // EFFECTS: resizes spinners to width of 300 and height of 30
     private void resizeSpinners(JSpinner startDay, JSpinner endDay) {
         startDay.setMinimumSize(new Dimension(300, 30));
         startDay.setPreferredSize(new Dimension(300, 30));
@@ -329,13 +377,16 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         endDay.setMaximumSize(new Dimension(300, 30));
     }
 
+    // EFFECTS: returns a label containing the given text
     private JLabel setupLabel(String text) {
         JLabel label = new JLabel(text);
         label.setFont(MEDIUM_FONT);
         label.setForeground(FONT_COLOUR);
         return label;
     }
-    
+
+    // MODIFIES: this
+    // EFFECTS: setups day range time row and adds it to presetDayRange panel
     private void setupDayRangeTimeRow() {
         JPanel row = new JPanel();
         row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
@@ -361,12 +412,15 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         presetDayRange.add(row, getPresetConstraints(2));
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups components in customization tab
     @Override
     protected void setupCustomizationComponents(int startingIndex) {
         String label = "Choose specific days and times for your notifications!";
         setupCustomizationFrequency(MONTH_MAX_DAYS, label, startingIndex);
     }
 
+    // EFFECTS: returns a row in the customization tab, representing a specific time and/or day
     @Override
     protected JPanel setupCustomizationRow(int index) {
         JPanel row = rowInit(index);
@@ -390,6 +444,7 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         return row;
     }
 
+    // EFFECTS: returns JPanel containing customization title label, with an additional supplementary label
     @Override
     protected JPanel getCustomizationLabelPanel(String string) {
         JPanel panel = new JPanel();
@@ -406,6 +461,7 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         return panel;
     }
 
+    // EFFECTS: returns grid bag constraints for a customization label at the given index
     private GridBagConstraints getCustomizationLabelConstraints(int index) {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -415,6 +471,7 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         return constraints;
     }
 
+    // EFFECTS: returns a customization that has been initialized
     private JPanel rowInit(int index) {
         JPanel row = new JPanel();
         row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
@@ -427,6 +484,7 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         return row;
     }
 
+    // EFFECTS: returns a day of month selection JSpinner
     private JSpinner getDayOfMonthSpinner() {
         JSpinner dayOfMonth = new JSpinner(new SpinnerNumberModel(1, 1, MONTH_MAX_DAYS, 1));
         setupSpinner(dayOfMonth);
@@ -436,6 +494,10 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         return dayOfMonth;
     }
 
+    // MODIFIES: customizationPanel
+    // EFFECTS: sets custom reminders based on the content in each customization row, returns whether
+    //          user inputted reminders are valid
+    //          if valid, set custom reminders to the current habit
     @Override
     protected boolean setCustomReminders(int frequency) {
         Set<Pair<Integer, LocalTime>> pairs = new HashSet<>();
@@ -458,6 +520,8 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         return true;
     }
 
+    // MODIFIES: dayOfMonth, hours, minutes
+    // EFFECTS: commits the given spinners
     private void commitSpinners(JSpinner dayOfMonth, JSpinner hours, JSpinner minutes) {
         try {
             dayOfMonth.commitEdit();
@@ -468,6 +532,8 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups components in reminder list tab
     @Override
     protected void setupReminderListComponents() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d h:mm a");

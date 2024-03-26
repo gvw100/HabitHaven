@@ -100,16 +100,22 @@ public class HabitUI extends JPanel {
     // EFFECTS: setups document listener for the name text field
     private void setupNameDocumentListener() {
         habitName.getDocument().addDocumentListener(new DocumentListener() {
+            // MODIFIES: this
+            // EFFECTS: sets new habit name
             @Override
             public void changedUpdate(DocumentEvent e) {
                 setNewName();
             }
 
+            // MODIFIES: this
+            // EFFECTS: sets new habit name
             @Override
             public void removeUpdate(DocumentEvent e) {
                 setNewName();
             }
 
+            // MODIFIES: this
+            // EFFECTS: sets new habit name
             @Override
             public void insertUpdate(DocumentEvent e) {
                 setNewName();
@@ -121,6 +127,8 @@ public class HabitUI extends JPanel {
     // EFFECTS: setups focus listener for the name text field
     private void setupNameFocusListener() {
         habitName.addFocusListener(new FocusAdapter() {
+            // MODIFIES: this
+            // EFFECTS: if textField contains filler text, then select all
             @Override
             public void focusGained(FocusEvent e) {
                 invokeLater(() -> {
@@ -130,12 +138,13 @@ public class HabitUI extends JPanel {
                 });
             }
 
+            // MODIFIES: this
+            // EFFECTS: if textField is blank, then set text to filler text
             @Override
             public void focusLost(FocusEvent e) {
                 invokeLater(() -> {
                     if (habitName.getText().isBlank()) {
                         habitName.setText("New Habit");
-                        habitName.selectAll();
                     }
                 });
             }
@@ -194,16 +203,22 @@ public class HabitUI extends JPanel {
     // EFFECTS: setups description document listener
     private void setupDescriptionDocumentListener() {
         habitDescriptionArea.getDocument().addDocumentListener(new DocumentListener() {
+            // MODIFIES: this
+            // EFFECTS: sets new habit description
             @Override
             public void changedUpdate(DocumentEvent e) {
                 setNewDescription();
             }
 
+            // MODIFIES: this
+            // EFFECTS: sets new habit description
             @Override
             public void removeUpdate(DocumentEvent e) {
                 setNewDescription();
             }
 
+            // MODIFIES: this
+            // EFFECTS: sets new habit description
             @Override
             public void insertUpdate(DocumentEvent e) {
                 setNewDescription();
@@ -215,6 +230,8 @@ public class HabitUI extends JPanel {
     // EFFECTS: setups up description focus listener
     private void setupDescriptionFocusListener() {
         habitDescriptionArea.addFocusListener(new FocusAdapter() {
+            // MODIFIES: this
+            // EFFECTS: if habitDescriptionArea contains filler text, then select all
             @Override
             public void focusGained(FocusEvent e) {
                 invokeLater(() -> {
@@ -224,12 +241,13 @@ public class HabitUI extends JPanel {
                 });
             }
 
+            // MODIFIES: this
+            // EFFECTS: if habitDescriptionArea is blank, replace with filler text
             @Override
             public void focusLost(FocusEvent e) {
                 invokeLater(() -> {
                     if (habitDescriptionArea.getText().isBlank()) {
                         habitDescriptionArea.setText("Description (optional)");
-                        habitDescriptionArea.selectAll();
                     }
                 });
             }
@@ -385,9 +403,11 @@ public class HabitUI extends JPanel {
     }
 
     // MODIFIES: this
-    // EFFECTS: setups listener for the increment button, checks whether any new achievements were earned,
-    //          adds to achievementToast queue, updates entire habit panel
+    // EFFECTS: setups listener for the increment button
     private void setupIncrementListener() {
+        // MODIFIES: this
+        // EFFECTS: checks whether any new achievements were earned,
+        //          adds to achievementToast queue, updates other tabs
         incrementSuccess.addActionListener(e -> invokeLater(() -> {
             List<Achievement> current = habit.getAchievements();
             if (habit.finishHabit()) {
@@ -406,6 +426,8 @@ public class HabitUI extends JPanel {
     // MODIFIES: this
     // EFFECTS: setups decrement button listener, updates numSuccess label and entire habit panel accordingly
     private void setupDecrementListener() {
+        // MODIFIES: this
+        // EFFECTS: decrement numSuccess, update numSuccess label and rest of habit panel
         decrementSuccess.addActionListener(e -> invokeLater(() -> {
             if (habit.undoFinishHabit()) {
                 habitNumSuccess.setText(String.valueOf(habit.getNumSuccess()));
@@ -428,6 +450,8 @@ public class HabitUI extends JPanel {
     // MODIFIES: this
     // EFFECTS: setups listeners for the change period and change frequency buttons
     private void setupFrequencyPeriodListeners() {
+        // MODIFIES: this
+        // EFFECTS: confirms change frequency action and prompts user to choose new frequency
         changeFrequency.addActionListener(e -> invokeLater(() -> {
             String message = "Changing frequency will reset habit progress, statistics, and achievements."
                     + " Are you sure you want to continue?";
@@ -436,6 +460,8 @@ public class HabitUI extends JPanel {
                 changeFrequency();
             }
         }));
+        // MODIFIES: this
+        // EFFECTS: confirms change period action and prompts user to choose new period
         changePeriod.addActionListener(e -> invokeLater(() -> {
             String message = "Changing period will reset habit progress, statistics, and achievements."
                     + " Are you sure you want to continue?";

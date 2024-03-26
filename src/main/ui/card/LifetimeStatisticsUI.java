@@ -212,18 +212,25 @@ public class LifetimeStatisticsUI extends JPanel {
         dailyBestStreak.setForeground(FONT_COLOUR);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups weekly best streak label
     private void setupWeeklyBestStreakLabel(int streak) {
         weeklyBestStreak = new JLabel("        Best Weekly Streak: " + streak);
         weeklyBestStreak.setFont(MEDIUM_FONT);
         weeklyBestStreak.setForeground(FONT_COLOUR);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups monthly best streak label
     private void setupMonthlyBestStreakLabel(int streak) {
         monthlyBestStreak = new JLabel("        Best Monthly Streak: " + streak);
         monthlyBestStreak.setFont(MEDIUM_FONT);
         monthlyBestStreak.setForeground(FONT_COLOUR);
     }
 
+    // MODIFIES: daily, weekly, monthly
+    // EFFECTS: calculates best streak for daily, weekly, and monthly, storing calculated values
+    //          into daily, weekly, and monthly
     private void getBestStreak(int[] daily, int[] weekly, int[] monthly) {
         daily[0] = weekly[0] = monthly[0] = 0;
         for (Habit habit : habitManager.getHabits()) {
@@ -240,6 +247,8 @@ public class LifetimeStatisticsUI extends JPanel {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups periodic completions labels
     private void setupPeriodicCompletions() {
         int[] total = new int[1];
         int[] daily = new int[1];
@@ -256,6 +265,8 @@ public class LifetimeStatisticsUI extends JPanel {
         mainPanel.add(monthlyPeriodicCompletions, getCenterConstraints(12));
     }
 
+    // MODIFIES: total, daily, weekly, monthly
+    // EFFECTS: calculates total number of periodic completions, storing results in total, daily, weekly, and monthly
     private void getTotalPeriodicCompletions(int[] total, int[] daily, int[] weekly, int[] monthly) {
         total[0] = daily[0] = weekly[0] = monthly[0] = 0;
         for (Habit habit : habitManager.getHabits()) {
@@ -273,30 +284,40 @@ public class LifetimeStatisticsUI extends JPanel {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups all periodic completions label
     private void setupAllPeriodicCompletionsLabels(int total) {
         allPeriodicCompletions = new JLabel("        Total Number of Periodic Completions: " + total);
         allPeriodicCompletions.setFont(MEDIUM_FONT);
         allPeriodicCompletions.setForeground(FONT_COLOUR);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups daily periodic completions label
     private void setupDailyPeriodicCompletionsLabels(int daily) {
         dailyPeriodicCompletions = new JLabel("Total Periodic Daily Completions: " + daily);
         dailyPeriodicCompletions.setFont(MEDIUM_FONT);
         dailyPeriodicCompletions.setForeground(FONT_COLOUR);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups weekly periodic completions label
     private void setupWeeklyPeriodicCompletionsLabels(int weekly) {
         weeklyPeriodicCompletions = new JLabel("Total Periodic Weekly Completions: " + weekly);
         weeklyPeriodicCompletions.setFont(MEDIUM_FONT);
         weeklyPeriodicCompletions.setForeground(FONT_COLOUR);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups monthly periodic completions label
     private void setupMonthlyPeriodicCompletionsLabels(int monthly) {
         monthlyPeriodicCompletions = new JLabel("Total Periodic Monthly Completions: " + monthly);
         monthlyPeriodicCompletions.setFont(MEDIUM_FONT);
         monthlyPeriodicCompletions.setForeground(FONT_COLOUR);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups success rate labels
     private void setupSuccessRate() {
         double[] average = new double[1];
         double[] daily = new double[1];
@@ -314,6 +335,7 @@ public class LifetimeStatisticsUI extends JPanel {
         mainPanel.add(getEmptyRow(), getCenterConstraints(17));
     }
 
+    // EFFECTS: returns an empty JPanel, used to fill up space in grid bag layout
     private JPanel getEmptyRow() {
         JPanel empty = new JPanel();
         empty.setBackground(APP_COLOUR);
@@ -321,6 +343,8 @@ public class LifetimeStatisticsUI extends JPanel {
         return empty;
     }
 
+    // MODIFIES: average, daily, weekly, monthly
+    // EFFECTS: calculates average success rates, storing the results in average, daily, weekly, and monthly
     private void getAverageSuccessRate(double[] average, double[] daily, double[] weekly, double[] monthly) {
         int dailyCount = 0;
         int weeklyCount = 0;
@@ -345,6 +369,9 @@ public class LifetimeStatisticsUI extends JPanel {
         calculateAverage(dailyCount, weeklyCount, monthlyCount, average, daily, weekly, monthly);
     }
 
+    // MODIFIES: average, daily, weekly, monthly
+    // EFFECTS: calculates average success rates, storing results in average, daily, weekly, and monthly
+    //          if the number of habits is 0, success rate is 0
     private void calculateAverage(int dailyCount, int weeklyCount, int monthlyCount,
                                   double[] average, double[] daily, double[] weekly, double[] monthly) {
         average[0] = habitManager.getHabits().size() == 0 ? 0 :
@@ -354,30 +381,39 @@ public class LifetimeStatisticsUI extends JPanel {
         monthly[0] = monthlyCount == 0 ? 0 : Math.round(monthly[0] / monthlyCount);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups all habits average success rate label
     private void setupAverageSuccessRateLabel(double average) {
         averageSuccessRate = new JLabel("        All Habits Average Success Rate: " + (int) average + "%");
         averageSuccessRate.setFont(MEDIUM_FONT);
         averageSuccessRate.setForeground(FONT_COLOUR);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups daily average success rate label
     private void setupDailyAverageSuccessRateLabel(double daily) {
         dailyAverageSuccessRate = new JLabel("Daily Habits Average Success Rate: " + (int) daily + "%");
         dailyAverageSuccessRate.setFont(MEDIUM_FONT);
         dailyAverageSuccessRate.setForeground(FONT_COLOUR);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups weekly average success rate label
     private void setupWeeklyAverageSuccessRateLabel(double weekly) {
         weeklyAverageSuccessRate = new JLabel("Weekly Habits Average Success Rate: " + (int) weekly + "%");
         weeklyAverageSuccessRate.setFont(MEDIUM_FONT);
         weeklyAverageSuccessRate.setForeground(FONT_COLOUR);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups monthly average success rate label
     private void setupMonthlyAverageSuccessRateLabel(double monthly) {
         monthlySuccessRate = new JLabel("Monthly Habits Average Success Rate: " + (int) monthly + "%");
         monthlySuccessRate.setFont(MEDIUM_FONT);
         monthlySuccessRate.setForeground(FONT_COLOUR);
     }
 
+    // EFFECTS: returns grid bag constraints of left aligned elements
     private GridBagConstraints getLeftConstraints(int y) {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -388,6 +424,7 @@ public class LifetimeStatisticsUI extends JPanel {
         return constraints;
     }
 
+    // EFFECTS: returns grid bag constraints of center aligned elements
     private GridBagConstraints getCenterConstraints(int y) {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -398,6 +435,8 @@ public class LifetimeStatisticsUI extends JPanel {
         return constraints;
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups empty row and adds it to mainPanel
     private void setupEmptyRow() {
         JPanel panel = new JPanel();
         panel.setBackground(APP_COLOUR);
