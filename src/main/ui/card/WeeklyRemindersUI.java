@@ -23,10 +23,13 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
     private JPanel presetWeekdays;
     private JPanel presetWeekends;
 
+    // EFFECTS: Constructs a weekly reminder panel
     public WeeklyRemindersUI(Habit habit) {
         super(habit);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups components in preset tab
     @Override
     protected void setupPresetComponents() {
         setupPresetLabel("Set up to 15 notifications per week!");
@@ -36,6 +39,8 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         setupPresetWeekends();
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups presetChoiceBox and adds it to presetPanel
     private void setupPresetChoiceBox() {
         String[] presetOptions = {"Which days would you like to be notified?",
                 "Every Day", "Every Weekday", "Every Weekend"};
@@ -47,10 +52,19 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         presetPanel.add(presetChoiceBox, getPresetChoiceConstraints());
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds listener to presetChoiceBox
     private void setupPresetChoiceListener() {
+        // MODIFIES: this
+        // EFFECTS: displays preset form
         presetChoiceBox.addActionListener((e) -> invokeLater(this::displayPresetForm));
     }
 
+    // MODIFIES: this
+    // EFFECTS: if "Every Day" is selected, show presetEveryDay,
+    //          if "Every Weekday" is selected, show presetWeekdays,
+    //          if "Every Weekend" is selected, show presetWeekends,
+    //          otherwise, hide all preset panels
     private void displayPresetForm() {
         switch (presetChoiceBox.getSelectedIndex()) {
             case 1:
@@ -75,6 +89,8 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups presetEveryDay panel and adds to presetPanel
     private void setupPresetEveryDay() {
         presetEveryDay = new JPanel();
         presetEveryDay.setLayout(new GridBagLayout());
@@ -88,7 +104,8 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         presetEveryDay.setVisible(false);
         presetPanel.add(presetEveryDay, getPresetFormConstraints());
     }
-    
+
+    // EFFECTS: returns preset box constraints
     private GridBagConstraints getPresetBoxConstraints() {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -100,6 +117,7 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         return constraints;
     }
 
+    // EFFECTS: returns preset form constraints
     private GridBagConstraints getPresetFormConstraints() {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -111,7 +129,12 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         return constraints;
     }
 
+    // MODIFIES: frequencyBox
+    // EFFECTS: adds listener to frequencyBox
     private void setupPresetEveryDayBoxListener(JComboBox<String> frequencyBox) {
+        // MODIFIES: this
+        // EFFECTS: updates presetEveryDayUI,
+        //          if a valid frequency is selected, then generate a preset form and submit button
         frequencyBox.addActionListener((e) -> invokeLater(() -> {
             int frequency = frequencyBox.getSelectedIndex();
             if (frequency != 0) {
@@ -124,8 +147,13 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         }));
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets up preset every day submit button and adds to presetEveryDay panel
     private void generatePresetEveryDaySubmitButton() {
         JButton submitButton = getPresetSubmitButton();
+        // MODIFIES: this
+        // EFFECTS: attempts to setPresetEveryDay reminders, notifies user whether reminder generation was successful,
+        //          if successful, then update reminders UI
         submitButton.addActionListener((e) -> invokeLater(() -> {
             if (setPresetEveryDay()) {
                 HabitManagerUI.changeMade();
@@ -140,6 +168,8 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         presetEveryDay.add(submitButton, getSubmitButtonConstraints());
     }
 
+    // MODIFIES: this
+    // EFFECTS: attempts to set preset every day reminders, returns whether reminders were set successfully
     private boolean setPresetEveryDay() {
         Set<LocalTime> times = new HashSet<>();
         if (!populateTimes(times, presetEveryDay)) {
@@ -156,6 +186,8 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         return true;
     }
 
+    // MODIFIES: times
+    // EFFECTS: populates times with user inputted times, returns false if there are duplicate times
     private boolean populateTimes(Set<LocalTime> times, JPanel panel) {
         for (Component component : panel.getComponents()) {
             if (!(component instanceof JPanel)) {
@@ -176,6 +208,8 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         return true;
     }
 
+    // MODIFIES: panel
+    // EFFECTS: generates presetForm and adds each row to panel
     private void generatePresetForm(JPanel panel, int frequency) {
         for (int i = 0; i < frequency; i++) {
             JPanel row = setupPresetRow(i);
@@ -183,6 +217,7 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         }
     }
 
+    // EFFECTS: setups a preset row at index i and returns it
     private JPanel setupPresetRow(int i) {
         JPanel row = new JPanel();
         row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
@@ -208,6 +243,8 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         return row;
     }
 
+    // MODIFIES: this
+    // EFFECTS: updates presetEveryDay panel with frequency box set to given index
     private void updatePresetEveryDayUI(int index) {
         presetEveryDay.removeAll();
         JComboBox<String> frequency = new JComboBox<>(new String[] {"Number of Notifications per Day", "1", "2"});
@@ -219,6 +256,8 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         presetEveryDay.add(frequency, getPresetBoxConstraints());
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups presetWeekdays panel and adds it to presetPanel
     private void setupPresetWeekdays() {
         presetWeekdays = new JPanel();
         presetWeekdays.setLayout(new GridBagLayout());
@@ -234,7 +273,12 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         presetPanel.add(presetWeekdays, getPresetFormConstraints());
     }
 
+    // MODIFIES: frequencyBox
+    // EFFECTS: adds listener to frequencyBox
     private void setupPresetWeekdaysBoxListener(JComboBox<String> frequencyBox) {
+        // MODIFIES: this
+        // EFFECTS: updates presetWeekdaysUI,
+        //          if a valid frequency is selected, generate preset form and preset weekdays submit button
         frequencyBox.addActionListener((e) -> invokeLater(() -> {
             int frequency = frequencyBox.getSelectedIndex();
             if (frequency != 0) {
@@ -247,8 +291,14 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         }));
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets up preset weekday submit button and adds it to presetWeekdays panel
     private void generatePresetWeekdaysSubmitButton() {
         JButton submitButton = getPresetSubmitButton();
+        // MODIFIES: this
+        // EFFECTS: attempts to set presetWeekdays reminders and notifies user
+        //          on whether reminders were set successfully,
+        //          if successful, update reminders UI
         submitButton.addActionListener((e) -> invokeLater(() -> {
             if (setPresetWeekdays()) {
                 HabitManagerUI.changeMade();
@@ -263,6 +313,8 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         presetWeekdays.add(submitButton, getSubmitButtonConstraints());
     }
 
+    // MODIFIES: this
+    // EFFECTS: attempts to set presetWeekdays reminders, returns whether reminders were set successfully
     private boolean setPresetWeekdays() {
         Set<LocalTime> times = new HashSet<>();
         if (!populateTimes(times, presetWeekdays)) {
@@ -279,6 +331,8 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         return true;
     }
 
+    // MODIFIES: this
+    // EFFECTS: updates presetWeekdaysUI with frequency box set to the given index
     private void updatePresetWeekdaysUI(int index) {
         presetWeekdays.removeAll();
         JComboBox<String> frequency = new JComboBox<>(new String[]
@@ -291,6 +345,8 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         presetWeekdays.add(frequency, getPresetBoxConstraints());
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups presetWeekdends panel and adds it to presetPanel
     private void setupPresetWeekends() {
         presetWeekends = new JPanel();
         presetWeekends.setLayout(new GridBagLayout());
@@ -306,7 +362,13 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         presetPanel.add(presetWeekends, getPresetFormConstraints());
     }
 
+    // MODIFIES: frequencyBox
+    // EFFECTS: adds listener to frequencyBox
     private void setupPresetWeekendsBoxListener(JComboBox<String> frequencyBox) {
+        // MODIFIES: this
+        // EFFECTS: update preset weekends UI
+        //          if valid frequency is selected,
+        //          generatePresetForm and generate preset weekends submit button
         frequencyBox.addActionListener((e) -> invokeLater(() -> {
             int frequency = frequencyBox.getSelectedIndex();
             if (frequency != 0) {
@@ -319,8 +381,14 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         }));
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups and adds submit button to presetWeekends panel
     private void generatePresetWeekendsSubmitButton() {
         JButton submitButton = getPresetSubmitButton();
+        // MODIFIES: this
+        // EFFECTS: attempts to set presetWeekends reminders, notifies
+        //          user whether reminders were set successfully,
+        //          if successful, update reminders UI
         submitButton.addActionListener((e) -> invokeLater(() -> {
             if (setPresetWeekends()) {
                 HabitManagerUI.changeMade();
@@ -335,6 +403,8 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         presetWeekends.add(submitButton, getSubmitButtonConstraints());
     }
 
+    // MODIFIES: this
+    // EFFECTS: attempts to set presetWeekends reminders, returns whether reminders were set successfully
     private boolean setPresetWeekends() {
         Set<LocalTime> times = new HashSet<>();
         if (!populateTimes(times, presetWeekends)) {
@@ -351,6 +421,8 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         return true;
     }
 
+    // MODIFIES: this
+    // EFFECTS: updates presetWeekendsUI, frequency box set to given index
     private void updatePresetWeekendsUI(int index) {
         presetWeekends.removeAll();
         JComboBox<String> frequency = new JComboBox<>(new String[] {"Number of Notifications per Day of Weekend",
@@ -363,18 +435,25 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         presetWeekends.add(frequency, getPresetBoxConstraints());
     }
 
+    // EFFECTS: returns a preset submit button
     private JButton getPresetSubmitButton() {
         JButton button = new JButton("Submit");
         makeButton(button, WINDOW_WIDTH - SIDE_BAR_WIDTH, 50, MEDIUM_FONT);
         return button;
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups components in customization tab
     @Override
     protected void setupCustomizationComponents(int startingIndex) {
         setupCustomizationFrequency(MAX_FREQUENCY,
                 "Choose specific days and times for your notifications!", startingIndex);
     }
 
+    // MODIFIES: customizationPanel
+    // EFFECTS: sets custom reminders based on the content in each customization row, returns whether
+    //          user inputted reminders are valid
+    //          if valid, set custom reminders to the current habit
     @Override
     protected boolean setCustomReminders(int frequency) {
         Set<LocalDateTime> reminders = new HashSet<>();
@@ -397,6 +476,7 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         return true;
     }
 
+    // EFFECTS: returns a row in the customization tab, representing a specific time and/or day
     @Override
     protected JPanel setupCustomizationRow(int index) {
         JPanel row = customizationRowInit(index);
@@ -423,6 +503,7 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         return row;
     }
 
+    // EFFECTS: returns a customizationRow JPanel at index i that has been initialized
     private JPanel customizationRowInit(int i) {
         JPanel row = new JPanel();
         row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
@@ -435,6 +516,8 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         return row;
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups components in reminder list tab
     @Override
     protected void setupReminderListComponents() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE h:mm a");

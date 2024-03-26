@@ -42,7 +42,11 @@ name, description, period, and frequency.
 - Or, as a user, I want to be able to have the option to enable auto-save.
 - As a user, I want to be given the option to export my save file to my computer.
 - As a user, I want to be given the option to import a save file from my computer.
-- As a user, I want to be able to view and be notified of my achievements for each habit.
+- As a user, I want to be able to view and my achievements for each habit.
+- As a user, I want to be notified when I earn a new achievement.
+- As a user I want to have the option to make the application exit on close or hide on close.
+- As a user, I want to be able to archive and unarchive a habit. 
+- As a user, I want to be able to make a copy of a habit.
 ## Instructions for Grader
 - You can add habits to your habit list in one of two ways: 
   - Click the "Create Habit" option in the sidebar.
@@ -52,15 +56,23 @@ name, description, period, and frequency.
   - You can view habit statistics in the "Statistics" tab. 
   - You can customize and view notifications in the "Notifications" tab.
   - You can view habit achievements in the "Achievements" tab.
-- You can delete a habit by clicking the garbage can icon in the appropriate row of the habit list.
-  - You can delete all habits by clicking the "Settings" option in the sidebar and clicking "Delete All Habits."
+- You can delete a habit by clicking the garbage can icon in the appropriate row of the habit list. 
+- Alternatively, you can delete a habit by right-clicking and selecting the "Delete the Habit" option.
+- You can delete all habits by clicking the "Settings" option in the sidebar and clicking "Delete All Habits."
+- You can make a copy of a habit by right-clicking and selecting the "Clone the Habit" option.
+- You can archive a habit by right-clicking and selecting the "Archive the Habit" option.
+- You can unarchive a habit by right-clicking a habit in the "Archived Habits" tab and selecting the "Unarchive the Habit" option.
+- Hide on close and exit on close
+  - You can toggle the application to exit on close or hide on close. If you click a toast notification while the application is hidden, the application is re-opened back to where you left off
+  - You can find an exe file at out/executable/HabitHaven.exe. If the app is hidden, re-opening the exe brings you back to where you left off.
 - You can locate my visual component in many places:
-  - After earning an achievement, you can hear a sound effect being played and an achievement toast being displayed. These toasts can be toggled on and off in the "Settings" option.
+  - After earning an achievement, you can hear a sound effect being played and an achievement toast being displayed. These toasts can be toggled on and off in the "Settings" sidebar option.
   - Once my application launches, the HabitHaven logo can be seen above the two buttons.
   - The HabitHaven logo can be seen on the sidebar. 
   - Icons for each option on the sidebar can be seen on the sidebar. 
   - Once within a habit, icons can be seen within each of the tabs of the tabbed pane.
   - Icons for each achievement tier can be seen in the habit achievements.
+  - Some more icons can be seen in the settings sidebar option.
 - You can save the state of my application in one of three ways: 
   - Click the "Save to File" option in the sidebar.
   - Close the application with unsaved changes - you will be prompted to save, click "Yes".
