@@ -157,7 +157,10 @@ public class HabitUI extends JPanel {
     }
 
     // MODIFIES: this
-    // EFFECTS:
+    // EFFECTS: if inputted text length > MAX_HABIT_NAME_LENGTH, set text to the appropriate substring
+    //          of length MAX_HABIT_NAME_LENGTH,
+    //          if inputted text is blank, then set text to "New Habit" and select all,
+    //          sets habitName to the processed inputted text
     private void setNewName() {
         invokeLater(() -> {
             if (habitName.getText().length() > MAX_HABIT_NAME_LENGTH) {

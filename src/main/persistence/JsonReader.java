@@ -86,8 +86,9 @@ public class JsonReader {
         LocalDateTime nextPeriodEnd = LocalDateTime.parse(jsonObject.getString("nextPeriodEnd"));
         boolean isPreviousComplete = jsonObject.getBoolean("isPreviousComplete");
         HabitStatistics stats = parseHabitStatistics(jsonObject.getJSONObject("habitStats"));
+        boolean isArchived = jsonObject.getBoolean("isArchived");
         Habit habit = new Habit(name, description, period, frequency, id, notifyEnabled, numSuccess,
-                currentPeriodEnd, nextPeriodEnd, isPreviousComplete, clock, stats, null);
+                currentPeriodEnd, nextPeriodEnd, isPreviousComplete, clock, stats, null, isArchived);
         HabitReminder reminder;
         reminder = notifyEnabled ? parseHabitReminder(jsonObject.getJSONObject("habitReminder"), period, habit) : null;
         habit.setHabitReminder(reminder);

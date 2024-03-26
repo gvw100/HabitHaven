@@ -48,7 +48,7 @@ public class HabitManagerTest extends HabitHelperTest {
 
     @Test
     void testGetSize() {
-        h1.setNotifyEnabled(true);
+        h1.toggleNotifyEnabled();
         assertEquals(0, habitManager.getSize());
         habitManager.addHabit(h1);
         assertEquals(1, habitManager.getSize());

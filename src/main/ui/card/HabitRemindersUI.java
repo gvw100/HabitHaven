@@ -446,7 +446,7 @@ public abstract class HabitRemindersUI extends JPanel {
     // EFFECTS: toggles notifications on/off
     private void toggleNotifications() {
         HabitManagerUI.changeMade();
-        habit.setNotifyEnabled(!habit.isNotifyEnabled());
+        habit.toggleNotifyEnabled();
         updateRemindersUI();
     }
 

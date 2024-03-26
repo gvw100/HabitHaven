@@ -34,6 +34,7 @@ public class Habit {
     private final HabitStatistics habitStats;
     private HabitReminder habitReminder;
     private List<Achievement> achievements;
+    private boolean isArchived;
 
     // REQUIRES: 0 < frequency < 16
     // EFFECTS: initializes habit
@@ -50,13 +51,14 @@ public class Habit {
         this.habitStats = new HabitStatistics();
         this.habitReminder = this.notifyEnabled ? getNewReminder() : null;
         this.achievements = new ArrayList<>();
+        this.isArchived = false;
         updateDateTime();
     }
 
     // REQUIRES: 0 < frequency < 16
     // EFFECTS: initializes habit for returning users
     public Habit(String n, String d, Period p, int f, UUID id, boolean ne, int ns, LocalDateTime cpe,
-                 LocalDateTime npe, boolean ipc, Clock c, HabitStatistics hs, HabitReminder hr) {
+                 LocalDateTime npe, boolean ipc, Clock c, HabitStatistics hs, HabitReminder hr, boolean isArchived) {
         this.name = n;
         this.description = d;
         this.period = p;
@@ -71,6 +73,7 @@ public class Habit {
         this.habitStats = hs;
         this.habitReminder = hr;
         this.achievements = getAchieved(habitStats, period);
+        this.isArchived = isArchived;
     }
 
     public void setHabitReminder(HabitReminder habitReminder) {
@@ -101,24 +104,17 @@ public class Habit {
     }
 
     // MODIFIES: this
-    // EFFECTS: sets this.notifyEnabled to notifyEnabled,
-    //          if notifyEnabled != this.notifyEnabled, then habitReminder is reinitialized
-    //          if notifyEnabled is true, then habitReminder is reinitialized to a new reminder
-    //          if notifyEnabled is false, then all reminders are cancelled and habitReminder is set to null
-    //          returns whether this.notifyEnabled was changed
-    public boolean setNotifyEnabled(boolean notifyEnabled) {
-        if (notifyEnabled == this.notifyEnabled) {
-            return false;
-        }
-        if (notifyEnabled) {
-            this.notifyEnabled = true;
+    // EFFECTS: toggles this.notifyEnabled
+    //          if this.notifyEnabled is true, then habitReminder is reinitialized to a new reminder
+    //          if this.notifyEnabled is false, then all reminders are cancelled and habitReminder is set to null
+    public void toggleNotifyEnabled() {
+        this.notifyEnabled = !this.notifyEnabled;
+        if (this.notifyEnabled) {
             habitReminder = getNewReminder();
         } else {
-            this.notifyEnabled = false;
             habitReminder.cancelReminders();
             habitReminder = null;
         }
-        return true;
     }
 
     // REQUIRES: 0 < frequency < 16
@@ -162,6 +158,17 @@ public class Habit {
         return true;
     }
 
+    // MODIFIES: this
+    // EFFECTS: toggles isArchived, if archived, cancels reminders, if unarchived, updates habit
+    public void toggleIsArchived() {
+        this.isArchived = !this.isArchived;
+        if (this.isArchived && isNotifyEnabled()) {
+            habitReminder.cancelReminders();
+        } else {
+            updateHabit();
+        }
+    }
+
     // REQUIRES: no reminders scheduled yet for this period, notifyEnabled is true
     // EFFECTS: returns new habit reminder with default notifications based on period
     public HabitReminder getNewReminder() {
@@ -195,7 +202,6 @@ public class Habit {
         return this.id;
     }
 
-    // EFFECTS: returns whether notifications are enabled
     public boolean isNotifyEnabled() {
         return this.notifyEnabled;
     }
@@ -237,6 +243,10 @@ public class Habit {
     // EFFECTS: returns whether previous period was completed successfully
     public boolean isPreviousComplete() {
         return this.isPreviousComplete;
+    }
+
+    public boolean isArchived() {
+        return this.isArchived;
     }
 
     // MODIFIES: this
@@ -318,7 +328,11 @@ public class Habit {
     //          switch to next period and reset isPreviousComplete to false,
     //          if now is after nextPeriodEnd, switch to next period, reset streak, and reset isPreviousComplete
     //          returns whether this was modified
+    //          archived habits do not get updated
     public boolean updateHabit() {
+        if (isArchived) {
+            return false;
+        }
         boolean changeMade = false;
         LocalDateTime now = LocalDateTime.now(clock);
         if (!now.isBefore(currentPeriodEnd.plusMinutes(1)) && now.isBefore(nextPeriodEnd.plusMinutes(1))) {
@@ -407,6 +421,7 @@ public class Habit {
         if (habitReminder != null) {
             json.put("habitReminder", habitReminder.toJson());
         }
+        json.put("isArchived", isArchived);
         return json;
     }
 }

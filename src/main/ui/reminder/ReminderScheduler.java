@@ -34,9 +34,10 @@ public class ReminderScheduler {
     }
 
     // MODIFIES: this
-    // EFFECTS: schedules notifications to be sent at the given times
+    // EFFECTS: schedules notifications to be sent at the given times, does not schedule if period is complete or
+    //          habit is archived
     public void scheduleReminders(Set<LocalDateTime> reminders, Habit habit) {
-        if (habit.isPeriodComplete()) {
+        if (habit.isPeriodComplete() || habit.isArchived()) {
             return;
         }
         for (LocalDateTime reminder : reminders) {

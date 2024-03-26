@@ -2,6 +2,17 @@
     "habits": [
         {
             "period": "DAILY",
+            "isArchived": false,
+            "currentPeriodEnd": "2024-02-25T23:59",
+            "description": "revise for dsci mt once per day",
+            "frequency": 1,
+            "habitReminder": {
+                "reminders": [
+                    {"dateTime": "2024-02-25T18:30"},
+                    {"dateTime": "2024-02-25T17:00"}
+                ],
+                "isDefault": false
+            },
             "nextPeriodEnd": "2024-02-26T23:59",
             "isPreviousComplete": false,
             "habitStats": {
@@ -12,19 +23,9 @@
                 "numPeriodSuccess": 0
             },
             "notifyEnabled": true,
-            "currentPeriodEnd": "2024-02-25T23:59",
             "name": "dsci revision",
-            "description": "revise for dsci mt once per day",
             "id": "ffa469d5-ec39-438b-964e-703a6b84544b",
-            "numSuccess": 0,
-            "frequency": 1,
-            "habitReminder": {
-                "reminders": [
-                    {"dateTime": "2024-02-25T18:30"},
-                    {"dateTime": "2024-02-25T17:00"}
-                ],
-                "isDefault": false
-            }
+            "numSuccess": 0
         },
         {
             "period": "WEEKLY",
@@ -38,6 +39,7 @@
                 "numPeriodSuccess": 17
             },
             "notifyEnabled": false,
+            "isArchived": true,
             "currentPeriodEnd": "2024-03-02T23:59",
             "name": "jogging",
             "description": "jog twice per week",
@@ -47,21 +49,9 @@
         },
         {
             "period": "DAILY",
-            "nextPeriodEnd": "2024-02-26T23:59",
-            "isPreviousComplete": false,
-            "habitStats": {
-                "bestStreak": 2,
-                "totalNumSuccess": 30,
-                "numPeriod": 3,
-                "streak": 0,
-                "numPeriodSuccess": 2
-            },
-            "notifyEnabled": true,
+            "isArchived": false,
             "currentPeriodEnd": "2024-02-25T23:59",
-            "name": "math 200 grind",
             "description": "git gud 15 times per day",
-            "id": "bc04c252-5279-4eb7-9963-59c50c92946b",
-            "numSuccess": 0,
             "frequency": 15,
             "habitReminder": {
                 "reminders": [
@@ -82,25 +72,26 @@
                     {"dateTime": "2024-02-25T13:00"}
                 ],
                 "isDefault": true
-            }
+            },
+            "nextPeriodEnd": "2024-02-26T23:59",
+            "isPreviousComplete": false,
+            "habitStats": {
+                "bestStreak": 2,
+                "totalNumSuccess": 30,
+                "numPeriod": 3,
+                "streak": 0,
+                "numPeriodSuccess": 2
+            },
+            "notifyEnabled": true,
+            "name": "math 200 grind",
+            "id": "bc04c252-5279-4eb7-9963-59c50c92946b",
+            "numSuccess": 0
         },
         {
             "period": "MONTHLY",
-            "nextPeriodEnd": "2024-03-31T23:59",
-            "isPreviousComplete": true,
-            "habitStats": {
-                "bestStreak": 1,
-                "totalNumSuccess": 2,
-                "numPeriod": 5,
-                "streak": 1,
-                "numPeriodSuccess": 1
-            },
-            "notifyEnabled": true,
+            "isArchived": true,
             "currentPeriodEnd": "2024-02-29T23:59",
-            "name": "reading book",
             "description": "read two books per month",
-            "id": "a13e7b82-dfc7-43f1-80b0-4163a6317c4c",
-            "numSuccess": 1,
             "frequency": 2,
             "habitReminder": {
                 "reminders": [
@@ -135,25 +126,26 @@
                     {"dateTime": "2024-02-10T09:00"}
                 ],
                 "isDefault": true
-            }
+            },
+            "nextPeriodEnd": "2024-03-31T23:59",
+            "isPreviousComplete": true,
+            "habitStats": {
+                "bestStreak": 1,
+                "totalNumSuccess": 2,
+                "numPeriod": 5,
+                "streak": 1,
+                "numPeriodSuccess": 1
+            },
+            "notifyEnabled": true,
+            "name": "reading book",
+            "id": "a13e7b82-dfc7-43f1-80b0-4163a6317c4c",
+            "numSuccess": 1
         },
         {
             "period": "MONTHLY",
-            "nextPeriodEnd": "2024-03-31T23:59",
-            "isPreviousComplete": false,
-            "habitStats": {
-                "bestStreak": 0,
-                "totalNumSuccess": 0,
-                "numPeriod": 0,
-                "streak": 0,
-                "numPeriodSuccess": 0
-            },
-            "notifyEnabled": true,
+            "isArchived": true,
             "currentPeriodEnd": "2024-02-29T23:59",
-            "name": "make personal project",
             "description": "make personal project once per month",
-            "id": "f68fd6ee-a514-49c2-b3d8-3ff265e4ebac",
-            "numSuccess": 0,
             "frequency": 1,
             "habitReminder": {
                 "reminders": [
@@ -196,25 +188,26 @@
                         "day": 20
                     }
                 ]
-            }
+            },
+            "nextPeriodEnd": "2024-03-31T23:59",
+            "isPreviousComplete": false,
+            "habitStats": {
+                "bestStreak": 0,
+                "totalNumSuccess": 0,
+                "numPeriod": 0,
+                "streak": 0,
+                "numPeriodSuccess": 0
+            },
+            "notifyEnabled": true,
+            "name": "make personal project",
+            "id": "f68fd6ee-a514-49c2-b3d8-3ff265e4ebac",
+            "numSuccess": 0
         },
         {
             "period": "WEEKLY",
-            "nextPeriodEnd": "2024-03-09T23:59",
-            "isPreviousComplete": true,
-            "habitStats": {
-                "bestStreak": 1,
-                "totalNumSuccess": 5,
-                "numPeriod": 0,
-                "streak": 1,
-                "numPeriodSuccess": 1
-            },
-            "notifyEnabled": true,
+            "isArchived": false,
             "currentPeriodEnd": "2024-03-02T23:59",
-            "name": "resistance bands",
             "description": "do resistance bands 5 times per week",
-            "id": "9b2ccb3f-3d9b-451a-a18f-79695bf1850f",
-            "numSuccess": 5,
             "frequency": 5,
             "habitReminder": {
                 "reminders": [
@@ -227,7 +220,20 @@
                     {"dateTime": "2024-03-01T16:30"}
                 ],
                 "isDefault": false
-            }
+            },
+            "nextPeriodEnd": "2024-03-09T23:59",
+            "isPreviousComplete": true,
+            "habitStats": {
+                "bestStreak": 1,
+                "totalNumSuccess": 5,
+                "numPeriod": 0,
+                "streak": 1,
+                "numPeriodSuccess": 1
+            },
+            "notifyEnabled": true,
+            "name": "resistance bands",
+            "id": "9b2ccb3f-3d9b-451a-a18f-79695bf1850f",
+            "numSuccess": 5
         }
     ],
     "hideOnClose": true,

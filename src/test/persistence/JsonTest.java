@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class JsonTest {
 
     protected void checkHabit(Habit habit, String n, String d, Period p, int f, UUID id,
-                              boolean ne, int ns, LocalDateTime cpe, LocalDateTime npe, boolean ipc) {
+                              boolean ne, int ns, LocalDateTime cpe, LocalDateTime npe, boolean ipc, boolean ia) {
         assertEquals(n, habit.getName());
         assertEquals(d, habit.getDescription());
         assertEquals(p, habit.getPeriod());
@@ -28,6 +28,7 @@ public class JsonTest {
         assertEquals(cpe, habit.getCurrentPeriodEnd());
         assertEquals(npe, habit.getNextPeriodEnd());
         assertEquals(ipc, habit.isPreviousComplete());
+        assertEquals(ia, habit.isArchived());
     }
 
     protected void checkHabitStatistics(Habit habit, int s, int bs, int tns, int nps, int np) {
@@ -73,7 +74,8 @@ public class JsonTest {
         LocalDateTime cpe = LocalDateTime.parse("2024-02-25T23:59");
         LocalDateTime npe = LocalDateTime.parse("2024-02-26T23:59");
         boolean ipc = false;
-        checkHabit(habit, n, d, p, f, id, ne, ns, cpe, npe, ipc);
+        boolean ia = false;
+        checkHabit(habit, n, d, p, f, id, ne, ns, cpe, npe, ipc, ia);
 
         int s, bs, tns, nps, np;
         s = bs = tns = nps = np = 0;
@@ -100,7 +102,8 @@ public class JsonTest {
         LocalDateTime cpe = LocalDateTime.parse("2024-03-02T23:59");
         LocalDateTime npe = LocalDateTime.parse("2024-03-09T23:59");
         boolean ipc = true;
-        checkHabit(habit, n, d, p, f, id, ne, ns, cpe, npe, ipc);
+        boolean ia = true;
+        checkHabit(habit, n, d, p, f, id, ne, ns, cpe, npe, ipc, ia);
 
         int s, bs, tns, nps, np;
         s = 7;
@@ -125,7 +128,8 @@ public class JsonTest {
         LocalDateTime cpe = LocalDateTime.parse("2024-02-25T23:59");
         LocalDateTime npe = LocalDateTime.parse("2024-02-26T23:59");
         boolean ipc = false;
-        checkHabit(habit, n, d, p, f, id, ne, ns, cpe, npe, ipc);
+        boolean ia = false;
+        checkHabit(habit, n, d, p, f, id, ne, ns, cpe, npe, ipc, ia);
 
         int s, bs, tns, nps, np;
         s = 0;
@@ -158,7 +162,8 @@ public class JsonTest {
         LocalDateTime cpe = LocalDateTime.parse("2024-02-29T23:59");
         LocalDateTime npe = LocalDateTime.parse("2024-03-31T23:59");
         boolean ipc = true;
-        checkHabit(habit, n, d, p, f, id, ne, ns, cpe, npe, ipc);
+        boolean ia = true;
+        checkHabit(habit, n, d, p, f, id, ne, ns, cpe, npe, ipc, ia);
 
         int s, bs, tns, nps, np;
         s = 1;
@@ -195,7 +200,8 @@ public class JsonTest {
         LocalDateTime cpe = LocalDateTime.parse("2024-02-29T23:59");
         LocalDateTime npe = LocalDateTime.parse("2024-03-31T23:59");
         boolean ipc = false;
-        checkHabit(habit, n, d, p, f, id, ne, ns, cpe, npe, ipc);
+        boolean ia = true;
+        checkHabit(habit, n, d, p, f, id, ne, ns, cpe, npe, ipc, ia);
 
         int s, bs, tns, nps, np;
         s = bs = tns = nps = np = 0;
@@ -235,7 +241,8 @@ public class JsonTest {
         LocalDateTime cpe = LocalDateTime.parse("2024-03-02T23:59");
         LocalDateTime npe = LocalDateTime.parse("2024-03-09T23:59");
         boolean ipc = true;
-        checkHabit(habit, n, d, p, f, id, ne, ns, cpe, npe, ipc);
+        boolean ia = false;
+        checkHabit(habit, n, d, p, f, id, ne, ns, cpe, npe, ipc, ia);
 
         int s, bs, tns, nps, np;
         s = 1;

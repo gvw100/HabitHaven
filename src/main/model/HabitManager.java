@@ -85,7 +85,9 @@ public class HabitManager {
     // EFFECTS: disables reminders for all habits
     public void turnOffReminders() {
         for (Habit h : habits) {
-            h.setNotifyEnabled(false);
+            if (h.isNotifyEnabled()) {
+                h.toggleNotifyEnabled();
+            }
         }
     }
 

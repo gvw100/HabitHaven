@@ -25,6 +25,7 @@ public class SettingsUI extends JPanel {
     private AchievementToast toast;
     private HabitManagerUI habitManagerUI;
 
+    // EFFECTS: constructs a settingsUI panel
     public SettingsUI(HabitManager habitManager, JFrame parent, AchievementToast toast, HabitManagerUI habitManagerUI) {
         this.habitManager = habitManager;
         this.toast = toast;

@@ -412,21 +412,21 @@ public class ConsoleApp {
         System.out.println("\tb -> Back to habit");
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, habit
     // EFFECTS: changes name to input provided by user
     private void changeName(Habit habit) {
         habit.setName(getHabitName());
         isSaved = false;
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, habit
     // EFFECTS: changes description to input provided by user
     private void changeDescription(Habit habit) {
         habit.setDescription(getHabitDescription());
         isSaved = false;
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, habit
     // EFFECTS: changes period to period selected by user
     private void changePeriod(Habit habit) {
         String command;
@@ -445,7 +445,7 @@ public class ConsoleApp {
         }
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, habit
     // EFFECTS: changes frequency to frequency selected by user between 1 and MAX_FREQUENCY
     private void changeFrequency(Habit habit) {
         String command;
@@ -464,7 +464,7 @@ public class ConsoleApp {
         }
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, habit
     // EFFECTS: resets habit progress and statistics
     private void resetProgress(Habit habit) {
         String command;
@@ -500,7 +500,7 @@ public class ConsoleApp {
         }
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, habit
     // EFFECTS: marks habit as complete, incrementing numSuccess, awarding user for successful completion of period
     private void finishHabit(Habit habit) {
         String periodString = getPeriodString(habit.getPeriod(), "today.", "this week.", "this month.");
@@ -520,7 +520,7 @@ public class ConsoleApp {
         }
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, habit
     // EFFECTS: undoes the last completion of habit, decrementing numSuccess
     private void undoFinishHabit(Habit habit) {
         if (habit.undoFinishHabit()) {
@@ -565,11 +565,8 @@ public class ConsoleApp {
         do {
             displayNotificationOptions();
             switch (input.next()) {
-                case "e":
-                    enableNotifications(habit);
-                    break;
-                case "d":
-                    disableNotifications(habit);
+                case "t":
+                    toggleNotifications(habit);
                     break;
                 case "c":
                     customizeNotificationDateTimes(habit);
@@ -583,33 +580,19 @@ public class ConsoleApp {
     // EFFECTS: displays notification options
     private void displayNotificationOptions() {
         System.out.println("\nSelect one of the following: \n");
-        System.out.println("\te -> Enable notifications");
-        System.out.println("\td -> Disable notifications");
+        System.out.println("\tt -> Toggle notifications");
         System.out.println("\tc -> Customize notification times");
         System.out.println("\tb -> Back to habit");
     }
 
-    // MODIFIES: this
-    // EFFECTS: enables notifications for given habit
-    private void enableNotifications(Habit habit) {
-        boolean wasChanged = habit.setNotifyEnabled(true);
-        if (wasChanged) {
-            System.out.println("\nNotifications enabled");
-            isSaved = false;
+    // MODIFIES: habit
+    // EFFECTS: toggles habit.isNotifyEnabled
+    private void toggleNotifications(Habit habit) {
+        habit.toggleNotifyEnabled();
+        if (habit.isNotifyEnabled()) {
+            System.out.println("Notifications Enabled");
         } else {
-            System.out.println("\nNotifications already enabled");
-        }
-    }
-
-    // MODIFIES: this
-    // EFFECTS: disables notifications for given habit
-    private void disableNotifications(Habit habit) {
-        boolean wasChanged = habit.setNotifyEnabled(false);
-        if (wasChanged) {
-            System.out.println("\nNotifications disabled");
-            isSaved = false;
-        } else {
-            System.out.println("\nNotifications already disabled");
+            System.out.println("Notifications Disabled");
         }
     }
 
@@ -696,7 +679,7 @@ public class ConsoleApp {
             int hours = processHourInput(i);
             int minutes = processMinuteInput(i);
             LocalDateTime reminder = DailyReminder.makeDailyReminder(LocalTime.of(hours, minutes), clock);
-            if (!reminders.add(reminder)) {
+            if (reminders.add(reminder)) {
                 break;
             } else {
                 System.out.println("Reminder already exists for that time");
@@ -712,7 +695,7 @@ public class ConsoleApp {
             int hours = processHourInput(i);
             int minutes = processMinuteInput(i);
             LocalDateTime reminder = WeeklyReminder.makeWeeklyReminder(dayOfWeek, LocalTime.of(hours, minutes), clock);
-            if (!reminders.add(reminder)) {
+            if (reminders.add(reminder)) {
                 break;
             } else {
                 System.out.println("Reminder already exists for that time");
@@ -729,7 +712,7 @@ public class ConsoleApp {
             int minutes = processMinuteInput(i);
             LocalTime time = LocalTime.of(hours, minutes);
             Pair<Integer, LocalTime> pair = new Pair<>(dayOfMonth, time);
-            if (!pairs.add(pair)) {
+            if (pairs.add(pair)) {
                 break;
             } else {
                 System.out.println("Reminder already exists for that time");

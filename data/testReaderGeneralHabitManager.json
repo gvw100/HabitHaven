@@ -24,7 +24,8 @@
           {"dateTime": "2024-02-25T17:00"}
         ],
         "isDefault": false
-      }
+      },
+      "isArchived": false
     },
     {
       "period": "WEEKLY",
@@ -43,7 +44,8 @@
       "description": "jog twice per week",
       "id": "42f3bb31-6161-48c2-aec4-5f3eec0d9a19",
       "numSuccess": 1,
-      "frequency": 2
+      "frequency": 2,
+      "isArchived": true
     },
     {
       "period": "DAILY",
@@ -82,7 +84,8 @@
           {"dateTime": "2024-02-25T13:00"}
         ],
         "isDefault": true
-      }
+      },
+      "isArchived": false
     },
     {
       "period": "MONTHLY",
@@ -135,7 +138,8 @@
           {"dateTime": "2024-02-10T09:00"}
         ],
         "isDefault": true
-      }
+      },
+      "isArchived": true
     },
     {
       "period": "MONTHLY",
@@ -196,7 +200,8 @@
             "day": 20
           }
         ]
-      }
+      },
+      "isArchived": true
     },
     {
       "period": "WEEKLY",
@@ -227,7 +232,8 @@
           {"dateTime": "2024-03-01T16:30"}
         ],
         "isDefault": false
-      }
+      },
+      "isArchived": false
     }
   ],
   "isAutoSave": true,

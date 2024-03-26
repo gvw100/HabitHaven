@@ -29,11 +29,14 @@ public class LifetimeStatisticsUI extends JPanel {
     private JLabel weeklyAverageSuccessRate;
     private JLabel monthlySuccessRate;
 
+    // EFFECTS: Constructs a lifetime statistics panel
     public LifetimeStatisticsUI(HabitManager habitManager) {
         this.habitManager = habitManager;
         setupPanel();
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups lifetime statistics panel
     private void setupPanel() {
         setLayout(new GridLayout(1, 1));
         JScrollPane scrollPane = new JScrollPane(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -47,11 +50,15 @@ public class LifetimeStatisticsUI extends JPanel {
         add(scrollPane);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups components in the habit statistics panel
     private void setupComponents() {
         setupTitle();
         setupBody();
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups title JLabel and adds it to mainPanel
     private void setupTitle() {
         JLabel title = new JLabel("Lifetime Habit Statistics");
         title.setFont(HUGE_FONT);
@@ -66,6 +73,8 @@ public class LifetimeStatisticsUI extends JPanel {
         mainPanel.add(title, constraints);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups body components of lifetime statistics panel
     private void setupBody() {
         if (habitManager.getHabits().isEmpty()) {
             setupNoHabits();
@@ -79,6 +88,8 @@ public class LifetimeStatisticsUI extends JPanel {
         setupEmptyRow();
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups no habits label and adds to mainPanel, called if user has no habits
     private void setupNoHabits() {
         JLabel noHabits = new JLabel("No habits to display statistics for");
         noHabits.setFont(BIG_FONT);
@@ -91,6 +102,8 @@ public class LifetimeStatisticsUI extends JPanel {
         mainPanel.add(noHabits, constraints);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups number of habits label and adds to mainPanel
     private void setupNumHabits() {
         JLabel numHabits = new JLabel("        Number of Habits: " + habitManager.getHabits().size());
         numHabits.setFont(MEDIUM_FONT);
@@ -104,16 +117,19 @@ public class LifetimeStatisticsUI extends JPanel {
         mainPanel.add(numHabits, constraints);
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets up allSingularCompletions, dailySingularCompletions, weeklySingularCompletions, and
+    //          monthlySingularCompletions and adds them to mainPanel
     private void setupSingularCompletions() {
         int[] total = new int[1];
         int[] daily = new int[1];
         int[] weekly = new int[1];
         int[] monthly = new int[1];
         getTotalSingularCompletions(total, daily, weekly, monthly);
-        setupAllSingularCompletionsLabels(total[0]);
-        setupDailySingularCompletionsLabels(daily[0]);
-        setupWeeklySingularCompletionsLabels(weekly[0]);
-        setupMonthlySingularCompletionsLabels(monthly[0]);
+        setupAllSingularCompletionsLabel(total[0]);
+        setupDailySingularCompletionsLabel(daily[0]);
+        setupWeeklySingularCompletionsLabel(weekly[0]);
+        setupMonthlySingularCompletionsLabel(monthly[0]);
         GridBagConstraints constraints = getLeftConstraints(2);
         mainPanel.add(allSingularCompletions, constraints);
         mainPanel.add(dailySingularCompletions, getCenterConstraints(3));
@@ -121,6 +137,9 @@ public class LifetimeStatisticsUI extends JPanel {
         mainPanel.add(monthlySingularCompletions, getCenterConstraints(5));
     }
 
+    // MODIFIES: total, daily, weekly, monthly
+    // EFFECTS: calculates total number of completions for all periods, daily, weekly, and monthly,
+    //          storing calculated values in total, daily, weekly, and monthly
     private void getTotalSingularCompletions(int[] total, int[] daily, int[] weekly, int[] monthly) {
         total[0] = daily[0] = weekly[0] = monthly[0] = 0;
         for (Habit habit : habitManager.getHabits()) {
@@ -138,30 +157,40 @@ public class LifetimeStatisticsUI extends JPanel {
         }
     }
 
-    private void setupAllSingularCompletionsLabels(int total) {
+    // MODIFIES: this
+    // EFFECTS: setups all singular completions label
+    private void setupAllSingularCompletionsLabel(int total) {
         allSingularCompletions = new JLabel("        Total Number of Singular Completions: " + total);
         allSingularCompletions.setFont(MEDIUM_FONT);
         allSingularCompletions.setForeground(FONT_COLOUR);
     }
 
-    private void setupDailySingularCompletionsLabels(int daily) {
+    // MODIFIES: this
+    // EFFECTS: setups all daily singular completions label
+    private void setupDailySingularCompletionsLabel(int daily) {
         dailySingularCompletions = new JLabel("Total Daily Completions: " + daily);
         dailySingularCompletions.setFont(MEDIUM_FONT);
         dailySingularCompletions.setForeground(FONT_COLOUR);
     }
 
-    private void setupWeeklySingularCompletionsLabels(int weekly) {
+    // MODIFIES: this
+    // EFFECTS: setups all weekly singular completions label
+    private void setupWeeklySingularCompletionsLabel(int weekly) {
         weeklySingularCompletions = new JLabel("Total Weekly Completions: " + weekly);
         weeklySingularCompletions.setFont(MEDIUM_FONT);
         weeklySingularCompletions.setForeground(FONT_COLOUR);
     }
 
-    private void setupMonthlySingularCompletionsLabels(int monthly) {
+    // MODIFIES: this
+    // EFFECTS: setups all monthly singular completions label
+    private void setupMonthlySingularCompletionsLabel(int monthly) {
         monthlySingularCompletions = new JLabel("Total Monthly Completions: " + monthly);
         monthlySingularCompletions.setFont(MEDIUM_FONT);
         monthlySingularCompletions.setForeground(FONT_COLOUR);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups streak labels and adds to mainPanel
     private void setupStreak() {
         int[] daily = new int[1];
         int[] weekly = new int[1];
@@ -175,6 +204,8 @@ public class LifetimeStatisticsUI extends JPanel {
         mainPanel.add(monthlyBestStreak, getLeftConstraints(8));
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups daily best streak label
     private void setupDailyBestStreakLabel(int streak) {
         dailyBestStreak = new JLabel("        Best Daily Streak: " + streak);
         dailyBestStreak.setFont(MEDIUM_FONT);
