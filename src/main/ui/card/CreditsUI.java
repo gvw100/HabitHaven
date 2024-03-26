@@ -205,6 +205,7 @@ public class CreditsUI extends JPanel {
         private final S second;
         private final T third;
 
+        // Constructs a triplet with given values
         public Triplet(F first, S second, T third) {
             this.first = first;
             this.second = second;

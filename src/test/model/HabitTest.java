@@ -170,13 +170,25 @@ public class HabitTest extends HabitHelperTest {
     }
 
     @Test
-    void testToggleIsArchivedFalseToTrue() {
-        finishHabitNumTimes(h1, 3);
-        checkStats(h1, 1, 1, 3, 1, 0);
+    void testToggleIsArchivedFalseToTrueNotifyEnabled() {
+        finishHabitNumTimes(h1, 2);
+        checkStats(h1, 0, 0, 2, 0, 0);
         h1.setClock(getFixedClock("2024-02-18T00:00:00.00Z"));
+        testJobSize(h1.getHabitReminder(), 1);
         h1.toggleIsArchived();
         assertTrue(h1.isArchived());
-        checkStats(h1, 1, 1, 3, 1, 0);
+        checkStats(h1, 0, 0, 2, 0, 0);
+        testJobSize(h1.getHabitReminder(), 0);
+    }
+
+    @Test
+    void testToggleIsArchivedFalseToTrueNotifyNotEnabled() {
+        finishHabitNumTimes(h2, 14);
+        checkStats(h2, 0, 0, 14, 0, 0);
+        h2.setClock(getFixedClock("2024-06-02T00:00:00.00Z"));
+        h2.toggleIsArchived();
+        assertTrue(h2.isArchived());
+        checkStats(h2, 0, 0, 14, 0, 0);
     }
 
     @Test
