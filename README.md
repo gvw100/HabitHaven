@@ -63,8 +63,7 @@ name, description, period, and frequency.
 - You can archive a habit by right-clicking and selecting the "Archive the Habit" option.
 - You can unarchive a habit by right-clicking a habit in the "Archived Habits" tab and selecting the "Unarchive the Habit" option.
 - Hide on close and exit on close
-  - You can toggle the application to exit on close or hide on close. If you click a toast notification while the application is hidden, the application is re-opened back to where you left off
-  - You can find an exe file at out/executable/HabitHaven.exe. If the app is hidden, re-opening the exe brings you back to where you left off.
+  - You can toggle the application to exit on close or hide on close. If you click a toast notification while the application is hidden, the application is re-opened back to where you left off.
 - You can locate my visual component in many places:
   - After earning an achievement, you can hear a sound effect being played and an achievement toast being displayed. These toasts can be toggled on and off in the "Settings" sidebar option.
   - Once my application launches, the HabitHaven logo can be seen above the two buttons.
