@@ -10,6 +10,7 @@ public class Achievement {
     private final AchievementType type;
     private final AchievementTier tier;
 
+    // EFFECTS: constructs an achievement with a name, description, target, type, and tier
     public Achievement(String name, String description, int target, AchievementType type, AchievementTier tier) {
         this.name = name;
         this.description = description;

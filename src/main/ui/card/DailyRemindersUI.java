@@ -17,6 +17,7 @@ import java.util.List;
 import static javax.swing.SwingUtilities.invokeLater;
 import static ui.Constants.*;
 
+// Represents the JPanel for the notifications tab for a daily habit
 public class DailyRemindersUI extends HabitRemindersUI {
     private JPanel presetRow;
     private JComboBox<String> presetFrequency;
@@ -28,15 +29,22 @@ public class DailyRemindersUI extends HabitRemindersUI {
     private JComboBox<String> presetEndAmPm;
     private JButton presetSubmitButton;
 
+    // EFFECTS: constructs a daily reminder panel
     public DailyRemindersUI(Habit habit) {
         super(habit);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups components in customization tab
     @Override
     protected void setupCustomizationComponents(int startingIndex) {
         setupCustomizationFrequency(MAX_FREQUENCY, "Choose specific times for your notifications!", startingIndex);
     }
 
+    // MODIFIES: customizationPanel
+    // EFFECTS: sets custom reminders based on the content in each customization row, returns whether
+    //          user inputted reminders are valid
+    //          if valid, set custom reminders to the current habit
     @Override
     protected boolean setCustomReminders(int frequency) {
         Set<LocalDateTime> reminders = new HashSet<>();
@@ -44,7 +52,7 @@ public class DailyRemindersUI extends HabitRemindersUI {
             JPanel row = (JPanel) customizationPanel.getComponent(i + 5);
             JSpinner hours = (JSpinner) row.getComponent(2);
             JSpinner minutes = (JSpinner) row.getComponent(4);
-            commitCustomizationSpinners(hours, minutes);
+            commitSpinners(hours, minutes);
             JComboBox<String> amPm = (JComboBox<String>) row.getComponent(6);
             String minString = getMinuteString(minutes);
             LocalTime time = LocalTime.parse(hours.getValue() + ":" + minString + " " + amPm.getSelectedItem(),
@@ -58,15 +66,7 @@ public class DailyRemindersUI extends HabitRemindersUI {
         return true;
     }
 
-    private void commitCustomizationSpinners(JSpinner hours, JSpinner minutes) {
-        try {
-            hours.commitEdit();
-            minutes.commitEdit();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-    }
-
+    // EFFECTS: returns customization row with spinners and combo boxes to select time
     @Override
     protected JPanel setupCustomizationRow(int index) {
         JPanel row = new JPanel();
@@ -93,6 +93,8 @@ public class DailyRemindersUI extends HabitRemindersUI {
         return row;
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups components in reminder list tab
     @Override
     protected void setupReminderListComponents() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
@@ -103,6 +105,8 @@ public class DailyRemindersUI extends HabitRemindersUI {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups components in preset tab
     @Override
     protected void setupPresetComponents() {
         setupPresetLabel("Set up to 15 notifications between 2 times of your choice!");
@@ -111,6 +115,8 @@ public class DailyRemindersUI extends HabitRemindersUI {
         setupPresetButton();
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups preset frequency combo box
     private void setupPresetFrequency() {
         String[] frequencyOptions = new String[MAX_FREQUENCY + 1];
         frequencyOptions[0] = "Number of Notifications";
@@ -125,6 +131,7 @@ public class DailyRemindersUI extends HabitRemindersUI {
         presetPanel.add(presetFrequency, getPresetFrequencyConstraints());
     }
 
+    // EFFECTS: returns grid bag constraints for preset frequency combo box
     private GridBagConstraints getPresetFrequencyConstraints() {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -136,11 +143,15 @@ public class DailyRemindersUI extends HabitRemindersUI {
         return constraints;
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds listener to preset frequency combo box, submit button is enabled if index != 0
     private void setupPresetFrequencyListener() {
         presetFrequency.addActionListener(e ->
                 invokeLater(() -> presetSubmitButton.setEnabled(presetFrequency.getSelectedIndex() != 0)));
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups spinners to select start time and end time
     private void setupSpinners() {
         presetRow = new JPanel();
         presetRow.setLayout(new BoxLayout(presetRow, BoxLayout.X_AXIS));
@@ -150,6 +161,8 @@ public class DailyRemindersUI extends HabitRemindersUI {
         presetPanel.add(presetRow, getTimeInputRowConstraints(5));
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups start time spinners
     private void setupStartSpinner() {
         presetStartHours = new JSpinner(new SpinnerNumberModel(9, 1, 12, 1));
         setupPresetSpinnerLabel("Start Time: ");
@@ -168,6 +181,8 @@ public class DailyRemindersUI extends HabitRemindersUI {
         presetRow.add(Box.createRigidArea(new Dimension(PADDING, 0)));
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups preset spinner label and adds it to presetRow
     private void setupPresetSpinnerLabel(String text) {
         JLabel label = new JLabel(text);
         label.setFont(MEDIUM_FONT);
@@ -176,6 +191,8 @@ public class DailyRemindersUI extends HabitRemindersUI {
         presetRow.add(Box.createRigidArea(new Dimension(PADDING, 0)));
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups end time spinner
     private void setupEndSpinner() {
         presetEndHours = new JSpinner(new SpinnerNumberModel(9, 1, 12, 1));
         setupPresetSpinnerLabel("End Time: ");
@@ -194,6 +211,8 @@ public class DailyRemindersUI extends HabitRemindersUI {
         presetRow.add(presetEndAmPm);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups preset submit button
     private void setupPresetButton() {
         presetSubmitButton = new JButton("Set Notifications");
         makeButton(presetSubmitButton, WINDOW_WIDTH - SIDE_BAR_WIDTH, 50, MEDIUM_FONT);
@@ -213,6 +232,8 @@ public class DailyRemindersUI extends HabitRemindersUI {
         presetPanel.add(presetSubmitButton, getSubmitButtonConstraints());
     }
 
+    // MODIFIES: this
+    // EFFECTS: commits changes to all preset spinners
     private void commitPresetSpinners() {
         try {
             presetStartHours.commitEdit();
@@ -224,6 +245,9 @@ public class DailyRemindersUI extends HabitRemindersUI {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: generates reminders based on start time, end time, and frequency, returns whether
+    //          reminder generation was successful
     private boolean generateReminders() {
         Set<LocalDateTime> reminders = new HashSet<>();
         Pair<LocalTime, LocalTime> startEnd = getStartEnd();
@@ -249,6 +273,7 @@ public class DailyRemindersUI extends HabitRemindersUI {
         return true;
     }
 
+    // EFFECTS: returns a pair of start and end times inputted by user
     private Pair<LocalTime, LocalTime> getStartEnd() {
         String startMin;
         String endMin;

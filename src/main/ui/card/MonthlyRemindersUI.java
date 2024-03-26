@@ -18,6 +18,7 @@ import java.util.List;
 import static javax.swing.SwingUtilities.invokeLater;
 import static ui.Constants.*;
 
+// Represents the JPanel for the notifications tab for a monthly habit
 public class MonthlyRemindersUI extends HabitRemindersUI {
     private JPanel presetBegMidEnd;
     private JButton presetBegMidEndSubmit;
@@ -443,7 +444,7 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
             JSpinner dayOfMonth = (JSpinner) row.getComponent(2);
             JSpinner hours = (JSpinner) row.getComponent(4);
             JSpinner minutes = (JSpinner) row.getComponent(6);
-            commitCustomizationSpinners(dayOfMonth, hours, minutes);
+            commitSpinners(dayOfMonth, hours, minutes);
             JComboBox<String> amPm = (JComboBox<String>) row.getComponent(8);
             String minString = getMinuteString(minutes);
             LocalTime time = LocalTime.parse(hours.getValue() + ":" + minString + " " + amPm.getSelectedItem(),
@@ -457,7 +458,7 @@ public class MonthlyRemindersUI extends HabitRemindersUI {
         return true;
     }
 
-    private void commitCustomizationSpinners(JSpinner dayOfMonth, JSpinner hours, JSpinner minutes) {
+    private void commitSpinners(JSpinner dayOfMonth, JSpinner hours, JSpinner minutes) {
         try {
             dayOfMonth.commitEdit();
             hours.commitEdit();

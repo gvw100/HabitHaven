@@ -18,7 +18,6 @@ public class MonthlyReminder extends HabitReminder {
     // EFFECTS: constructs a default monthly reminder with given clock and habit
     public MonthlyReminder(Clock clock, Habit habit) {
         super(clock, habit);
-        customReminders = null;
         updateReminders();
     }
 

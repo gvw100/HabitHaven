@@ -72,7 +72,7 @@ public class HabitManager {
     }
 
     // REQUIRES: habit is in this.habits
-    // MODIFIES: this
+    // MODIFIES: this, habit
     // EFFECTS: habit deleted from list of habits and reminders are cancelled if habit.isNotifyEnabled()
     public void deleteHabit(Habit habit) {
         habits.remove(habit);

@@ -8,7 +8,7 @@ public class Constants {
     public static final int WINDOW_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
     public static final int WINDOW_HEIGHT = Math.round(Toolkit.getDefaultToolkit().getScreenSize().height * 0.99f);
     public static final int SIDE_BAR_WIDTH = 200;
-    // ACHIEVEMENT_SOUND and icon by Robtop Games
+    // ACHIEVEMENT_SOUND and icon by RobTop Games
     public static final String ACHIEVEMENT_SOUND = "./data/achievement.wav";
     public static final ImageIcon ACHIEVEMENT_ON = new ImageIcon("./data/achievement_on.png");
     public static final ImageIcon ACHIEVEMENT_OFF = new ImageIcon("./data/achievement_off.png");

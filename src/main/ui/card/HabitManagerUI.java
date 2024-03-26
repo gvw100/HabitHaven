@@ -28,6 +28,7 @@ import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 import static ui.Constants.*;
 
+// Represents the main JPanel of the entire app, consisting of a sidebar and a card layout panel
 public class HabitManagerUI extends JPanel {
     private JFrame parent;
     private JLayeredPane layeredPane;
@@ -41,6 +42,7 @@ public class HabitManagerUI extends JPanel {
     private static boolean isSaved;
     private static HabitManager habitManager;
 
+    // EFFECTS: constructs a new HabitMangerUI panel
     public HabitManagerUI(boolean isLoaded, JFrame frame, HabitManager habitManager) {
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         HabitManagerUI.habitManager = habitManager;
@@ -61,6 +63,8 @@ public class HabitManagerUI extends JPanel {
         HabitManagerUI.habitManager = habitManager;
     }
 
+    // MODIFIES: this
+    // EFFECTS: if isAutoSave(), then save habits to file, otherwise, set isSaved to false
     public static void changeMade() {
         if (HabitManager.isAutoSave()) {
             nonSideBarSaveHabits(habitManager);
@@ -73,6 +77,10 @@ public class HabitManagerUI extends JPanel {
         HabitManagerUI.isSaved = isSaved;
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds window listener to parent frame, if !isAutoSave(), user is given choice to save or not,
+    //          if isHideOnClose(), parent frame is hidden and appIsOpen is set to false,
+    //          otherwise, the application exits
     private void setWindowListener() {
         parent.addWindowListener(new WindowAdapter() {
             @Override
@@ -99,6 +107,8 @@ public class HabitManagerUI extends JPanel {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups HabitManagerUI panel
     private void setupPanel() {
         setLayout(new GridLayout(1, 1));
         JPanel wholePanel = new JPanel();
@@ -121,6 +131,8 @@ public class HabitManagerUI extends JPanel {
     }
 
     // Inspiration taken from: https://www.youtube.com/watch?v=Wlbk47TltNY
+    // MODIFIES: this
+    // EFFECTS: setups sidebar panel
     private void setupSidebar() {
         setupSidebarGradient();
         sidebar.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
@@ -144,6 +156,9 @@ public class HabitManagerUI extends JPanel {
         sidebar.add(credits);
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates a gradient for the sidebar, ranging from slightly over half of the height of the sidebar,
+    //          to the bottom of the sidebar
     private void setupSidebarGradient() {
         sidebar = new JPanel() {
             @Override
@@ -160,6 +175,8 @@ public class HabitManagerUI extends JPanel {
         };
     }
 
+    // MODIFIES: this, createHabit, habitList, lifetimeStats, save, settings, credits
+    // EFFECTS: setups listeners for each sidebar option
     private void setupSidebarOptionListeners(JPanel createHabit, JPanel habitList, JPanel lifetimeStats,
                                              JPanel save, JPanel settings, JPanel credits) {
         setupCreateHabitListener(createHabit);
@@ -170,6 +187,8 @@ public class HabitManagerUI extends JPanel {
         setupCreditsListener(credits);
     }
 
+    // MODIFIES: habitList
+    // EFFECTS: adds listener to  habit list sidebar option
     private void setupHabitListListener(JPanel habitList) {
         habitList.addMouseListener(new MouseAdapter() {
             @Override
@@ -179,11 +198,15 @@ public class HabitManagerUI extends JPanel {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: updates habit list and shows habit list panel
     public void toHabitList() {
         updateHabitList();
         cardLayout.show(mainPanel, "habits");
     }
 
+    // MODIFIES: save
+    // EFFECTS: adds listener to save sidebar option
     private void setupSaveListener(JPanel save) {
         save.addMouseListener(new MouseAdapter() {
             @Override
@@ -193,6 +216,9 @@ public class HabitManagerUI extends JPanel {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: save label changed to "Saving...", habitManager saved to file,
+    //          save label changed to "Saved!" for 1 second, before reverting back to "Save to File"
     private void manualSaveHabits(JPanel save, JLabel saveText) {
         saveText.setText("Saving...");
         save.update(save.getGraphics());
@@ -214,6 +240,8 @@ public class HabitManagerUI extends JPanel {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: saves habitManager to file
     private static void nonSideBarSaveHabits(HabitManager habitManager) {
         JsonWriter jsonWriter = new JsonWriter(HABIT_MANAGER_STORE);
         try {
@@ -226,56 +254,83 @@ public class HabitManagerUI extends JPanel {
         }
     }
 
+    // MODIFIES: createHabit
+    // EFFECTS: adds listener to create habit sidebar option
     private void setupCreateHabitListener(JPanel createHabit) {
         createHabit.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                invokeLater(() -> createHabit());
+                invokeLater(() -> toCreateHabit());
             }
         });
     }
 
-    private void createHabit() {
+    // MODIFIES: this
+    // EFFECTS: setups createHabitUI panel and switches card to createHabitUI
+    private void toCreateHabit() {
         CreateHabitUI createHabitUI = new CreateHabitUI(habitManager, this);
         mainPanel.add(createHabitUI, "createHabit");
         cardLayout.show(mainPanel, "createHabit");
     }
 
+    // MODIFIES: lifetimeStats
+    // EFFECTS: adds listener to lifetime stats sidebar option
     private void setupLifetimeStatsListener(JPanel lifetimeStats) {
         lifetimeStats.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                invokeLater(() -> {
-                    LifetimeStatisticsUI lifetimeStatisticsUI = new LifetimeStatisticsUI(habitManager);
-                    mainPanel.add(lifetimeStatisticsUI, "lifetimeStatistics");
-                    cardLayout.show(mainPanel, "lifetimeStatistics");
-                });
+                invokeLater(() -> toLifetimeStats());
             }
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups lifetimeStatisticsUI panel and switches card to lifetimeStatisticsUI
+    private void toLifetimeStats() {
+        LifetimeStatisticsUI lifetimeStatisticsUI = new LifetimeStatisticsUI(habitManager);
+        mainPanel.add(lifetimeStatisticsUI, "lifetimeStatistics");
+        cardLayout.show(mainPanel, "lifetimeStatistics");
+    }
+
+    // MODIFIES: settings
+    // EFFECTS: adds listener to settings sidebar option
     private void setupSettingsListener(JPanel settings, HabitManagerUI habitManagerUI) {
         settings.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                invokeLater(() -> {
-                    SettingsUI settingsUI = new SettingsUI(habitManager, parent, achievementToast, habitManagerUI);
-                    mainPanel.add(settingsUI, "settings");
-                    cardLayout.show(mainPanel, "settings");
-                });
+                invokeLater(() -> toSettings(habitManagerUI));
             }
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups settingsUI panel and switches card to settingsUI panel
+    private void toSettings(HabitManagerUI habitManagerUI) {
+        SettingsUI settingsUI = new SettingsUI(habitManager, parent, achievementToast, habitManagerUI);
+        mainPanel.add(settingsUI, "settings");
+        cardLayout.show(mainPanel, "settings");
+    }
+
+    // MODIFIES: credits
+    // EFFECTS: adds listener to credits sidebar option
     private void setupCreditsListener(JPanel credits) {
         credits.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // TODO
+                toCredits();
             }
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups creditsUI panel and switches card to creditsUI panel
+    private void toCredits() {
+        CreditsUI creditsUI = new CreditsUI();
+        mainPanel.add(creditsUI, "credits");
+        cardLayout.show(mainPanel, "credits");
+    }
+
+    // EFFECTS: returns sidebar option panel with given text and icon
     private JPanel setupSidebarOption(String text, ImageIcon icon) {
         JPanel option = new JPanel();
         option.setLayout(new GridLayout(1, 1));
@@ -290,6 +345,8 @@ public class HabitManagerUI extends JPanel {
         return option;
     }
 
+    // MODIFIES: option
+    // EFFECTS: setups sidebar listener to the given sidebar option, hovering over makes background brighter
     private void setupSidebarListener(JPanel option) {
         option.addMouseListener(new MouseAdapter() {
             @Override
@@ -307,12 +364,16 @@ public class HabitManagerUI extends JPanel {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: updates habit list panel
     private void updateHabitList() {
         habitsPanel.removeAll();
         setupRows();
         updateUI();
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups habit list panel
     private void setupHabitsUI() {
         mainPanel.setLayout(cardLayout);
         habitsPanel = new JPanel();
@@ -326,6 +387,8 @@ public class HabitManagerUI extends JPanel {
         cardLayout.show(mainPanel, "habits");
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds habit rows to habit list panel
     private void setupRows() {
         List<Habit> habits = habitManager.getHabits();
         setupFirstRows();
@@ -349,6 +412,7 @@ public class HabitManagerUI extends JPanel {
         habitsPanel.add(emptySpace, constraints);
     }
 
+    // EFFECTS: returns grid bag constraints for empty space to fill the bottom of grid bag layout
     private GridBagConstraints getEmptySpaceConstraints() {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -360,6 +424,7 @@ public class HabitManagerUI extends JPanel {
         return constraints;
     }
 
+    // EFFECTS: returns grid bag constraints of no habit message
     private GridBagConstraints getNoHabitsConstraints() {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -370,6 +435,8 @@ public class HabitManagerUI extends JPanel {
         return constraints;
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups a row for the given habit and adds it to habitsPanel
     private void setupRow(Habit habit) {
         JPanel empty = makeGap(WINDOW_WIDTH - SIDE_BAR_WIDTH, 1);
         GridBagConstraints fillingConstraints = getHabitRowFillingConstraints();
@@ -390,6 +457,8 @@ public class HabitManagerUI extends JPanel {
         habitsPanel.add(deletePanel, getHabitElementConstraints(4));
     }
 
+    // MODIFIES: namePanel, completedPanel periodPanel, notificationsPanel, deletePanel
+    // EFFECTS: adds custom listener to all components in habit row to establish hover behaviour
     private void addCustomListener(JPanel namePanel, JPanel completedPanel, JPanel periodPanel,
                                    JPanel notificationsPanel, JPanel deletePanel, HabitRowListener listener) {
         namePanel.addMouseListener(listener);
@@ -399,6 +468,7 @@ public class HabitManagerUI extends JPanel {
         deletePanel.addMouseListener(listener);
     }
 
+    // EFFECTS: returns grid bag constraints for white filling at the top of each habit row
     private GridBagConstraints getHabitRowFillingConstraints() {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -409,6 +479,7 @@ public class HabitManagerUI extends JPanel {
         return constraints;
     }
 
+    // EFFECTS: returns grid bag constraints for each element in habit row
     private GridBagConstraints getHabitElementConstraints(int x) {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = x;
@@ -419,11 +490,13 @@ public class HabitManagerUI extends JPanel {
         return constraints;
     }
 
+    // EFFECTS: returns period string in title case ("Daily", "Weekly", etc.)
     private String getPeriodString(Habit habit) {
         String lower = habit.getPeriod().toString().toLowerCase();
         return lower.substring(0, 1).toUpperCase() + lower.substring(1);
     }
 
+    // EFFECTS: returns notifications panel with clickable icon to toggle notifications on/off
     private JPanel setupNotificationsPanel(Habit habit) {
         JPanel notificationsPanel = new JPanel();
         notificationsPanel.setLayout(new FlowLayout());
@@ -434,6 +507,7 @@ public class HabitManagerUI extends JPanel {
         return notificationsPanel;
     }
 
+    // EFFECTS: returns label containing either BELL_ON or BELL_OFF depending on whether notifications are enabled
     private JLabel setupNotificationsLabel(Habit habit) {
         JLabel notifications = new JLabel(habit.isNotifyEnabled() ? BELL_ON : BELL_OFF);
         notifications.setFont(MEDIUM_FONT);
@@ -442,6 +516,8 @@ public class HabitManagerUI extends JPanel {
         return notifications;
     }
 
+    // MODIFIES: notifications
+    // EFFECTS: adds listener to notifications label
     private void setupNotificationsListener(JLabel notifications, Habit habit) {
         notifications.addMouseListener(new MouseAdapter() {
             @Override
@@ -469,6 +545,7 @@ public class HabitManagerUI extends JPanel {
         });
     }
 
+    // EFFECTS: returns panel containing DELETE_ICON
     private JPanel setupDeletePanel(Habit habit) {
         JPanel deletePanel = new JPanel();
         deletePanel.setLayout(new FlowLayout());
@@ -478,6 +555,7 @@ public class HabitManagerUI extends JPanel {
         return deletePanel;
     }
 
+    // EFFECTS: returns delete label containing DELETE_ICON
     private JLabel setupDeleteLabel(Habit habit) {
         JLabel delete = new JLabel(DELETE_ICON);
         delete.setFont(MEDIUM_FONT);
@@ -486,6 +564,8 @@ public class HabitManagerUI extends JPanel {
         return delete;
     }
 
+    // MODIFIES: delete
+    // EFFECTS: adds listener to delete label
     private void setupDeleteListener(JLabel delete, Habit habit) {
         delete.addMouseListener(new MouseAdapter() {
             @Override
@@ -512,6 +592,7 @@ public class HabitManagerUI extends JPanel {
         });
     }
 
+    // EFFECTS: returns small horizontal white bar that serves to subdivide each habit row
     private JPanel makeGap(int width, int height) {
         JPanel empty = new JPanel();
         empty.setBackground(FONT_COLOUR);
@@ -521,11 +602,15 @@ public class HabitManagerUI extends JPanel {
         return empty;
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups first rows of habit list panel
     private void setupFirstRows() {
         addTitleRow();
         addHeadingRow();
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds title row to habitsPanel
     private void addTitleRow() {
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new FlowLayout());
@@ -538,6 +623,8 @@ public class HabitManagerUI extends JPanel {
         habitsPanel.add(titlePanel, titleConstraints);
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds heading row to habitsPanel
     private void addHeadingRow() {
         GridBagConstraints nameConstraints = getHeadingElementConstraints(0);
         GridBagConstraints completedConstraints = getHeadingElementConstraints(1);
@@ -552,7 +639,6 @@ public class HabitManagerUI extends JPanel {
         completedPanel.add(setupLabel("Progress"));
         periodPanel.add(setupLabel("Period"));
         notificationsPanel.add(setupLabel("Notifications"));
-
         habitsPanel.add(namePanel, nameConstraints);
         habitsPanel.add(completedPanel, completedConstraints);
         habitsPanel.add(periodPanel, periodConstraints);
@@ -560,6 +646,7 @@ public class HabitManagerUI extends JPanel {
         habitsPanel.add(setupAddPanel(), addConstraints);
     }
 
+    // EFFECTS: returns a JPanel for each heading element
     private JPanel setupHeadingElementPanel() {
         JPanel headingPanel = new JPanel();
         headingPanel.setLayout(new FlowLayout());
@@ -567,6 +654,7 @@ public class HabitManagerUI extends JPanel {
         return headingPanel;
     }
 
+    // EFFECTS: returns grid bag constraints for title
     private GridBagConstraints getTitleConstraints() {
         GridBagConstraints titleConstraints = new GridBagConstraints();
         titleConstraints.gridx = 0;
@@ -576,6 +664,7 @@ public class HabitManagerUI extends JPanel {
         return titleConstraints;
     }
 
+    /// EFFECTS: returns grid bag constraints for heading row
     private GridBagConstraints getHeadingElementConstraints(int x) {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = x;
@@ -585,6 +674,7 @@ public class HabitManagerUI extends JPanel {
         return constraints;
     }
 
+    // EFFECTS: returns JPanel containing clickable ADD_ICON
     private JPanel setupAddPanel() {
         JPanel addPanel = new JPanel();
         addPanel.setLayout(new FlowLayout());
@@ -594,6 +684,7 @@ public class HabitManagerUI extends JPanel {
         return addPanel;
     }
 
+    // EFFECTS: returns JLabel containing clickable ADD_ICON
     private JLabel setupAddLabel() {
         JLabel add = new JLabel(ADD_ICON);
         add.setFont(MEDIUM_FONT);
@@ -601,7 +692,7 @@ public class HabitManagerUI extends JPanel {
         add.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                invokeLater(() -> createHabit());
+                invokeLater(() -> toCreateHabit());
             }
 
             @Override
@@ -617,6 +708,7 @@ public class HabitManagerUI extends JPanel {
         return add;
     }
 
+    // EFFECTS: returns a label with the given text
     private JLabel setupLabel(String text) {
         JLabel label = new JLabel(text);
         label.setFont(MEDIUM_FONT);
@@ -624,6 +716,7 @@ public class HabitManagerUI extends JPanel {
         return label;
     }
 
+    // EFFECTS: returns habit row panel, background colour is green if current period complete
     private JPanel setupHabitPanel(String text, boolean isPeriodComplete) {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout());
@@ -683,10 +776,12 @@ public class HabitManagerUI extends JPanel {
         }
     }
 
+    // Helper class to ensure that all elements in habit row have the same hover behaviour and click behaviour
     private class HabitRowListener extends MouseAdapter {
         JPanel[] panels;
         Habit habit;
 
+        // EFFECTS: constructs a habit row listener with the given habit row elements and habit
         public HabitRowListener(JPanel[] panels, Habit habit) {
             this.panels = panels;
             this.habit = habit;

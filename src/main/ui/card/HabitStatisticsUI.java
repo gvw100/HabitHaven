@@ -9,6 +9,7 @@ import java.awt.*;
 
 import static ui.Constants.*;
 
+// Represents the habit statistics tab JPanel for a given habit
 public class HabitStatisticsUI extends JPanel {
     private JLabel statsTitle;
     private JLabel streak;
@@ -21,6 +22,7 @@ public class HabitStatisticsUI extends JPanel {
     private Habit habit;
     private HabitStatistics habitStats;
 
+    // EFFECTS: constructs a HabitStatisticsUI panel
     public HabitStatisticsUI(Habit habit) {
         this.habit = habit;
         this.habitStats = habit.getHabitStats();

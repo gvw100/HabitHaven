@@ -7,15 +7,14 @@ import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static ui.Constants.*;
 
 // Inspiration taken from: https://www.codejava.net/coding/how-to-play-back-audio-in-java-with-examples
+// Represents the JPanel of an achievement toast
 public class AchievementToast extends JPanel {
-    private LinkedBlockingQueue<Pair<String, Achievement>> achievementQueue;
     private Lock lock = new ReentrantLock();
     private JLabel title;
     private JLabel description;
@@ -24,7 +23,6 @@ public class AchievementToast extends JPanel {
     // EFFECTS: initializes achievement toast panel with placeholder text
     public AchievementToast(boolean achievementToastsEnabled) {
         this.achievementToastsEnabled = achievementToastsEnabled;
-        achievementQueue = new LinkedBlockingQueue<>();
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setMinimumSize(new Dimension(WINDOW_WIDTH, 500));
         setupPlaceholderToast();
@@ -35,17 +33,12 @@ public class AchievementToast extends JPanel {
     }
 
     // MODIFIES: this
-    // EFFECTS: adds an achievement to the achievementQueue, then displays toast
+    // EFFECTS: queues an achievement to be displayed
     public void add(Pair<String, Achievement> achievement) {
         if (!HabitApp.appIsOpen() || !achievementToastsEnabled) {
             return;
         }
-        try {
-            achievementQueue.put(achievement);
-            displayToast();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        displayToast(achievement);
     }
 
     // MODIFIES: this
@@ -88,13 +81,12 @@ public class AchievementToast extends JPanel {
     // MODIFIES: this
     // EFFECTS: first attempts to acquire the lock, once successful, displays achievement toast,
     //          then waits for 4 seconds, lock ensures achievements are displayed sequentially at even intervals
-    //          in the order of the queue
-    private void displayToast() {
+    private void displayToast(Pair<String, Achievement> achievement) {
         Thread thread = new Thread(() -> {
             try {
                 lock.lock();
                 if (HabitApp.appIsOpen() && achievementToastsEnabled) {
-                    updateToast(achievementQueue.take());
+                    updateToast(achievement);
                     int red = APP_COLOUR_LIGHT.getRed();
                     int green = APP_COLOUR_LIGHT.getGreen();
                     int blue = APP_COLOUR_LIGHT.getBlue();

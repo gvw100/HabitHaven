@@ -6,6 +6,7 @@ import java.awt.*;
 import static javax.swing.SwingUtilities.invokeLater;
 import static ui.Constants.*;
 
+// Represents the JPanel of the start screen
 public class StartUI extends JPanel {
     private JLabel logo;
     private JButton newUserButton;

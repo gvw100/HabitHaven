@@ -7,11 +7,12 @@ import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.text.ParseException;
 
 import static javax.swing.SwingUtilities.invokeLater;
 import static ui.Constants.*;
 
-// Abstract class to represent a general habit reminder customization panel
+// Abstract class to represent a general habit reminder customization JPanel
 public abstract class HabitRemindersUI extends JPanel {
     protected JScrollPane parentPreset;
     protected JPanel presetPanel;
@@ -130,6 +131,7 @@ public abstract class HabitRemindersUI extends JPanel {
         return constraints;
     }
 
+    // MODIFIES: customizationFrequency
     // EFFECTS: setups listener to the customization tab frequency combo box
     private void setupCustomizationFrequencyListener(JComboBox<String> customizationFrequency) {
         customizationFrequency.addActionListener(e -> invokeLater(() -> {
@@ -144,6 +146,7 @@ public abstract class HabitRemindersUI extends JPanel {
     // EFFECTS: returns a row in the customization tab, representing a specific day and/or time
     protected abstract JPanel setupCustomizationRow(int index);
 
+    // MODIFIES: customizationPanel
     // EFFECTS: sets custom reminders based on the content in each customization row, returns whether
     //          user inputted reminders are valid
     //          if valid, set custom reminders to the current habit
@@ -164,6 +167,7 @@ public abstract class HabitRemindersUI extends JPanel {
         addEmptySpace(customizationPanel);
     }
 
+    // MODIFIES: submit
     // EFFECTS: setups listener to the customization submit button
     private void setupCustomizationButtonListener(JButton submit, int frequency) {
         submit.addActionListener((e) -> invokeLater(() -> {
@@ -508,6 +512,7 @@ public abstract class HabitRemindersUI extends JPanel {
         setupSpinnerListeners(textField);
     }
 
+    // MODIFIES: textField
     // EFFECTS: given a JSpinner text field, selects all once focus is gained
     private void setupSpinnerListeners(JFormattedTextField textField) {
         textField.addFocusListener(new FocusAdapter() {
@@ -561,5 +566,16 @@ public abstract class HabitRemindersUI extends JPanel {
     private void updateReminderListComponents() {
         reminderListPanel.removeAll();
         setupReminderListPanel();
+    }
+
+    // MODIFIES: hours, minutes
+    // EFFECTS: commits edits in both spinners
+    protected void commitSpinners(JSpinner hours, JSpinner minutes) {
+        try {
+            hours.commitEdit();
+            minutes.commitEdit();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 }

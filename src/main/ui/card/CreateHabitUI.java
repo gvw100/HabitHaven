@@ -16,6 +16,7 @@ import java.time.Clock;
 import static javax.swing.SwingUtilities.invokeLater;
 import static ui.Constants.*;
 
+// Represents the JPanel for the create habit screen
 public class CreateHabitUI extends JPanel {
     private JTextField habitName;
     private JTextArea habitDescription;
@@ -27,16 +28,15 @@ public class CreateHabitUI extends JPanel {
     private HabitManager habitManager;
     private HabitManagerUI habitManagerUI;
 
+    // EFFECTS: constructs JPanel for create habit screen
     public CreateHabitUI(HabitManager habitManager, HabitManagerUI habitManagerUI) {
         this.habitManager = habitManager;
         this.habitManagerUI = habitManagerUI;
-        setupCreateHabit();
-    }
-
-    private void setupCreateHabit() {
         setupPanel();
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups create habit screen panel
     private void setupPanel() {
         setBackground(APP_COLOUR);
         setLayout(new GridBagLayout());
@@ -49,6 +49,8 @@ public class CreateHabitUI extends JPanel {
         setupCreateHabitButton();
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups habitName text field, adds to create habit panel
     private void setupHabitName() {
         habitName = new JTextField();
         habitName.setFont(HUGE_FONT);
@@ -61,12 +63,16 @@ public class CreateHabitUI extends JPanel {
         setupNameListener();
         add(habitName, getCreateHabitConstraints(0));
     }
-    
+
+    // MODIFIES: this
+    // EFFECTS: setups listeners for name text field
     private void setupNameListener() {
         setupNameFocusListener();
         setupNameDocumentListener();
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups focus listeners for name text field
     private void setupNameFocusListener() {
         habitName.addFocusListener(new FocusListener() {
             @Override
@@ -83,13 +89,14 @@ public class CreateHabitUI extends JPanel {
                 invokeLater(() -> {
                     if (habitName.getText().isBlank()) {
                         habitName.setText("Enter Habit Name");
-                        habitName.selectAll();
                     }
                 });
             }
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups document listeners for name text field
     private void setupNameDocumentListener() {
         habitName.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -109,8 +116,12 @@ public class CreateHabitUI extends JPanel {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: if text length > MAX_HABIT_NAME_LENGTH, set habit name text field to substring
+    //          of length MAX_HABIT_NAME_LENGTH,
+    //          if text is blank, replace text with "Enter Habit Name" and select all
     private void checkNameText() {
-        Runnable runnable = () -> {
+        invokeLater(() -> {
             if (habitName.getText().length() > MAX_HABIT_NAME_LENGTH) {
                 habitName.setText(habitName.getText().substring(0, MAX_HABIT_NAME_LENGTH));
             }
@@ -118,10 +129,11 @@ public class CreateHabitUI extends JPanel {
                 habitName.setText("Enter Habit Name");
                 habitName.selectAll();
             }
-        };
-        invokeLater(runnable);
+        });
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups habit description text area
     private void setupHabitDescription() {
         JPanel habitDescriptionPanel = new JPanel();
         habitDescriptionPanel.setLayout(new GridLayout(1, 1));
@@ -143,11 +155,15 @@ public class CreateHabitUI extends JPanel {
         add(habitDescriptionPanel, getCreateHabitConstraints(1));
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups description text area listeners
     private void setupDescriptionListener() {
         setupDescriptionFocusListener();
         setupDescriptionDocumentListener();
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds focus listener to description text area
     private void setupDescriptionFocusListener() {
         habitDescription.addFocusListener(new FocusListener() {
             @Override
@@ -164,13 +180,14 @@ public class CreateHabitUI extends JPanel {
                 invokeLater(() -> {
                     if (habitDescription.getText().isBlank()) {
                         habitDescription.setText("Description (optional)");
-                        habitDescription.selectAll();
                     }
                 });
             }
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds document listener to description text area
     private void setupDescriptionDocumentListener() {
         habitDescription.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -190,8 +207,12 @@ public class CreateHabitUI extends JPanel {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: if length > MAX_DESCRIPTION_LENGTH, set text area text to the substring of
+    //          length MAX_DESCRIPTION_LENGTH,
+    //          if text area text is blank, set text to "Description (optional)" and select all
     private void checkDescriptionText() {
-        Runnable runnable = () -> {
+        invokeLater(() -> {
             if (habitDescription.getText().length() > MAX_DESCRIPTION_LENGTH) {
                 habitDescription.setText(habitDescription.getText().substring(0, MAX_DESCRIPTION_LENGTH));
             }
@@ -199,10 +220,11 @@ public class CreateHabitUI extends JPanel {
                 habitDescription.setText("Description (optional)");
                 habitDescription.selectAll();
             }
-        };
-        invokeLater(runnable);
+        });
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups period selection combo box
     private void setupPeriodBox() {
         String[] periods = {"Period", "Daily", "Weekly", "Monthly"};
         periodBox = new JComboBox<>(periods);
@@ -214,6 +236,8 @@ public class CreateHabitUI extends JPanel {
         add(periodBox, getCreateHabitConstraints(2));
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds listener to period combo box
     private void setupPeriodListener() {
         periodBox.addActionListener(e -> invokeLater(() -> {
             if (periodBox.getSelectedIndex() != 0) {
@@ -224,6 +248,8 @@ public class CreateHabitUI extends JPanel {
         }));
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups frequency selection combo box
     private void setupFrequencyBox() {
         String[] frequencyOptions = new String[MAX_FREQUENCY + 1];
         frequencyOptions[0] = "Frequency";
@@ -239,6 +265,8 @@ public class CreateHabitUI extends JPanel {
         add(frequencyBox, getCreateHabitConstraints(3));
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds listener to frequency combo box
     private void setupFrequencyListener() {
         frequencyBox.addActionListener(e -> invokeLater(() -> {
             if (frequencyBox.getSelectedIndex() != 0) {
@@ -249,6 +277,8 @@ public class CreateHabitUI extends JPanel {
         }));
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups notification selection combo box
     private void setupNotificationBox() {
         notificationBox = new JComboBox<>(new String[]{"Enable notifications?", "Yes", "No"});
         notificationBox.setFont(MEDIUM_FONT);
@@ -259,6 +289,8 @@ public class CreateHabitUI extends JPanel {
         add(notificationBox, getCreateHabitConstraints(4));
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds listener to notification combo box
     private void setupNotificationListener() {
         notificationBox.addActionListener(e -> invokeLater(() -> {
             if (notificationBox.getSelectedIndex() != 0) {
@@ -268,7 +300,9 @@ public class CreateHabitUI extends JPanel {
             }
         }));
     }
-    
+
+    // MODIFIES: this
+    // EFFECTS: if none of the combo boxes have selected index of 0, enable the create habit button
     private void checkValidHabit() {
         if (periodBox.getSelectedIndex() != 0 && frequencyBox.getSelectedIndex() != 0
                 && notificationBox.getSelectedIndex() != 0) {
@@ -276,6 +310,8 @@ public class CreateHabitUI extends JPanel {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups create habit button
     private void setupCreateHabitButton() {
         createHabitButton = new JButton("Create Habit");
         makeButton(createHabitButton, LARGE_BUTTON_WIDTH, LARGE_BUTTON_HEIGHT, BIG_FONT);
@@ -284,6 +320,8 @@ public class CreateHabitUI extends JPanel {
         add(createHabitButton, getCreateHabitConstraints(5));
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds listener to the create habit button
     private void setupCreateHabitListener() {
         createHabitButton.addActionListener(e -> invokeLater(() -> {
             String name = habitName.getText();
@@ -298,6 +336,7 @@ public class CreateHabitUI extends JPanel {
         }));
     }
 
+    // EFFECTS: gets the period based on the selected index of periodBox
     private Period getPeriod() {
         switch (periodBox.getSelectedIndex()) {
             case 1:
@@ -309,6 +348,7 @@ public class CreateHabitUI extends JPanel {
         }
     }
 
+    // EFFECTS: returns grid bag constraints of component at given index
     private GridBagConstraints getCreateHabitConstraints(int index) {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;

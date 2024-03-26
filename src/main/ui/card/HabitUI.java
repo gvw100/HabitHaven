@@ -19,6 +19,8 @@ import java.util.List;
 import static javax.swing.SwingUtilities.invokeLater;
 import static ui.Constants.*;
 
+// Represents the JPanel for a specific habit, consists of habit tab, statistics tab, notifications tab, and
+// achievements tab
 public class HabitUI extends JPanel {
     private Habit habit;
     private AchievementToast achievementToast;

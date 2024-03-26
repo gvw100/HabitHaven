@@ -9,6 +9,7 @@ import java.awt.*;
 
 import static ui.Constants.*;
 
+// Represents the JPanel displaying lifetime statistics of all existing habits
 public class LifetimeStatisticsUI extends JPanel {
     private HabitManager habitManager;
     private JPanel mainPanel;

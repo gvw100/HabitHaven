@@ -13,6 +13,7 @@ import static model.achievement.AchievementManager.*;
 import static ui.Constants.*;
 import static ui.Constants.WINDOW_HEIGHT;
 
+// Represents the JPanel for the achievements tab in a habit
 public class AchievementsUI extends JPanel {
     private Habit habit;
     private JTabbedPane tabbedPane;
@@ -25,12 +26,15 @@ public class AchievementsUI extends JPanel {
     private JPanel childGold;
     private JPanel childPlatinum;
 
+    // EFFECTS: constructs the JPanel for achievements tab
     public AchievementsUI(Habit habit) {
         this.habit = habit;
         UIManager.put("TabbedPane.selected", APP_COLOUR.brighter().brighter().brighter());
         setupPanel();
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups achievements tab
     private void setupPanel() {
         setBackground(APP_COLOUR);
         setLayout(new GridLayout(1, 1));
@@ -45,6 +49,8 @@ public class AchievementsUI extends JPanel {
         add(tabbedPane);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups achievements sub-tabs
     private void setupTabs() {
         setupBronzeTier();
         setupSilverTier();
@@ -56,6 +62,8 @@ public class AchievementsUI extends JPanel {
         tabbedPane.addTab("Platinum", PLATINUM_ICON, parentPlatinum, "Platinum Tier Achievements");
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups bronze tier tab
     private void setupBronzeTier() {
         parentBronze = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -69,6 +77,8 @@ public class AchievementsUI extends JPanel {
         parentBronze.setViewportView(childBronze);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups silver tier tab
     private void setupSilverTier() {
         parentSilver = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -82,6 +92,8 @@ public class AchievementsUI extends JPanel {
         parentSilver.setViewportView(childSilver);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups gold tier tab
     private void setupGoldTier() {
         parentGold = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -95,6 +107,8 @@ public class AchievementsUI extends JPanel {
         parentGold.setViewportView(childGold);
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups platinum tier tab
     private void setupPlatinumTier() {
         parentPlatinum = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -108,6 +122,8 @@ public class AchievementsUI extends JPanel {
         parentPlatinum.setViewportView(childPlatinum);
     }
 
+    // MODIFIES: panel
+    // EFFECTS: setups title panel and adds it to given JPanel
     private void setupTitlePanel(JPanel panel, String title) {
         JPanel titlePanel = new JPanel();
         titlePanel.setBackground(APP_COLOUR);
@@ -125,6 +141,8 @@ public class AchievementsUI extends JPanel {
         panel.add(titlePanel, constraints);
     }
 
+    // MODIFIES: panel
+    // EFFECTS: setups achievement grids in a given sub-tab
     private void setupGrids(JPanel panel, ImageIcon icon, List<Achievement> achievements) {
         int i = 0;
         for (Achievement achievement : achievements) {
@@ -133,6 +151,8 @@ public class AchievementsUI extends JPanel {
         }
     }
 
+    // MODIFIES: panel
+    // EFFECTS: setups achievement grid in a given sub-tab with index i
     private void setupGrid(JPanel panel, Achievement achievement, ImageIcon icon, int i) {
         JPanel achievementPanel = new JPanel();
         achievementPanel.setBackground(
@@ -155,6 +175,8 @@ public class AchievementsUI extends JPanel {
         panel.add(achievementPanel, constraints);
     }
 
+    // MODIFIES: achievementPanel
+    // EFFECTS: adds components to achievementPanel
     private void addComponents(JPanel achievementPanel, JLabel achievementLabel,
                                JLabel descriptionLabel, JLabel progressLabel) {
         achievementPanel.add(achievementLabel);
@@ -166,6 +188,7 @@ public class AchievementsUI extends JPanel {
         achievementPanel.setBorder(BorderFactory.createLineBorder(FONT_COLOUR, 2));
     }
 
+    // EFFECTS: returns grid bag constraints for grid with given index
     private GridBagConstraints getAchievementConstraint(int index) {
         int row = (int) Math.floor((double) index / 3) + 1;
         int column = index % 3;
@@ -176,7 +199,8 @@ public class AchievementsUI extends JPanel {
         constraints.fill = GridBagConstraints.HORIZONTAL;
         return constraints;
     }
-    
+
+    // EFFECTS: returns progress string of an achievement
     private String getProgressString(Achievement achievement) {
         int num;
         if (AchievementManager.isAchieved(habit.getHabitStats(), achievement)) {
@@ -199,6 +223,8 @@ public class AchievementsUI extends JPanel {
         return num + " / " + achievement.getTarget();
     }
 
+    // MODIFIES: panel
+    // EFFECTS: adds empty row to given panel
     private void setupEmptyRow(JPanel panel) {
         JPanel empty = new JPanel();
         empty.setBackground(APP_COLOUR);
@@ -213,6 +239,8 @@ public class AchievementsUI extends JPanel {
         panel.add(empty, constraints);
     }
 
+    // MODIFIES: this
+    // EFFECTS: updates all sub-tabs in achievements tab
     public void updateAchievementsUI() {
         updateBronze();
         updateSilver();
@@ -220,6 +248,8 @@ public class AchievementsUI extends JPanel {
         updatePlatinum();
     }
 
+    // MODIFIES: this
+    // EFFECTS: updates bronze sub-tab
     private void updateBronze() {
         childBronze.removeAll();
         setupTitlePanel(childBronze, "Bronze Tier Achievements");
@@ -227,6 +257,8 @@ public class AchievementsUI extends JPanel {
         setupEmptyRow(childBronze);
     }
 
+    // MODIFIES: this
+    // EFFECTS: updates silver sub-tab
     private void updateSilver() {
         childSilver.removeAll();
         setupTitlePanel(childSilver, "Silver Tier Achievements");
@@ -234,6 +266,8 @@ public class AchievementsUI extends JPanel {
         setupEmptyRow(childSilver);
     }
 
+    // MODIFIES: this
+    // EFFECTS: updates gold sub-tab
     private void updateGold() {
         childGold.removeAll();
         setupTitlePanel(childGold, "Gold Tier Achievements");
@@ -241,6 +275,8 @@ public class AchievementsUI extends JPanel {
         setupEmptyRow(childGold);
     }
 
+    // MODIFIES: this
+    // EFFECTS: updates platinum sub-tab
     private void updatePlatinum() {
         childPlatinum.removeAll();
         setupTitlePanel(childPlatinum, "Platinum Tier Achievements");

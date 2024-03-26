@@ -18,7 +18,7 @@ import java.util.UUID;
 import static model.achievement.AchievementManager.getAchieved;
 
 // Represents a habit with a name, description, period, frequency, number of successes, habit statistics,
-// and habit notifications
+// habit notifications, and habit achievements
 public class Habit {
     private String name;
     private String description;
@@ -337,6 +337,7 @@ public class Habit {
         if (isNotifyEnabled()) {
             habitReminder.updateReminders();
         }
+        achievements = getAchieved(habitStats, period);
         return changeMade;
     }
 

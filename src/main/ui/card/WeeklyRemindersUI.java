@@ -5,7 +5,6 @@ import model.reminder.WeeklyReminder;
 
 import javax.swing.*;
 import java.awt.*;
-import java.text.ParseException;
 import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -17,6 +16,7 @@ import java.util.List;
 import static javax.swing.SwingUtilities.invokeLater;
 import static ui.Constants.*;
 
+// Represents the JPanel for the notifications tab for a weekly habit
 public class WeeklyRemindersUI extends HabitRemindersUI {
     private JComboBox<String> presetChoiceBox;
     private JPanel presetEveryDay;
@@ -174,15 +174,6 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
             }
         }
         return true;
-    }
-
-    private void commitSpinners(JSpinner hours, JSpinner minutes) {
-        try {
-            hours.commitEdit();
-            minutes.commitEdit();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
     }
 
     private void generatePresetForm(JPanel panel, int frequency) {
@@ -436,7 +427,7 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
         JPanel row = new JPanel();
         row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
         row.setBackground(APP_COLOUR);
-        JLabel label = new JLabel("Notifications " + (i + 1));
+        JLabel label = new JLabel("Reminder " + (i + 1));
         label.setFont(MEDIUM_FONT);
         label.setForeground(FONT_COLOUR);
         row.add(label);

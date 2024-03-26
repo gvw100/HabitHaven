@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import static javax.swing.SwingUtilities.invokeLater;
 import static ui.Constants.*;
 
+// Represents the JPanel for displaying settings
 public class SettingsUI extends JPanel {
     private HabitManager habitManager;
     private JPanel mainPanel;

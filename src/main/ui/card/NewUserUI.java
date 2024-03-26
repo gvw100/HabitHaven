@@ -6,7 +6,7 @@ import java.awt.*;
 import static javax.swing.SwingUtilities.invokeLater;
 import static ui.Constants.*;
 
-// Represents the user interface for a new user
+// Represents the JPanel for a new user
 public class NewUserUI extends JPanel {
     private JTextField usernameField;
     private JButton submit;

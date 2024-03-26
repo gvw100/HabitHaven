@@ -66,7 +66,7 @@ public class AchievementManager extends AchievementList {
         return achievedAchievements;
     }
 
-    // EFFECTS: returns list of all bronze achievements
+    // EFFECTS: returns list of all bronze achievements based on given period
     public static List<Achievement> getBronzeAchievements(Period period) {
         switch (period) {
             case DAILY:
@@ -78,7 +78,7 @@ public class AchievementManager extends AchievementList {
         }
     }
 
-    // EFFECTS: returns list of all silver achievements
+    // EFFECTS: returns list of all silver achievements based on given period
     public static List<Achievement> getSilverAchievements(Period period) {
         switch (period) {
             case DAILY:
@@ -90,7 +90,7 @@ public class AchievementManager extends AchievementList {
         }
     }
 
-    // EFFECTS: returns list of all gold achievements
+    // EFFECTS: returns list of all gold achievements based on given period
     public static List<Achievement> getGoldAchievements(Period period) {
         switch (period) {
             case DAILY:
@@ -102,7 +102,7 @@ public class AchievementManager extends AchievementList {
         }
     }
 
-    // EFFECTS: returns list of all platinum achievements
+    // EFFECTS: returns list of all platinum achievements based on given period
     public static List<Achievement> getPlatinumAchievements(Period period) {
         switch (period) {
             case DAILY:

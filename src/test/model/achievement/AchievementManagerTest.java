@@ -14,6 +14,7 @@ import static model.achievement.AchievementType.*;
 import static model.achievement.AchievementType.PERIODIC_SUCCESSES;
 import static org.junit.jupiter.api.Assertions.*;
 
+// A test class for AchievementManager
 public class AchievementManagerTest {
     private HabitStatistics noAchievements;
     private HabitStatistics someAchievements;
