@@ -346,7 +346,7 @@ public class WeeklyRemindersUI extends HabitRemindersUI {
     }
 
     // MODIFIES: this
-    // EFFECTS: setups presetWeekdends panel and adds it to presetPanel
+    // EFFECTS: setups presetWeekends panel and adds it to presetPanel
     private void setupPresetWeekends() {
         presetWeekends = new JPanel();
         presetWeekends.setLayout(new GridBagLayout());

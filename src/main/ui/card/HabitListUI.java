@@ -19,6 +19,7 @@ import static ui.Constants.*;
 import static ui.Constants.APP_COLOUR;
 import static ui.card.HabitManagerUI.changeMade;
 
+// Represents the habit list panel
 public class HabitListUI extends JPanel {
     private HabitManager habitManager;
     private JPanel habitsPanel;
@@ -299,6 +300,7 @@ public class HabitListUI extends JPanel {
         return constraints;
     }
 
+    // EFFECTS: returns JPanel to be displayed when there are no habits
     private JPanel getNoHabits(boolean isArchived) {
         JPanel noHabits = new JPanel();
         noHabits.setLayout(new FlowLayout());
