@@ -1,6 +1,8 @@
 package model;
 
 import model.achievement.Achievement;
+import model.log.Event;
+import model.log.EventLog;
 import model.reminder.DailyReminder;
 import model.reminder.HabitReminder;
 import model.reminder.MonthlyReminder;
@@ -82,10 +84,12 @@ public class Habit {
 
     public void setName(String name) {
         this.name = name;
+        EventLog.getInstance().logEvent(new Event("Name of habit with id " + id + " changed to " + name));
     }
 
     public void setDescription(String description) {
         this.description = description;
+        EventLog.getInstance().logEvent(new Event("Description of habit with id " + id + " changed to " + description));
     }
 
     // MODIFIES: this
@@ -115,6 +119,9 @@ public class Habit {
             habitReminder.cancelReminders();
             habitReminder = null;
         }
+        EventLog.getInstance().logEvent(
+                new Event("Notifications of habit " + name
+                        + " with id " + id + (notifyEnabled ? " enabled" : " disabled")));
     }
 
     // REQUIRES: 0 < frequency < 16
@@ -134,6 +141,8 @@ public class Habit {
         }
         resetProgress();
         achievements = getAchieved(habitStats, period);
+        EventLog.getInstance().logEvent(
+                new Event("Frequency of habit " + name + " with id " + id + " changed to " + frequency));
         return true;
     }
 
@@ -155,6 +164,8 @@ public class Habit {
             habitReminder = getNewReminder();
         }
         achievements = getAchieved(habitStats, period);
+        EventLog.getInstance().logEvent(
+                new Event("Period of habit " + name + " with id " + id + " changed to " + period));
         return true;
     }
 
@@ -167,6 +178,8 @@ public class Habit {
         } else {
             updateHabit();
         }
+        EventLog.getInstance().logEvent(
+                new Event("Habit " + name + " with id " + id + (isArchived ? " archived" : " unarchived")));
     }
 
     // REQUIRES: no reminders scheduled yet for this period, notifyEnabled is true
@@ -258,6 +271,7 @@ public class Habit {
             habitStats.incrementTotalNumSuccess();
             checkPeriodComplete();
             achievements = getAchieved(habitStats, period);
+            EventLog.getInstance().logEvent(new Event("Habit " + name + " with id " + id + " completed"));
             return true;
         }
         return false;
@@ -281,6 +295,7 @@ public class Habit {
                 habitReminder.updateReminders();
             }
             achievements = getAchieved(habitStats, period);
+            EventLog.getInstance().logEvent(new Event("Habit " + name + " with id " + id + " uncompleted"));
             return true;
         }
         return false;
@@ -297,6 +312,8 @@ public class Habit {
             if (isNotifyEnabled()) {
                 habitReminder.cancelReminders();
             }
+            EventLog.getInstance().logEvent(
+                    new Event("Habit " + name + " with id " + id + " completed for the period"));
         }
     }
 

@@ -34,6 +34,7 @@ public class HabitManagerTest extends HabitHelperTest {
         assertEquals(0, habitManager.getSize());
         assertFalse(HabitManager.isAutoSave());
         assertTrue(HabitManager.isAchievementToastsEnabled());
+        assertTrue(HabitManager.isHideOnClose());
     }
 
     @Test
@@ -64,6 +65,19 @@ public class HabitManagerTest extends HabitHelperTest {
         assertNull(HabitManager.getUsername());
         HabitManager.setUsername("username");
         assertEquals("username", HabitManager.getUsername());
+    }
+
+    @Test
+    void testToggleSettings() {
+        assertFalse(HabitManager.isAutoSave());
+        HabitManager.toggleAutoSave();
+        assertTrue(HabitManager.isAutoSave());
+        assertTrue(HabitManager.isAchievementToastsEnabled());
+        HabitManager.toggleAchievementToastsEnabled();
+        assertFalse(HabitManager.isAchievementToastsEnabled());
+        assertTrue(HabitManager.isHideOnClose());
+        HabitManager.toggleHideOnClose();
+        assertFalse(HabitManager.isHideOnClose());
     }
 
     @Test

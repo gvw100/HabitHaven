@@ -124,7 +124,7 @@ public class SettingsUI extends JPanel {
     // MODIFIES: autoSave
     // EFFECTS: toggles autoSave, changes text in autoSave button accordingly
     private void toggleAutoSaveButton(JToggleButton autoSave) {
-        HabitManager.setIsAutoSave(!HabitManager.isAutoSave());
+        HabitManager.toggleAutoSave();
         HabitManagerUI.changeMade();
         autoSave.setText(HabitManager.isAutoSave() ? "Turn Off Auto Save" : "Turn On Auto Save");
         autoSave.setIcon(HabitManager.isAutoSave() ? SAVE_OFF_ICON : SAVE_ICON);
@@ -157,18 +157,18 @@ public class SettingsUI extends JPanel {
         String text = isToasts ? "Turn Off Achievement Toasts"
                 : "Turn On Achievement Toasts";
         ImageIcon icon = isToasts ? ACHIEVEMENT_OFF : ACHIEVEMENT_ON;
-        JToggleButton turnOffToasts = getToggleButton(text, icon, isToasts);
-        // MODIFIES: this, turnOffToasts
+        JToggleButton toggleToasts = getToggleButton(text, icon, isToasts);
+        // MODIFIES: this, toggleToasts
         // EFFECTS: toggles achievementToastsEnabled
-        turnOffToasts.addItemListener(e -> invokeLater(() -> toggleToasts(turnOffToasts)));
-        mainPanel.add(turnOffToasts, getSettingsConstraints(4));
+        toggleToasts.addItemListener(e -> invokeLater(() -> toggleToasts(toggleToasts)));
+        mainPanel.add(toggleToasts, getSettingsConstraints(4));
     }
 
     // MODIFIES: this, button
     // EFFECTS: toggles achievementToastsEnabled, changes button text and icon accordingly
     private void toggleToasts(JToggleButton button) {
         boolean isToasts = !HabitManager.isAchievementToastsEnabled();
-        HabitManager.setAchievementToastsEnabled(isToasts);
+        HabitManager.toggleAchievementToastsEnabled();
         toast.setAchievementToastsEnabled(isToasts);
         HabitManagerUI.changeMade();
         button.setText(isToasts ? "Turn Off Achievement Toasts" : "Turn On Achievement Toasts");
@@ -192,7 +192,7 @@ public class SettingsUI extends JPanel {
     // EFFECTS: toggles hideOnClose, changes toggleButton text and icon accordingly
     private void toggleHideOnClose(JToggleButton toggleButton) {
         boolean newSelection = !HabitManager.isHideOnClose();
-        HabitManager.setHideOnClose(newSelection);
+        HabitManager.toggleHideOnClose();
         HabitManagerUI.changeMade();
         toggleButton.setText(newSelection ? "Make HabitHaven Exit on Close" : "Make HabitHaven Hide on Close");
         toggleButton.setIcon(newSelection ? EXIT_ICON : HIDE_ICON);

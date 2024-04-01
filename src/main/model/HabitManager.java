@@ -1,5 +1,7 @@
 package model;
 
+import model.log.Event;
+import model.log.EventLog;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -51,14 +53,30 @@ public class HabitManager {
 
     public static void setUsername(String username) {
         HabitManager.username = username;
+        EventLog.getInstance().logEvent(new Event("Username changed to " + username));
     }
 
     public static void setIsAutoSave(boolean isAutoSave) {
         HabitManager.isAutoSave = isAutoSave;
     }
 
+    // MODIFIES: this
+    // EFFECTS: toggles HabitManager.isAutoSave
+    public static void toggleAutoSave() {
+        HabitManager.isAutoSave = !HabitManager.isAutoSave;
+        EventLog.getInstance().logEvent(new Event("Auto save turned " + (HabitManager.isAutoSave ? "on" : "off")));
+    }
+
     public static void setAchievementToastsEnabled(boolean achievementToastsEnabled) {
         HabitManager.achievementToastsEnabled = achievementToastsEnabled;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: toggles HabitManager.achievementToastsEnabled
+    public static void toggleAchievementToastsEnabled() {
+        HabitManager.achievementToastsEnabled = !HabitManager.achievementToastsEnabled;
+        EventLog.getInstance().logEvent(
+                new Event("Achievement toasts turned " + (HabitManager.achievementToastsEnabled ? "on" : "off")));
     }
 
     public static void setHideOnClose(boolean hideOnClose) {
@@ -66,9 +84,18 @@ public class HabitManager {
     }
 
     // MODIFIES: this
+    // EFFECTS: toggles HabitManager.hideOnClose
+    public static void toggleHideOnClose() {
+        HabitManager.hideOnClose = !HabitManager.hideOnClose;
+        EventLog.getInstance().logEvent(
+                new Event("Application set to " + (HabitManager.hideOnClose ? "hide on close" : "exit on close")));
+    }
+
+    // MODIFIES: this
     // EFFECTS: habit added to list of habits
     public void addHabit(Habit habit) {
         habits.add(habit);
+        EventLog.getInstance().logEvent(new Event("Added habit " + habit.getName() + " with id " + habit.getId()));
     }
 
     // REQUIRES: habit is in this.habits
@@ -79,6 +106,7 @@ public class HabitManager {
         if (habit.isNotifyEnabled()) {
             habit.getHabitReminder().cancelReminders();
         }
+        EventLog.getInstance().logEvent(new Event("Removed habit " + habit.getName() + " with id" + habit.getId()));
     }
 
     // MODIFIES: this
@@ -89,6 +117,7 @@ public class HabitManager {
                 h.toggleNotifyEnabled();
             }
         }
+        EventLog.getInstance().logEvent(new Event("All notifications turned off"));
     }
 
     // EFFECTS: returns habit manager as a JSONObject

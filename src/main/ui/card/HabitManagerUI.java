@@ -5,6 +5,8 @@ import model.Habit;
 import model.HabitManager;
 import model.achievement.Achievement;
 import model.achievement.AchievementManager;
+import model.log.Event;
+import model.log.EventLog;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import persistence.JsonWriter;
@@ -95,15 +97,29 @@ public class HabitManagerUI extends JPanel {
                             nonSideBarSaveHabits(habitManager);
                         }
                     }
-                    if (HabitManager.isHideOnClose()) {
-                        parent.setVisible(false);
-                        HabitApp.setAppIsOpen(false);
-                    } else {
-                        System.exit(0);
-                    }
+                    hideOrExit();
                 });
             }
         });
+    }
+
+    // MODIFIES: this
+    // EFFECTS: hides the application or exits depending on HabitManager.isHideOnClose()
+    private void hideOrExit() {
+        if (HabitManager.isHideOnClose()) {
+            parent.setVisible(false);
+            HabitApp.setAppIsOpen(false);
+        } else {
+            printEventLog(EventLog.getInstance());
+            System.exit(0);
+        }
+    }
+
+    // EFFECTS: prints all events in eventLog when application exits
+    private void printEventLog(EventLog eventLog) {
+        for (Event event : eventLog) {
+            System.out.println(event.toString());
+        }
     }
 
     // MODIFIES: this
