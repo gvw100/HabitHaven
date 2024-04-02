@@ -100,6 +100,12 @@ public class HabitManagerTest extends HabitHelperTest {
         assertTrue(HabitManager.isHideOnClose());
         HabitManager.toggleHideOnClose();
         assertFalse(HabitManager.isHideOnClose());
+        HabitManager.toggleAutoSave();
+        assertFalse(HabitManager.isAutoSave());
+        HabitManager.toggleAchievementToastsEnabled();
+        assertTrue(HabitManager.isAchievementToastsEnabled());
+        HabitManager.toggleHideOnClose();
+        assertTrue(HabitManager.isHideOnClose());
     }
 
     @Test
