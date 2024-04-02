@@ -1,8 +1,9 @@
-package ui.card;
+package ui.card.habit.reminder;
 
 import javafx.util.Pair;
 import model.Habit;
 import model.reminder.MonthlyReminder;
+import ui.card.HabitManagerUI;
 
 import javax.swing.*;
 

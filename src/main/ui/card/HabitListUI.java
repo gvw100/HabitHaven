@@ -6,6 +6,7 @@ import model.HabitManager;
 import model.achievement.Achievement;
 import model.achievement.AchievementManager;
 import ui.AchievementToast;
+import ui.card.habit.HabitUI;
 
 import javax.swing.*;
 import java.awt.*;

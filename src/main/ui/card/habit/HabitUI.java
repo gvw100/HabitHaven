@@ -1,4 +1,4 @@
-package ui.card;
+package ui.card.habit;
 
 import javafx.util.Pair;
 import model.Habit;
@@ -6,6 +6,11 @@ import model.Period;
 import model.achievement.Achievement;
 import model.achievement.AchievementManager;
 import ui.AchievementToast;
+import ui.card.*;
+import ui.card.habit.reminder.DailyRemindersUI;
+import ui.card.habit.reminder.HabitRemindersUI;
+import ui.card.habit.reminder.MonthlyRemindersUI;
+import ui.card.habit.reminder.WeeklyRemindersUI;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;

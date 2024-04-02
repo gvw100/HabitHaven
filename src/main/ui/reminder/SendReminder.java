@@ -2,7 +2,6 @@ package ui.reminder;
 
 import model.Habit;
 import model.HabitManager;
-import model.Period;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import ui.HabitApp;
@@ -19,13 +18,7 @@ import static javax.swing.SwingUtilities.invokeLater;
 // Represents a job to send a notification to the user
 public class SendReminder implements Job {
 
-    private String username;
-    private String habitName;
-    private int habitFrequency;
-    private Period habitPeriod;
-    private int habitNumSuccesses;
-    private int habitStreak;
-    private int bestStreak;
+    private Habit habit;
     private LocalDateTime dateTime;
     private static boolean isConsoleApp;
 
@@ -38,16 +31,8 @@ public class SendReminder implements Job {
         SendReminder.isConsoleApp = isConsoleApp;
     }
 
-    // MODIFIES: this
-    // EFFECTS: sets fields to the given habit's fields
     public void setHabit(Habit habit) {
-        this.username = HabitManager.getUsername();
-        this.habitName = habit.getName();
-        this.habitFrequency = habit.getFrequency();
-        this.habitPeriod = habit.getPeriod();
-        this.habitNumSuccesses = habit.getNumSuccess();
-        this.habitStreak = habit.getHabitStats().getStreak();
-        this.bestStreak = habit.getHabitStats().getBestStreak();
+        this.habit = habit;
     }
 
     public void setDateTime(LocalDateTime dateTime) {
@@ -68,9 +53,9 @@ public class SendReminder implements Job {
     private void sendConsoleReminder() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("LLL d, uuuu h:mm a");
         String messageTime = dateTime.format(formatter);
-        String messageTitle = "\n" + messageTime + "\nHabit Reminder: " + habitName;
-        String messageIntro = "Hey " + username + "! Remember to focus on your habit: "
-                + habitName + "! You're on track to greatness!";
+        String messageTitle = "\n" + messageTime + "\nHabit Reminder: " + habit.getName();
+        String messageIntro = "Hey " + HabitManager.getUsername() + "! Remember to focus on your habit: "
+                + habit.getName() + "! You're on track to greatness!";
         String messageGoals = getMessageGoals();
         String messageProgress = getMessageProgress();
         String messageStreak = getMessageStreak();
@@ -81,10 +66,11 @@ public class SendReminder implements Job {
 
     // EFFECTS: sends a desktop notification to the user
     private void sendUIReminder() {
-        String message = "Hey " + username + "! Only " + (habitFrequency - habitNumSuccesses)
-                + " more to go for " + habitName
+        String message = "Hey " + HabitManager.getUsername() + "! Only "
+                + (habit.getFrequency() - habit.getNumSuccess()) + " more to go for " + habit.getName()
                 + getPeriodString(" today.", " this week.", " this month.")
-                + (habitStreak == 0 ? " Go get that streak started!" : " Keep that streak going!");
+                + (habit.getHabitStats().getStreak() == 0
+                ? " Go get that streak started!" : " Keep that streak going!");
         try {
             SystemTray tray = SystemTray.getSystemTray();
             Image image = ImageIO.read(new File("./data/logo_icon.png"));
@@ -92,7 +78,7 @@ public class SendReminder implements Job {
             trayIcon.setImageAutoSize(true);
             tray.add(trayIcon);
             trayIcon.displayMessage(
-                    "Habit Reminder: " + habitName, message, TrayIcon.MessageType.NONE);
+                    "Habit Reminder: " + habit.getName(), message, TrayIcon.MessageType.NONE);
             addListener(trayIcon);
         } catch (IOException | AWTException e) {
             e.printStackTrace();
@@ -113,21 +99,21 @@ public class SendReminder implements Job {
     // EFFECTS: returns a message about the user's goals
     private String getMessageGoals() {
         String periodString = getPeriodString("day", "week", "month");
-        if (habitFrequency == 1) {
-            return "You're aiming to do this habit " + habitFrequency + " time per "
+        if (habit.getFrequency() == 1) {
+            return "You're aiming to do this habit 1 time per "
                     + periodString + ". ";
         } else {
-            return "You're aiming to do this habit " + habitFrequency + " times per "
+            return "You're aiming to do this habit " + habit.getFrequency() + " times per "
                     + periodString + ". ";
         }
     }
 
     // EFFECTS: returns a message about the user's progress
     private String getMessageProgress() {
-        String times = habitNumSuccesses == 1 ? " time" : " times";
-        if (habitNumSuccesses > 0) {
-            return "You've already completed this habit " + habitNumSuccesses + times + "! "
-                    + "Only " + (habitFrequency - habitNumSuccesses) + " more to go! Keep pushing forward!";
+        String times = habit.getNumSuccess() == 1 ? " time" : " times";
+        if (habit.getNumSuccess() > 0) {
+            return "You've already completed this habit " + habit.getNumSuccess() + times + "! "
+                    + "Only " + (habit.getFrequency() - habit.getNumSuccess()) + " more to go! Keep pushing forward!";
         } else {
             return "You haven't completed this habit yet "
                     + getPeriodString("today", "this week", "this month")
@@ -137,6 +123,8 @@ public class SendReminder implements Job {
 
     // EFFECTS: returns a message about the user's streak
     private String getMessageStreak() {
+        int habitStreak = habit.getHabitStats().getStreak();
+        int bestStreak = habit.getHabitStats().getBestStreak();
         String day = habitStreak == 1 ? " day" : " days";
         String week = habitStreak == 1 ? " week" : " weeks";
         String month = habitStreak == 1 ? " month" : " months";
@@ -154,7 +142,7 @@ public class SendReminder implements Job {
 
     // EFFECTS: returns a string based on the habit's period
     private String getPeriodString(String day, String week, String month) {
-        switch (habitPeriod) {
+        switch (habit.getPeriod()) {
             case DAILY:
                 return day;
             case WEEKLY:

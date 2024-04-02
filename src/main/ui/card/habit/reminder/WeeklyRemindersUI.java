@@ -1,7 +1,8 @@
-package ui.card;
+package ui.card.habit.reminder;
 
 import model.Habit;
 import model.reminder.WeeklyReminder;
+import ui.card.HabitManagerUI;
 
 import javax.swing.*;
 import java.awt.*;

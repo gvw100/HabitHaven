@@ -32,23 +32,22 @@ import static ui.Constants.*;
 
 // Represents the main JPanel of the entire app, consisting of a sidebar and a card layout panel
 public class HabitManagerUI extends JPanel {
-    private JFrame parent;
+    private HabitApp parent;
     private JLayeredPane layeredPane;
     private JPanel sidebar;
     private JPanel mainPanel;
     private CardLayout cardLayout;
     private AchievementToast achievementToast;
-
     private static boolean isSaved;
     private static HabitManager habitManager;
 
     // EFFECTS: constructs a new HabitMangerUI panel
-    public HabitManagerUI(boolean isLoaded, JFrame frame, HabitManager habitManager) {
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    public HabitManagerUI(boolean isLoaded, HabitApp parent, HabitManager habitManager) {
+        parent.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         HabitManagerUI.habitManager = habitManager;
         this.achievementToast = new AchievementToast(HabitManager.isAchievementToastsEnabled());
         this.layeredPane = new JLayeredPane();
-        this.parent = frame;
+        this.parent = parent;
         add(layeredPane);
         HabitManagerUI.isSaved = isLoaded;
         if (isLoaded) {

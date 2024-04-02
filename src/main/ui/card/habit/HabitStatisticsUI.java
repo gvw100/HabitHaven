@@ -1,4 +1,4 @@
-package ui.card;
+package ui.card.habit;
 
 import model.Habit;
 import model.HabitStatistics;
@@ -18,14 +18,11 @@ public class HabitStatisticsUI extends JPanel {
     private JLabel numPeriodSuccess;
     private JLabel numPeriod;
     private JLabel successRate;
-
     private Habit habit;
-    private HabitStatistics habitStats;
 
     // EFFECTS: constructs a HabitStatisticsUI panel
     public HabitStatisticsUI(Habit habit) {
         this.habit = habit;
-        this.habitStats = habit.getHabitStats();
         setupPanel();
     }
 
@@ -81,6 +78,7 @@ public class HabitStatisticsUI extends JPanel {
 
     // EFFECTS: returns text for streak label
     private String getStreakText() {
+        HabitStatistics habitStats = habit.getHabitStats();
         String[] strings = habitStats.getStreak() == 1 ? new String[]{"day", "week", "month"}
                 : new String[]{"days", "weeks", "months"};
         return "Current Streak: " + habitStats.getStreak() + " " + getPeriodString(strings);
@@ -97,6 +95,7 @@ public class HabitStatisticsUI extends JPanel {
 
     // EFFECTS: returns text for best streak label
     private String getBestStreakText() {
+        HabitStatistics habitStats = habit.getHabitStats();
         String[] strings = habitStats.getBestStreak() == 1 ? new String[]{"day", "week", "month"}
                 : new String[]{"days", "weeks", "months"};
         return "Best Streak: " + habitStats.getBestStreak() + " " + getPeriodString(strings);
@@ -113,6 +112,7 @@ public class HabitStatisticsUI extends JPanel {
 
     // EFFECTS: returns text for total num success label
     private String getTotalNumSuccessText() {
+        HabitStatistics habitStats = habit.getHabitStats();
         return "Lifetime Number of Completions: " + habitStats.getTotalNumSuccess()
                 + (habitStats.getTotalNumSuccess() == 1 ? " time" : " times");
     }
@@ -128,6 +128,7 @@ public class HabitStatisticsUI extends JPanel {
 
     // EFFECTS: returns text for num period success label
     private String getNumPeriodSuccessText() {
+        HabitStatistics habitStats = habit.getHabitStats();
         String[] plural = new String[]{"Days", "Weeks", "Months"};
         String[] strings = habitStats.getNumPeriodSuccess() == 1 ? new String[]{"day", "week", "month"} :
                 new String[]{"days", "weeks", "months"};
@@ -146,6 +147,7 @@ public class HabitStatisticsUI extends JPanel {
 
     // EFFECTS: returns text for num period label
     private String getNumPeriodText() {
+        HabitStatistics habitStats = habit.getHabitStats();
         String[] plural = new String[]{"Days", "Weeks", "Months"};
         String[] strings = habitStats.getNumPeriod() == 1 ? new String[]{"day", "week", "month"}
                 : new String[]{"days", "weeks", "months"};
@@ -164,6 +166,7 @@ public class HabitStatisticsUI extends JPanel {
 
     // EFFECTS: returns text for success rate label
     private String getSuccessRateText() {
+        HabitStatistics habitStats = habit.getHabitStats();
         return "Success Rate: " + habitStats.getSuccessRate(habit.isPeriodComplete()) + "%";
     }
 

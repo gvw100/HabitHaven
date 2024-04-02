@@ -5,6 +5,7 @@ import org.json.JSONException;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 import ui.AchievementToast;
+import ui.HabitApp;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -21,12 +22,13 @@ import static ui.Constants.*;
 public class SettingsUI extends JPanel {
     private HabitManager habitManager;
     private JPanel mainPanel;
-    private JFrame parent;
+    private HabitApp parent;
     private AchievementToast toast;
     private HabitManagerUI habitManagerUI;
 
     // EFFECTS: constructs a settingsUI panel
-    public SettingsUI(HabitManager habitManager, JFrame parent, AchievementToast toast, HabitManagerUI habitManagerUI) {
+    public SettingsUI(HabitManager habitManager, HabitApp parent,
+                      AchievementToast toast, HabitManagerUI habitManagerUI) {
         this.habitManager = habitManager;
         this.toast = toast;
         this.parent = parent;

@@ -1,4 +1,4 @@
-package ui.card;
+package ui.card.habit;
 
 import model.Habit;
 import model.achievement.Achievement;

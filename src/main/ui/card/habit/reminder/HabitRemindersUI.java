@@ -1,6 +1,7 @@
-package ui.card;
+package ui.card.habit.reminder;
 
 import model.Habit;
+import ui.card.HabitManagerUI;
 
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
@@ -549,7 +550,7 @@ public abstract class HabitRemindersUI extends JPanel {
     }
 
     // EFFECTS: updates entire habit reminder JPanel
-    protected void updateRemindersUI() {
+    public void updateRemindersUI() {
         updatePresetComponents();
         updateCustomizationComponents();
         updateReminderListComponents();

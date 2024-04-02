@@ -35,10 +35,9 @@ public class AchievementToast extends JPanel {
     // MODIFIES: this
     // EFFECTS: queues an achievement to be displayed
     public void add(Pair<String, Achievement> achievement) {
-        if (!HabitApp.appIsOpen() || !achievementToastsEnabled) {
-            return;
+        if (HabitApp.appIsOpen() && achievementToastsEnabled) {
+            displayToast(achievement);
         }
-        displayToast(achievement);
     }
 
     // MODIFIES: this
