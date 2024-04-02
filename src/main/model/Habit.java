@@ -276,9 +276,9 @@ public class Habit {
         if (numSuccess < frequency) {
             numSuccess++;
             habitStats.incrementTotalNumSuccess();
+            EventLog.getInstance().logEvent(new Event("Habit \"" + name + "\" with id " + id + " completed"));
             checkPeriodComplete();
             achievements = getAchieved(habitStats, period);
-            EventLog.getInstance().logEvent(new Event("Habit \"" + name + "\" with id " + id + " completed"));
             return true;
         }
         return false;

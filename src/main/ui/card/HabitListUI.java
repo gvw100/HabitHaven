@@ -23,13 +23,13 @@ import static ui.card.HabitManagerUI.changeMade;
 // Represents the habit list panel
 public class HabitListUI extends JPanel {
     private HabitManager habitManager;
+    private AchievementToast achievementToast;
     private JPanel habitsPanel;
     private JPanel archivedPanel;
     private JScrollPane parentRegular;
     private JScrollPane parentArchived;
     private CardLayout parentCardLayout;
     private JPanel parentPanel;
-    private AchievementToast achievementToast;
     private Runnable toCreateHabit;
 
     // EFFECTS: constructs a HabitListUI panel

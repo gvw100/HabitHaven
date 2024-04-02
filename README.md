@@ -120,9 +120,9 @@ Habit "drink water" with id 63695479-23a9-48ad-af24-28b809c6056f archived
 Mon Apr 01 17:02:46 PDT 2024
 Habit "jogging" with id 3c97de3e-d851-4e95-a017-6b7c761b549a completed
 Mon Apr 01 17:02:46 PDT 2024
-Habit "jogging" with id 3c97de3e-d851-4e95-a017-6b7c761b549a completed for the period
-Mon Apr 01 17:02:46 PDT 2024
 Habit "jogging" with id 3c97de3e-d851-4e95-a017-6b7c761b549a completed
+Mon Apr 01 17:02:46 PDT 2024
+Habit "jogging" with id 3c97de3e-d851-4e95-a017-6b7c761b549a completed for the period
 Mon Apr 01 17:02:52 PDT 2024
 Habit "jogging" with id 3c97de3e-d851-4e95-a017-6b7c761b549a uncompleted
 Mon Apr 01 17:03:17 PDT 2024
@@ -144,3 +144,23 @@ Application set to exit on close
 Mon Apr 01 17:03:50 PDT 2024
 Removed habit "drink water" with id 63695479-23a9-48ad-af24-28b809c6056f from habit manager
 ```
+## Phase 4: Task 3
+There are several areas in which I can potentially improve the design of my application. In particular, the cohesion
+of many of my classes could be improved. For instance, my HabitUI class has two distinct roles - to act as the container
+for each constituent tab (Habit tab, Statistics tab, Notifications tab, Achievements tab) but also to 
+implement the habit tab. Cohesion could be improved by splitting the HabitUI into two separate
+classes - one acting as the container JPanel and one dealing only with the Habit tab. A similar argument could be made 
+for my HabitListUI class. There really are three responsibilities here: coordinating the tabs, setting up the regular 
+habits tab, and setting up the archived habits tab. A potential solution is to create an abstract class for all the 
+common elements between the regular tab and the archived tab. A container class responsible for setting up the tabs and 
+coordinating them would instantiate both concrete classes that extend the abstract class.
+
+In my HabitRemindersUI class and subclasses, a common feature is that JSpinners always get committed before they are 
+processed (after a button press). When implementing this behaviour, it was very tedious to find every relevant button 
+listener across the four classes and ensure that all relevant JSpinners are committed. Even now, I still cannot be fully 
+certain that all the JSpinners get committed when they need to be, causing some potential inconsistency. To deal with 
+this issue, I could create a custom listener that takes has a field of a list of JSpinners. I could add this listener 
+to each submit button and override actionPerformed for each specific button. Furthermore, while I attempted to create a 
+general purpose commitSpinners method in my HabitRemindersUI abstract class, it only takes two JSpinners
+as parameters. A potential solution would be to have the commitSpinners method take a list of JSpinners as a parameter,
+establishing a single point of control.

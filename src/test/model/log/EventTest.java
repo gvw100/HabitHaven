@@ -31,7 +31,7 @@ public class EventTest {
     public void testEvent() {
         assertEquals("Sensor open at door", e.getDescription());
         Date date = e.getDate();
-        boolean sameSecond = (d.before(Date.from(date.toInstant().plusSeconds(1))));
+        boolean sameSecond = ((d.equals(date) || d.after(date)) && d.before(Date.from(date.toInstant().plusSeconds(1))));
         assertTrue(sameSecond);
     }
 

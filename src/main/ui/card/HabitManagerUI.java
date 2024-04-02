@@ -33,11 +33,11 @@ import static ui.Constants.*;
 // Represents the main JPanel of the entire app, consisting of a sidebar and a card layout panel
 public class HabitManagerUI extends JPanel {
     private HabitApp parent;
+    private AchievementToast achievementToast;
     private JLayeredPane layeredPane;
     private JPanel sidebar;
     private JPanel mainPanel;
     private CardLayout cardLayout;
-    private AchievementToast achievementToast;
     private static boolean isSaved;
     private static HabitManager habitManager;
 
