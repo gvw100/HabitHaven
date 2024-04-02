@@ -53,12 +53,12 @@ public class JsonReader {
 
     // EFFECTS: parses HabitManager from JSON object and returns it
     private HabitManager parseHabitManager(JSONObject jsonObject) {
-        HabitManager hm = new HabitManager();
+        HabitManager hm = new HabitManager(
+                jsonObject.getString("username"),
+                jsonObject.getBoolean("isAutoSave"),
+                jsonObject.getBoolean("achievementToastsEnabled"),
+                jsonObject.getBoolean("hideOnClose"));
         addHabits(hm, jsonObject);
-        HabitManager.setIsAutoSave(jsonObject.getBoolean("isAutoSave"));
-        HabitManager.setAchievementToastsEnabled(jsonObject.getBoolean("achievementToastsEnabled"));
-        HabitManager.setHideOnClose(jsonObject.getBoolean("hideOnClose"));
-        HabitManager.setUsername(jsonObject.getString("username"));
         return hm;
     }
 

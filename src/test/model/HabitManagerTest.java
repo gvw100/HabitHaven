@@ -3,6 +3,7 @@ package model;
 import model.reminder.DailyReminder;
 import model.reminder.HabitReminder;
 import model.reminder.MonthlyReminder;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,12 +30,33 @@ public class HabitManagerTest extends HabitHelperTest {
         h3 = new Habit("and another name", "yet another description", Period.MONTHLY, 7, true, c3);
     }
 
+    @AfterEach
+    void runAfter() {
+        HabitManager.setUsername(null);
+    }
+
     @Test
     void testConstructor() {
         assertEquals(0, habitManager.getSize());
         assertFalse(HabitManager.isAutoSave());
         assertTrue(HabitManager.isAchievementToastsEnabled());
         assertTrue(HabitManager.isHideOnClose());
+    }
+
+    @Test
+    void testConstructor2() {
+        HabitManager hm = new HabitManager("Gregor", false, true, false);
+        assertEquals("Gregor", HabitManager.getUsername());
+        assertFalse(HabitManager.isAutoSave());
+        assertTrue(HabitManager.isAchievementToastsEnabled());
+        assertFalse(HabitManager.isHideOnClose());
+        assertEquals(0, hm.getSize());
+        HabitManager other = new HabitManager("John", true, false, true);
+        assertEquals("John", HabitManager.getUsername());
+        assertTrue(HabitManager.isAutoSave());
+        assertFalse(HabitManager.isAchievementToastsEnabled());
+        assertTrue(HabitManager.isHideOnClose());
+        assertEquals(0, other.getSize());
     }
 
     @Test

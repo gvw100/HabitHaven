@@ -26,6 +26,15 @@ public class HabitManager {
         hideOnClose = true;
     }
 
+    // EFFECTS: constructs a habit manager with an empty list of habits for a returning user
+    public HabitManager(String username, boolean isAutoSave, boolean achievementToastsEnabled, boolean hideOnClose) {
+        habits = new ArrayList<>();
+        HabitManager.username = username;
+        HabitManager.isAutoSave = isAutoSave;
+        HabitManager.achievementToastsEnabled = achievementToastsEnabled;
+        HabitManager.hideOnClose = hideOnClose;
+    }
+
     public List<Habit> getHabits() {
         return this.habits;
     }
@@ -39,25 +48,26 @@ public class HabitManager {
         return HabitManager.username;
     }
 
+    // EFFECTS: returns whether auto save is enabled
     public static boolean isAutoSave() {
         return HabitManager.isAutoSave;
     }
 
+    // EFFECTS: returns whether achievement toasts are enabled
     public static boolean isAchievementToastsEnabled() {
         return HabitManager.achievementToastsEnabled;
     }
 
+    // EFFECTS: returns true if application will hide on close, false if application will exit on close
     public static boolean isHideOnClose() {
         return HabitManager.hideOnClose;
     }
 
+    // MODIFIES: this
+    // EFFECTS: setups HabitManager.username to given username
     public static void setUsername(String username) {
         HabitManager.username = username;
-        EventLog.getInstance().logEvent(new Event("Username changed to " + username));
-    }
-
-    public static void setIsAutoSave(boolean isAutoSave) {
-        HabitManager.isAutoSave = isAutoSave;
+        EventLog.getInstance().logEvent(new Event("Username changed to \"" + username + "\""));
     }
 
     // MODIFIES: this
@@ -67,20 +77,12 @@ public class HabitManager {
         EventLog.getInstance().logEvent(new Event("Auto save turned " + (HabitManager.isAutoSave ? "on" : "off")));
     }
 
-    public static void setAchievementToastsEnabled(boolean achievementToastsEnabled) {
-        HabitManager.achievementToastsEnabled = achievementToastsEnabled;
-    }
-
     // MODIFIES: this
     // EFFECTS: toggles HabitManager.achievementToastsEnabled
     public static void toggleAchievementToastsEnabled() {
         HabitManager.achievementToastsEnabled = !HabitManager.achievementToastsEnabled;
         EventLog.getInstance().logEvent(
                 new Event("Achievement toasts turned " + (HabitManager.achievementToastsEnabled ? "on" : "off")));
-    }
-
-    public static void setHideOnClose(boolean hideOnClose) {
-        HabitManager.hideOnClose = hideOnClose;
     }
 
     // MODIFIES: this
@@ -95,7 +97,6 @@ public class HabitManager {
     // EFFECTS: habit added to list of habits
     public void addHabit(Habit habit) {
         habits.add(habit);
-        EventLog.getInstance().logEvent(new Event("Added habit " + habit.getName() + " with id " + habit.getId()));
     }
 
     // REQUIRES: habit is in this.habits
@@ -106,7 +107,8 @@ public class HabitManager {
         if (habit.isNotifyEnabled()) {
             habit.getHabitReminder().cancelReminders();
         }
-        EventLog.getInstance().logEvent(new Event("Removed habit " + habit.getName() + " with id" + habit.getId()));
+        EventLog.getInstance().logEvent(new Event(
+                "Removed habit \"" + habit.getName() + "\" with id " + habit.getId() + " from habit manager"));
     }
 
     // MODIFIES: this
@@ -117,7 +119,6 @@ public class HabitManager {
                 h.toggleNotifyEnabled();
             }
         }
-        EventLog.getInstance().logEvent(new Event("All notifications turned off"));
     }
 
     // EFFECTS: returns habit manager as a JSONObject

@@ -55,6 +55,8 @@ public class Habit {
         this.achievements = new ArrayList<>();
         this.isArchived = false;
         updateDateTime();
+        EventLog.getInstance().logEvent(
+                new Event("Added new habit \"" + name + "\" with id " + id + " to habit manager"));
     }
 
     // REQUIRES: 0 < frequency < 16
@@ -82,14 +84,19 @@ public class Habit {
         this.habitReminder = habitReminder;
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets this.name to given name
     public void setName(String name) {
         this.name = name;
-        EventLog.getInstance().logEvent(new Event("Name of habit with id " + id + " changed to " + name));
+        EventLog.getInstance().logEvent(new Event("Name of habit with id " + id + " changed to \"" + name + "\""));
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets this.description to given description
     public void setDescription(String description) {
         this.description = description;
-        EventLog.getInstance().logEvent(new Event("Description of habit with id " + id + " changed to " + description));
+        EventLog.getInstance().logEvent(
+                new Event("Description of habit with id " + id + " changed to \"" + description + "\""));
     }
 
     // MODIFIES: this
@@ -120,8 +127,8 @@ public class Habit {
             habitReminder = null;
         }
         EventLog.getInstance().logEvent(
-                new Event("Notifications of habit " + name
-                        + " with id " + id + (notifyEnabled ? " enabled" : " disabled")));
+                new Event("Notifications of habit \"" + name
+                        + "\" with id " + id + (this.notifyEnabled ? " enabled" : " disabled")));
     }
 
     // REQUIRES: 0 < frequency < 16
@@ -142,7 +149,7 @@ public class Habit {
         resetProgress();
         achievements = getAchieved(habitStats, period);
         EventLog.getInstance().logEvent(
-                new Event("Frequency of habit " + name + " with id " + id + " changed to " + frequency));
+                new Event("Frequency of habit \"" + name + "\" with id " + id + " changed to " + frequency));
         return true;
     }
 
@@ -165,7 +172,7 @@ public class Habit {
         }
         achievements = getAchieved(habitStats, period);
         EventLog.getInstance().logEvent(
-                new Event("Period of habit " + name + " with id " + id + " changed to " + period));
+                new Event("Period of habit \"" + name + "\" with id " + id + " changed to " + period));
         return true;
     }
 
@@ -179,7 +186,7 @@ public class Habit {
             updateHabit();
         }
         EventLog.getInstance().logEvent(
-                new Event("Habit " + name + " with id " + id + (isArchived ? " archived" : " unarchived")));
+                new Event("Habit \"" + name + "\" with id " + id + (isArchived ? " archived" : " unarchived")));
     }
 
     // REQUIRES: no reminders scheduled yet for this period, notifyEnabled is true
@@ -271,7 +278,7 @@ public class Habit {
             habitStats.incrementTotalNumSuccess();
             checkPeriodComplete();
             achievements = getAchieved(habitStats, period);
-            EventLog.getInstance().logEvent(new Event("Habit " + name + " with id " + id + " completed"));
+            EventLog.getInstance().logEvent(new Event("Habit \"" + name + "\" with id " + id + " completed"));
             return true;
         }
         return false;
@@ -295,7 +302,7 @@ public class Habit {
                 habitReminder.updateReminders();
             }
             achievements = getAchieved(habitStats, period);
-            EventLog.getInstance().logEvent(new Event("Habit " + name + " with id " + id + " uncompleted"));
+            EventLog.getInstance().logEvent(new Event("Habit \"" + name + "\" with id " + id + " uncompleted"));
             return true;
         }
         return false;
@@ -313,7 +320,7 @@ public class Habit {
                 habitReminder.cancelReminders();
             }
             EventLog.getInstance().logEvent(
-                    new Event("Habit " + name + " with id " + id + " completed for the period"));
+                    new Event("Habit \"" + name + "\" with id " + id + " completed for the period"));
         }
     }
 

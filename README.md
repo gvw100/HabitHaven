@@ -42,8 +42,9 @@ name, description, period, and frequency.
 - Or, as a user, I want to be able to have the option to enable auto-save.
 - As a user, I want to be given the option to export my save file to my computer.
 - As a user, I want to be given the option to import a save file from my computer.
-- As a user, I want to be able to view and my achievements for each habit.
-- As a user, I want to be notified when I earn a new achievement.
+- As a user, I want to be able to view my achievements for each habit.
+- As a user, I want to be shown an achievement toast when I earn a new achievement.
+- As a user, I want to be able to toggle on/off achievement toasts.
 - As a user I want to have the option to make the application exit on close or hide on close.
 - As a user, I want to be able to archive and unarchive a habit. 
 - As a user, I want to be able to make a copy of a habit.
@@ -80,3 +81,66 @@ name, description, period, and frequency.
 - You can reload the state of my application in one of two ways:
   - Press the "Load from File" button in the start screen.
   - Click the "Import from File" button to select a save file on your pc.
+## Phase 4: Task 2
+```
+Mon Apr 01 17:00:18 PDT 2024
+Added new habit "drink water" with id 63695479-23a9-48ad-af24-28b809c6056f to habit manager
+Mon Apr 01 17:00:39 PDT 2024
+Name of habit with id fe931308-f19c-4545-b4c7-25edf0c82274 changed to "eetcode"
+Mon Apr 01 17:00:40 PDT 2024
+Name of habit with id fe931308-f19c-4545-b4c7-25edf0c82274 changed to "Leetcode"
+Mon Apr 01 17:01:16 PDT 2024
+Description of habit with id 3c97de3e-d851-4e95-a017-6b7c761b549a changed to "j"
+Mon Apr 01 17:01:16 PDT 2024
+Description of habit with id 3c97de3e-d851-4e95-a017-6b7c761b549a changed to "jo"
+Mon Apr 01 17:01:16 PDT 2024
+Description of habit with id 3c97de3e-d851-4e95-a017-6b7c761b549a changed to "jog"
+Mon Apr 01 17:01:16 PDT 2024
+Description of habit with id 3c97de3e-d851-4e95-a017-6b7c761b549a changed to "jogg"
+Mon Apr 01 17:01:16 PDT 2024
+Description of habit with id 3c97de3e-d851-4e95-a017-6b7c761b549a changed to "joggi"
+Mon Apr 01 17:01:16 PDT 2024
+Description of habit with id 3c97de3e-d851-4e95-a017-6b7c761b549a changed to "joggin"
+Mon Apr 01 17:01:16 PDT 2024
+Description of habit with id 3c97de3e-d851-4e95-a017-6b7c761b549a changed to "jogging"
+Mon Apr 01 17:01:33 PDT 2024
+Notifications of habit "jogging" with id 3c97de3e-d851-4e95-a017-6b7c761b549a enabled
+Mon Apr 01 17:01:36 PDT 2024
+Notifications of habit "Leetcode" with id fe931308-f19c-4545-b4c7-25edf0c82274 disabled
+Mon Apr 01 17:01:40 PDT 2024
+Notifications of habit "Daily Math 200" with id 450aff2e-9574-485f-a641-72aefa75574a disabled
+Mon Apr 01 17:01:56 PDT 2024
+Frequency of habit "Daily Math 200" with id 450aff2e-9574-485f-a641-72aefa75574a changed to 2
+Mon Apr 01 17:02:13 PDT 2024
+Period of habit "jogging" with id 3c97de3e-d851-4e95-a017-6b7c761b549a changed to DAILY
+Mon Apr 01 17:02:22 PDT 2024
+Habit "do yoga" with id bf05ed23-1737-46cd-a2a9-2cacf4cd6392 unarchived
+Mon Apr 01 17:02:30 PDT 2024
+Habit "drink water" with id 63695479-23a9-48ad-af24-28b809c6056f archived
+Mon Apr 01 17:02:46 PDT 2024
+Habit "jogging" with id 3c97de3e-d851-4e95-a017-6b7c761b549a completed
+Mon Apr 01 17:02:46 PDT 2024
+Habit "jogging" with id 3c97de3e-d851-4e95-a017-6b7c761b549a completed for the period
+Mon Apr 01 17:02:46 PDT 2024
+Habit "jogging" with id 3c97de3e-d851-4e95-a017-6b7c761b549a completed
+Mon Apr 01 17:02:52 PDT 2024
+Habit "jogging" with id 3c97de3e-d851-4e95-a017-6b7c761b549a uncompleted
+Mon Apr 01 17:03:17 PDT 2024
+Username changed to "Gregor"
+Mon Apr 01 17:03:23 PDT 2024
+Auto save turned off
+Mon Apr 01 17:03:26 PDT 2024
+Auto save turned on
+Mon Apr 01 17:03:28 PDT 2024
+Auto save turned off
+Mon Apr 01 17:03:36 PDT 2024
+Achievement toasts turned off
+Mon Apr 01 17:03:36 PDT 2024
+Achievement toasts turned on
+Mon Apr 01 17:03:40 PDT 2024
+Application set to hide on close
+Mon Apr 01 17:03:41 PDT 2024
+Application set to exit on close
+Mon Apr 01 17:03:50 PDT 2024
+Removed habit "drink water" with id 63695479-23a9-48ad-af24-28b809c6056f from habit manager
+```

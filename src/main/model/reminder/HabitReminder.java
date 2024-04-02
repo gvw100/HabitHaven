@@ -54,7 +54,7 @@ public abstract class HabitReminder {
 
     // EFFECTS: returns true if the reminder is default, false if it is custom
     public boolean isDefault() {
-        return isDefault;
+        return this.isDefault;
     }
 
     // REQUIRES: no reminders scheduled yet for this period, isDefault is true
