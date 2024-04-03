@@ -47,6 +47,7 @@ public class CreateHabitUI extends JPanel {
         setupFrequencyBox();
         setupNotificationBox();
         setupCreateHabitButton();
+        setupEmptyRow();
     }
 
     // MODIFIES: this
@@ -347,6 +348,27 @@ public class CreateHabitUI extends JPanel {
         createHabitButton.setEnabled(false);
         setupCreateHabitListener();
         add(createHabitButton, getCreateHabitConstraints(5));
+    }
+
+    // EFFECTS: returns grid bag constraints for empty filling panel
+    private GridBagConstraints getEmptyConstraints() {
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridx = 0;
+        constraints.gridy = 6;
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        constraints.gridwidth = 3;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        return constraints;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: adds empty row to create habit panel
+    private void setupEmptyRow() {
+        JPanel empty = new JPanel();
+        empty.setBackground(APP_COLOUR);
+        empty.setPreferredSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, 50));
+        add(empty, getEmptyConstraints());
     }
 
     // MODIFIES: this
