@@ -67,7 +67,7 @@ public class HabitManager {
     // EFFECTS: setups HabitManager.username to given username
     public static void setUsername(String username) {
         HabitManager.username = username;
-        EventLog.getInstance().logEvent(new Event("Username changed to \"" + username + "\""));
+        EventLog.getInstance().logEvent(new Event("Username set to \"" + username + "\""));
     }
 
     // MODIFIES: this

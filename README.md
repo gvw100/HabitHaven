@@ -126,7 +126,7 @@ Habit "jogging" with id 3c97de3e-d851-4e95-a017-6b7c761b549a completed for the p
 Mon Apr 01 17:02:52 PDT 2024
 Habit "jogging" with id 3c97de3e-d851-4e95-a017-6b7c761b549a uncompleted
 Mon Apr 01 17:03:17 PDT 2024
-Username changed to "Gregor"
+Username set to "Gregor"
 Mon Apr 01 17:03:23 PDT 2024
 Auto save turned off
 Mon Apr 01 17:03:26 PDT 2024
