@@ -159,6 +159,7 @@ public class CreateHabitUI extends JPanel {
         habitDescription.setBorder(BorderFactory.createLineBorder(FONT_COLOUR));
         habitDescription.setCaretColor(FONT_COLOUR);
         habitDescriptionPanel.setPreferredSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, TEXT_FIELD_HEIGHT * 5));
+        habitDescriptionPanel.setMinimumSize(new Dimension(WINDOW_WIDTH - SIDE_BAR_WIDTH, TEXT_FIELD_HEIGHT * 5));
         habitDescription.setText("Description (optional)");
         habitDescription.setAlignmentX(Component.CENTER_ALIGNMENT);
         setupDescriptionListener();
