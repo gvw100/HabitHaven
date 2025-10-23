@@ -2,7 +2,8 @@
 
 ## Overview
 
-**HabitHaven** is a personal productivity app designed to help users build and maintain positive habits through structured tracking, reminders, and gamification. It provides a visually organized and engaging way to stay consistent and celebrate progress.
+**HabitHaven** is a personal productivity app designed to help users build and maintain positive habits through structured tracking, reminders, and gamification. It provides a visually organized and engaging way to stay consistent and celebrate progress. [Check it out here!](https://youtu.be/gzEbAXSCz4E)
+
 
 ## Key Features
 
